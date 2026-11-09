@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.local
+.DS_Store
+
+# Generated comparison screenshots are local evidence; keep the rig output itself regenerable.
+artifacts/**/*.png

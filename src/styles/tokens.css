@@ -1,0 +1,312 @@
+/* ==========================================================================
+   copyui tokens
+   --------------------------------------------------------------------------
+   The single source of truth for the whole system. Values were derived by
+   measuring the rendered affectui.com interface (computed styles only), then
+   normalised into a scale. Components never hard-code a colour, radius,
+   shadow, duration or easing — they read these variables.
+
+   Two layers:
+   1. Editorial / app tokens  (--bg, --text, --line, --accent, --r-*, --shadow-*)
+   2. Semantic UI tokens      (--ui-*) aliases that every component consumes.
+
+   Theme by setting data-theme="dark" (or class="dark") on <html>.
+   Rebrand by overriding --accent, --accent-2 or --radius-scale.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---- Typeface ------------------------------------------------------- */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ---- Type scale (13px base, as measured) ---------------------------- */
+  --text-2xs: 10px;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-md: 14px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 26px;
+  --text-3xl: 32px;
+  --text-4xl: 40px;
+  --text-5xl: 52px;
+
+  --leading-tight: 1.1;
+  --leading-snug: 1.32;
+  --leading-normal: 1.4285714;
+  --leading-relaxed: 1.65;
+
+  --tracking-display: -0.035em;
+  --tracking-heading: -0.024em;
+  --tracking-body: 0em;
+  --tracking-caps: 0.06em;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* ---- Surfaces ------------------------------------------------------- */
+  --bg: #f5f5f5;
+  --panel: #fcfcfc;
+  --panel-border: #ececec;
+  --card: #ffffff;
+  --card-border: rgba(10, 10, 10, 0.055);
+  --preview: #fafafa;
+  --sunken: #f0f0f0;
+  --tray: #f5f5f5;
+  --wash: rgba(0, 0, 0, 0.03);
+  --fill: rgba(0, 0, 0, 0.055);
+  --fill-strong: rgba(0, 0, 0, 0.085);
+  --hover: rgba(0, 0, 0, 0.045);
+
+  /* ---- Ink ------------------------------------------------------------ */
+  --text: #0a0a0a;
+  --text-muted: #737373;
+  --text-subtle: rgba(0, 0, 0, 0.42);
+  --text-faint: rgba(0, 0, 0, 0.27);
+  --ink: rgba(0, 0, 0, 0.88);
+  --ink-soft: rgba(0, 0, 0, 0.61);
+  --ink-muted: rgba(0, 0, 0, 0.45);
+  --ink-faint: rgba(0, 0, 0, 0.27);
+  --icon: rgba(0, 0, 0, 0.45);
+
+  /* ---- Lines ---------------------------------------------------------- */
+  --line: #e5e5e5;
+  --line-soft: rgba(10, 10, 10, 0.1);
+  --hairline: rgba(0, 0, 0, 0.07);
+  --hairline-strong: rgba(0, 0, 0, 0.12);
+
+  /* ---- Solid + accent ------------------------------------------------- */
+  --solid: #171717;
+  --solid-hover: #2a2a2a;
+  --on-solid: #ffffff;
+  --accent: #2f6bff;
+  --accent-2: #5e3ee0;
+  --accent-ink: #1c50d6;
+  --accent-soft: rgba(47, 107, 255, 0.09);
+  --accent-line: rgba(47, 107, 255, 0.28);
+  --focus: rgba(47, 107, 255, 0.55);
+  --focus-ring: #a1a1a6;
+
+  /* ---- Status --------------------------------------------------------- */
+  --ok: #0f7b3f;
+  --ok-bg: rgba(0, 164, 51, 0.1);
+  --warn: #a65a00;
+  --warn-bg: rgba(255, 156, 0, 0.16);
+  --danger: #d72400;
+  --danger-bg: rgba(245, 43, 0, 0.09);
+  --brand: #0063b1;
+  --brand-bg: rgba(0, 143, 245, 0.1);
+
+  /* ---- Spacing (4px base) --------------------------------------------- */
+  --s-0: 0px;
+  --s-1: 2px;
+  --s-2: 4px;
+  --s-3: 6px;
+  --s-4: 8px;
+  --s-5: 10px;
+  --s-6: 12px;
+  --s-7: 14px;
+  --s-8: 16px;
+  --s-9: 20px;
+  --s-10: 24px;
+  --s-11: 28px;
+  --s-12: 32px;
+  --s-13: 40px;
+  --s-14: 48px;
+  --s-15: 64px;
+
+  /* ---- Radii (scalable) ----------------------------------------------- */
+  --radius-scale: 1;
+  --r-xs: calc(6px * var(--radius-scale));
+  --r-sm: calc(8px * var(--radius-scale));
+  --r-md: calc(10px * var(--radius-scale));
+  --r-lg: calc(14px * var(--radius-scale));
+  --r-xl: calc(18px * var(--radius-scale));
+  --r-2xl: calc(24px * var(--radius-scale));
+  --r-pill: 999px;
+
+  /* ---- Elevation ------------------------------------------------------ */
+  --shadow-panel: 0 1px 0 rgba(0, 0, 0, 0.04), 0 2px 1px -1px rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 1px 1.5px rgba(0, 0, 0, 0.04), inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  --shadow-hairline: 0 0 0 0.5px rgba(0, 0, 0, 0.06), 0 1px 1px -1px rgba(0, 0, 0, 0.1),
+    0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-lift: 0 4px 12px -6px rgba(0, 0, 0, 0.1);
+  --shadow-pop: 0 4px 42px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.06);
+  --shadow-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+
+  /* ---- Motion --------------------------------------------------------- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-pop: cubic-bezier(0.34, 1.5, 0.64, 1);
+  --ease-morph: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-instant: 0ms;
+  --dur-fast: 120ms;
+  --dur: 180ms;
+  --dur-slow: 280ms;
+  --dur-morph: 380ms;
+
+  /* ---- Layout --------------------------------------------------------- */
+  --gutter: 28px;
+  --frame-gap: 8px;
+  --sidebar-w: 256px;
+  --content-max: 1118px;
+  --prose-max: 680px;
+
+  /* ======================================================================
+     Semantic UI aliases — what components actually consume.
+     ====================================================================== */
+  --ui-font: var(--font-sans);
+  --ui-card: var(--card);
+  --ui-tray: var(--tray);
+  --ui-sunken: var(--sunken);
+  --ui-line: var(--hairline);
+  --ui-line-strong: var(--hairline-strong);
+  --ui-fill: var(--fill);
+  --ui-fill-strong: var(--fill-strong);
+  --ui-wash: var(--wash);
+  --ui-hover: var(--hover);
+
+  --ui-ink: var(--ink);
+  --ui-ink-soft: var(--ink-soft);
+  --ui-ink-muted: var(--ink-muted);
+  --ui-text: var(--ink-soft);
+  --ui-muted: var(--ink-muted);
+  --ui-faint: var(--ink-faint);
+  --ui-hint: var(--text-subtle);
+
+  --ui-solid: var(--solid);
+  --ui-on-solid: var(--on-solid);
+  --ui-accent: var(--accent);
+  --ui-accent-2: var(--accent-2);
+  --ui-accent-soft: var(--accent-soft);
+  --ui-accent-line: var(--accent-line);
+  --ui-focus: var(--focus);
+
+  --ui-ok: var(--ok);
+  --ui-ok-bg: var(--ok-bg);
+  --ui-warn: var(--warn);
+  --ui-warn-bg: var(--warn-bg);
+  --ui-danger: var(--danger);
+  --ui-danger-bg: var(--danger-bg);
+  --ui-brand: var(--brand);
+  --ui-brand-bg: var(--brand-bg);
+
+  --ui-shadow: var(--shadow-hairline);
+  --ui-shadow-pop: var(--shadow-pop);
+  --ui-shadow-lift: var(--shadow-lift);
+
+  --ui-ease: var(--ease);
+  --ui-ease-pop: var(--ease-pop);
+  --ui-ease-morph: var(--ease-morph);
+  --ui-dur-fast: var(--dur-fast);
+  --ui-dur: var(--dur);
+  --ui-dur-slow: var(--dur-slow);
+  --ui-dur-morph: var(--dur-morph);
+
+  --ui-r-xs: var(--r-xs);
+  --ui-r-sm: var(--r-sm);
+  --ui-r-md: var(--r-md);
+  --ui-r-lg: var(--r-lg);
+  --ui-r-xl: var(--r-xl);
+  --ui-r-pill: var(--r-pill);
+}
+
+/* ---- Dark theme -------------------------------------------------------- */
+:root[data-theme="dark"],
+.dark {
+  color-scheme: dark;
+
+  --bg: #0c0c0d;
+  --panel: #121213;
+  --panel-border: #222224;
+  --card: #151517;
+  --card-border: rgba(255, 255, 255, 0.07);
+  --preview: #111113;
+  --sunken: #0d0d0f;
+  --tray: #1b1b1e;
+
+  --wash: rgba(255, 255, 255, 0.025);
+  --fill: rgba(255, 255, 255, 0.06);
+  --fill-strong: rgba(255, 255, 255, 0.1);
+  --hover: rgba(255, 255, 255, 0.05);
+
+  --text: #ededed;
+  --text-muted: #8b8b90;
+  --text-subtle: rgba(255, 255, 255, 0.46);
+  --text-faint: rgba(255, 255, 255, 0.28);
+  --ink: rgba(255, 255, 255, 0.9);
+  --ink-soft: rgba(255, 255, 255, 0.64);
+  --ink-muted: rgba(255, 255, 255, 0.46);
+  --ink-faint: rgba(255, 255, 255, 0.3);
+  --icon: rgba(255, 255, 255, 0.52);
+
+  --line: #222224;
+  --line-soft: rgba(255, 255, 255, 0.1);
+  --hairline: rgba(255, 255, 255, 0.08);
+  --hairline-strong: rgba(255, 255, 255, 0.14);
+
+  --solid: #f2f2f2;
+  --solid-hover: #ffffff;
+  --on-solid: #0b0b0d;
+  --accent: #6d97ff;
+  --accent-ink: #93b2ff;
+  --accent-soft: rgba(109, 151, 255, 0.14);
+  --accent-line: rgba(109, 151, 255, 0.34);
+  --focus: rgba(109, 151, 255, 0.6);
+  --focus-ring: #6d6d73;
+
+  --ok: #59d18c;
+  --ok-bg: rgba(34, 197, 94, 0.14);
+  --warn: #f0b429;
+  --warn-bg: rgba(240, 180, 41, 0.14);
+  --danger: #ff6a55;
+  --danger-bg: rgba(255, 90, 70, 0.14);
+  --brand: #7cc0ff;
+  --brand-bg: rgba(90, 170, 255, 0.14);
+
+  --shadow-card: 0 1px 1.5px rgba(0, 0, 0, 0.4), inset 0 -1px 0 rgba(0, 0, 0, 0.34);
+  --shadow-hairline: 0 0 0 0.5px rgba(255, 255, 255, 0.07), 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-lift: 0 6px 18px -8px rgba(0, 0, 0, 0.7);
+  --shadow-pop: 0 12px 40px -12px rgba(0, 0, 0, 0.8), 0 2px 6px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.07);
+  --shadow-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+/* ---- Elevation modes (see the header control) ------------------------- */
+:root[data-elevation="flat"] {
+  --shadow-card: none;
+  --shadow-hairline: 0 0 0 0.5px var(--hairline);
+  --shadow-lift: none;
+  --shadow-pop: 0 0 0 0.5px var(--hairline-strong);
+}
+
+:root[data-elevation="layered"] {
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px -12px rgba(0, 0, 0, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  --shadow-hairline: 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.12),
+    0 12px 32px -16px rgba(0, 0, 0, 0.2);
+  --shadow-lift: 0 10px 28px -14px rgba(0, 0, 0, 0.24);
+}
+
+/* ---- Reduced motion --------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur: 1ms;
+    --dur-slow: 1ms;
+    --dur-morph: 1ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
