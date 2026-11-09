@@ -89,10 +89,20 @@ Each node records its rect, font family/size/weight/line-height/letter-spacing, 
 | composer | `.ui-ccc` | `.ui-cc` |
 | selected tab | `.preview-bar button` | `.preview-tab[aria-selected="true"]` |
 | body | `body` | `body` |
+| first content section | `.doc__article > .doc__section:nth-of-type(2)` | `.doc__section:nth-of-type(2)` |
+| content h2/list | first section `.doc__h2` / `.doc__list` | first section `.doc__h2` / `.doc__list` |
+| install section | nth-of-type(4) | nth-of-type(4) |
+| install card | `.install`, `.install__head`, `.install__cmd` | `.install`, `.install__head`, `.install__cmd` |
+| code panel | `.code`, `.code__head`, `.code__body` | `.code`, `.code__head`, `.code__body` |
+| API section/table | nth-of-type(7), `.table-wrap`, `.table` | nth-of-type(7), `.table-wrap`, `.table` |
+| related grid | `.related` | `.related` |
+| footer | `.doc__footer` | `.doc__footer` |
+| active sidebar link | `.sidebar .nav-link[aria-current="page"]` | `.ds__nav-item--sub[aria-current="page"]` |
+| table of contents | no in-page TOC | no in-page TOC |
 
-The detail surface runs 55 frame checks per capture: panel and sidebar, article width/position, detail topbar height, breadcrumb, title/lead type and widths, preview section, bar height/padding, stage and stage-look inset, the 680/612/326px composer and tab/body frame. Values and tolerances are the same class as the index checks: 1px for frame geometry, 0.5px for radii, 0.05px for line-height, exact for font sizes, weights, letter-spacing, colours and column count. Panels without a border at mobile widths do not compare border colour.
+The detail surface runs 134 frame checks per capture: the measured top frame plus 11 section headings and their 48px padding, first-section y/width, heading and list type, install width/height/tabs, code width/header/body, API heading/table cells/columns, the 3/1-column related grid and card boxes, the footer spacing, active sidebar state, no-TOC invariant and 17-component body uniqueness. Values and tolerances are the same class as the index checks: 1px for frame geometry, 0.5px for radii, 0.05px for line-height, exact for font sizes, weights, letter-spacing, colours and column count. Panels without a border at mobile widths do not compare border colour.
 
-`home` is captured but not gated on frame checks: it intentionally keeps the larger marketing display scale. The index uses 30–31 checks per capture; the detail uses 55. The 18 captures total **514 checks**.
+`home` is captured but not gated on frame checks: it intentionally keeps the larger marketing display scale. The index uses 30–31 checks per capture; the detail uses 134. The 18 captures total **988 checks**.
 
 ## Run
 
@@ -116,10 +126,10 @@ Those paths are environment-specific and are deliberately not checked in.
 
 ## Reproducibility
 
-On this host, two consecutive unchanged runs both passed **514/514** checks and produced byte-identical `metrics.json`:
+On this host, two consecutive unchanged runs both passed **988/988** checks and produced byte-identical `metrics.json`:
 
 ```text
-ebfc70b20da68c251d0e0360f1326e289b3517664334e9d75dd78ae19d168148
+faf2b2e2f4117991d138f104f004ac6ab3c170ea16d4e963f965c4fdce5b5dc3
 ```
 
 There are no timestamps, random ids or paths in the metrics. The PNGs are not a byte-stability gate: the reference is live and some previews can change between runs. Re-running after a source change keeps the same file layout, so visual differences can be reviewed against stable metrics.
@@ -144,4 +154,5 @@ Current scores and limitations are recorded in [`artifacts/compare/layout-audit.
 - These are visual captures, not behavioural parity tests. The detail route's card navigation, browser back/forward, tabs, copy affordances and 390px no-overflow state were smoke-tested separately; keyboard and timer behaviour are not part of the rig.
 - The reference site can change independently; a diff can be caused by affectui, not by copyui.
 - Font rendering depends on the host's font stack and installed fonts. Geometry and declared font metrics are compared; glyph rasterization is not.
-- The detail template's below-the-fold `Props & variants` content is data-driven local documentation, not a copy of the reference's long-form usage sections. The frame-gated region ends at the 900/768/844px viewport.
+- The detail route renders 11 measured doc sections from a shared data registry; every component has its own body. The chat-composer install/usage panels are generated locally from the measured unlocked button/switch values because the reference page is Pro-locked.
+- The layout screenshots capture the first viewport. At 1024 the document body starts below the screenshot, so those scores exercise the top frame and measured toolbar; the 390 capture includes several body sections.

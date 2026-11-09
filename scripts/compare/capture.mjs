@@ -17,6 +17,7 @@
 
 import { chromium } from "playwright";
 import { spawn } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -84,6 +85,10 @@ function selectorsFor(site, surface) {
     };
   }
   if (surface.id === "detail-chat-composer") {
+    const section = (nth) =>
+      local
+        ? `.doc__section:nth-of-type(${nth})`
+        : `.doc__article > .doc__section:nth-of-type(${nth})`;
     return {
       panel: local ? ".ds__panel" : "main.panel",
       sidebar: local ? ".ds__side" : ".sidebar",
@@ -99,6 +104,35 @@ function selectorsFor(site, surface) {
       stageLook: ".stage__look",
       composer: local ? ".ui-cc" : ".ui-ccc",
       tab: local ? ".preview-tab[aria-selected=\"true\"]" : ".preview-bar button",
+      contentSection: section(2),
+      contentH2: `${section(2)} .doc__h2`,
+      contentList: `${section(2)} .doc__list`,
+      installSection: section(4),
+      install: ".install",
+      installHead: ".install__head",
+      installCmd: ".install__cmd",
+      installTabs: ".underline-tabs",
+      pmTabs: ".pm-tabs",
+      usageSection: section(5),
+      code: ".code",
+      codeHead: ".code__head",
+      codeBody: ".code__body",
+      examplesSection: section(6),
+      apiSection: section(7),
+      apiH2: `${section(7)} .doc__h2`,
+      apiH3: ".doc__h3--code",
+      tableWrap: ".table-wrap",
+      table: ".table",
+      tableHead: "thead",
+      tableTh: "th",
+      tableTd: "td",
+      keyboardSection: section(8),
+      relatedSection: section(12),
+      related: ".related",
+      relatedCard: ".related > *",
+      footer: ".doc__footer",
+      activeNav: local ? ".ds__nav-item--sub[aria-current=\"page\"]" : ".sidebar .nav-link[aria-current=\"page\"]",
+      toc: "[aria-label=\"On this page\"], [class*=\"toc\"]",
       body: "body",
     };
   }
@@ -208,6 +242,34 @@ async function collectMetrics(page, selectors) {
         height: Number(r.height.toFixed(2)),
       };
     });
+
+    const contentSections = selectors.contentSection
+      ? [...document.querySelectorAll(".doc__section:not(.doc__section--preview)")]
+      : [];
+    result.sectionTitles = contentSections.map((section) =>
+      (section.querySelector(".doc__h2")?.textContent ?? "").trim(),
+    );
+    result.sectionPaddings = contentSections.map(
+      (section) => getComputedStyle(section).paddingTop,
+    );
+    result.sectionRects = contentSections.map((section) => {
+      const r = section.getBoundingClientRect();
+      return {
+        x: Number(r.x.toFixed(2)),
+        y: Number(r.y.toFixed(2)),
+        width: Number(r.width.toFixed(2)),
+      };
+    });
+    const activeNav = selectors.activeNav ? document.querySelector(selectors.activeNav) : null;
+    result.activeNavText = activeNav?.textContent?.trim() ?? null;
+    result.activeNavCurrent = activeNav?.getAttribute("aria-current") ?? null;
+    result.tocCount = selectors.toc ? document.querySelectorAll(selectors.toc).length : 0;
+    result.apiRows = selectors.table ? document.querySelectorAll(`${selectors.table} tbody tr`).length : 0;
+    result.apiColumns = selectors.table ? document.querySelectorAll(`${selectors.table} thead th`).length : 0;
+    const related = selectors.related ? document.querySelector(selectors.related) : null;
+    result.relatedColumns = related
+      ? getComputedStyle(related).gridTemplateColumns.split(/\s+/).filter(Boolean).length
+      : null;
     return result;
   }, { selectors });
 }
@@ -332,12 +394,35 @@ async function captureSite(browser, site, surface, viewport, theme) {
   return { metrics, errors, file };
 }
 
-function missingRequired(surface, metrics) {
+function missingRequired(surface, metrics, site) {
+  const detailRequired = [
+    "panel",
+    "content",
+    "title",
+    "bar",
+    "stage",
+    "stageLook",
+    "composer",
+    "contentSection",
+    "contentH2",
+    "contentList",
+    "apiSection",
+    "apiH3",
+    "tableWrap",
+    "table",
+    "related",
+    "relatedCard",
+    "footer",
+    "activeNav",
+  ];
+  if (site === "local") {
+    detailRequired.push("installSection", "install", "installHead", "installCmd", "code", "codeHead", "codeBody");
+  }
   const required =
     surface.id === "components"
       ? ["panel", "sidebar", "content", "topbar", "title", "card"]
       : surface.id === "detail-chat-composer"
-        ? ["panel", "content", "title", "bar", "stage", "stageLook", "composer"]
+        ? detailRequired
         : ["title", "body"];
   return required.filter((key) => !metrics[key]);
 }
@@ -346,7 +431,7 @@ async function captureSiteStable(browser, site, surface, viewport, theme) {
   let last = null;
   for (let attempt = 1; attempt <= 3; attempt += 1) {
     last = await captureSite(browser, site, surface, viewport, theme);
-    const missing = missingRequired(surface, last.metrics);
+    const missing = missingRequired(surface, last.metrics, site);
     if (!missing.length) return last;
     console.log(`[compare] ${site} retry ${attempt}/3 · ${surface.id} · ${viewport.id} · ${theme} · missing ${missing.join(", ")}`);
     await new Promise((resolve) => setTimeout(resolve, 700));
@@ -428,6 +513,16 @@ function checksFor(surface, reference, local) {
     checks.push({ name, reference: a ?? null, local: b ?? null, unit: "", delta: null, pass: a === b });
   };
   const value = (node, pathname) => pathname.split(".").reduce((current, key) => current?.[key], node) ?? null;
+  const same = (name, a, b) => {
+    checks.push({
+      name,
+      reference: a ?? null,
+      local: b ?? null,
+      unit: "",
+      delta: null,
+      pass: JSON.stringify(a) === JSON.stringify(b),
+    });
+  };
 
   if (surface.id === "detail-chat-composer") {
     add("panel.x", value(reference.panel, "rect.x"), value(local.panel, "rect.x"), 1);
@@ -485,6 +580,92 @@ function checksFor(surface, reference, local) {
     exact("tab.weight", value(reference.tab, "font.weight"), value(local.tab, "font.weight"));
     add("body.fontSize", value(reference.body, "font.size"), value(local.body, "font.size"), 0.01);
     exact("body.background", value(reference.body, "background"), value(local.body, "background"));
+
+    // Documentation body: section order and spacing measured from the live
+    // button, switch and chat-composer pages at all three viewports.
+    exact("sections.count", reference.sectionTitles?.length ?? null, local.sectionTitles?.length ?? null);
+    same("sections.titles", reference.sectionTitles, local.sectionTitles);
+    same("sections.paddings", reference.sectionPaddings, local.sectionPaddings);
+    add("contentSection.x", value(reference.contentSection, "rect.x"), value(local.contentSection, "rect.x"), 1);
+    add("contentSection.y", value(reference.contentSection, "rect.y"), value(local.contentSection, "rect.y"), 1);
+    add("contentSection.width", value(reference.contentSection, "rect.width"), value(local.contentSection, "rect.width"), 1);
+    exact("contentSection.padding", value(reference.contentSection, "padding"), value(local.contentSection, "padding"));
+    add("contentH2.y", value(reference.contentH2, "rect.y"), value(local.contentH2, "rect.y"), 1);
+    add("contentH2.width", value(reference.contentH2, "rect.width"), value(local.contentH2, "rect.width"), 1);
+    add("contentH2.height", value(reference.contentH2, "rect.height"), value(local.contentH2, "rect.height"), 1);
+    add("contentH2.fontSize", value(reference.contentH2, "font.size"), value(local.contentH2, "font.size"), 0.01);
+    add("contentH2.lineHeight", value(reference.contentH2, "font.lineHeight"), value(local.contentH2, "font.lineHeight"), 0.05);
+    exact("contentH2.weight", value(reference.contentH2, "font.weight"), value(local.contentH2, "font.weight"));
+    exact("contentH2.letterSpacing", value(reference.contentH2, "font.letterSpacing"), value(local.contentH2, "font.letterSpacing"));
+    exact("contentH2.padding", value(reference.contentH2, "padding"), value(local.contentH2, "padding"));
+    exact("contentH2.color", value(reference.contentH2, "color"), value(local.contentH2, "color"));
+    add("contentList.y", value(reference.contentList, "rect.y"), value(local.contentList, "rect.y"), 1);
+    add("contentList.height", value(reference.contentList, "rect.height"), value(local.contentList, "rect.height"), 1);
+    add("contentList.fontSize", value(reference.contentList, "font.size"), value(local.contentList, "font.size"), 0.01);
+    add("contentList.lineHeight", value(reference.contentList, "font.lineHeight"), value(local.contentList, "font.lineHeight"), 0.05);
+    exact("contentList.padding", value(reference.contentList, "padding"), value(local.contentList, "padding"));
+    exact("contentList.margin", value(reference.contentList, "margin"), value(local.contentList, "margin"));
+    exact("contentList.gap", value(reference.contentList, "gap"), value(local.contentList, "gap"));
+    exact("contentList.color", value(reference.contentList, "color"), value(local.contentList, "color"));
+    exact("installSection.padding", value(reference.installSection, "padding"), value(local.installSection, "padding"));
+    add("installSection.y", value(reference.installSection, "rect.y"), value(local.installSection, "rect.y"), 1);
+    add("installSection.width", value(reference.installSection, "rect.width"), value(local.installSection, "rect.width"), 1);
+    add("apiSection.x", value(reference.apiSection, "rect.x"), value(local.apiSection, "rect.x"), 1);
+    add("apiSection.width", value(reference.apiSection, "rect.width"), value(local.apiSection, "rect.width"), 1);
+    exact("apiSection.padding", value(reference.apiSection, "padding"), value(local.apiSection, "padding"));
+    add("apiH3.height", value(reference.apiH3, "rect.height"), value(local.apiH3, "rect.height"), 1);
+    add("apiH3.fontSize", value(reference.apiH3, "font.size"), value(local.apiH3, "font.size"), 0.01);
+    add("apiH3.lineHeight", value(reference.apiH3, "font.lineHeight"), value(local.apiH3, "font.lineHeight"), 0.05);
+    exact("apiH3.weight", value(reference.apiH3, "font.weight"), value(local.apiH3, "font.weight"));
+    exact("apiH3.padding", value(reference.apiH3, "padding"), value(local.apiH3, "padding"));
+    add("tableWrap.width", value(reference.tableWrap, "rect.width"), value(local.tableWrap, "rect.width"), 1);
+    add("tableWrap.radius", value(reference.tableWrap, "radius"), value(local.tableWrap, "radius"), 0.5);
+    add("tableTh.height", value(reference.tableTh, "rect.height"), value(local.tableTh, "rect.height"), 1);
+    add("tableTh.fontSize", value(reference.tableTh, "font.size"), value(local.tableTh, "font.size"), 0.01);
+    exact("tableTh.weight", value(reference.tableTh, "font.weight"), value(local.tableTh, "font.weight"));
+    add("tableTh.lineHeight", value(reference.tableTh, "font.lineHeight"), value(local.tableTh, "font.lineHeight"), 0.05);
+    exact("tableTh.padding", value(reference.tableTh, "padding"), value(local.tableTh, "padding"));
+    exact("tableTh.background", value(reference.tableTh, "background"), value(local.tableTh, "background"));
+    exact("tableTh.color", value(reference.tableTh, "color"), value(local.tableTh, "color"));
+    exact("tableTd.padding", value(reference.tableTd, "padding"), value(local.tableTd, "padding"));
+    add("tableTd.fontSize", value(reference.tableTd, "font.size"), value(local.tableTd, "font.size"), 0.01);
+    add("tableTd.lineHeight", value(reference.tableTd, "font.lineHeight"), value(local.tableTd, "font.lineHeight"), 0.05);
+    exact("tableColumns", reference.apiColumns, local.apiColumns);
+    add("related.x", value(reference.related, "rect.x"), value(local.related, "rect.x"), 1);
+    add("related.width", value(reference.related, "rect.width"), value(local.related, "rect.width"), 1);
+    exact("related.padding", value(reference.related, "padding"), value(local.related, "padding"));
+    exact("related.gap", value(reference.related, "gap"), value(local.related, "gap"));
+    exact("related.columns", reference.relatedColumns, local.relatedColumns);
+    add("relatedCard.width", value(reference.relatedCard, "rect.width"), value(local.relatedCard, "rect.width"), 1);
+    add("relatedCard.height", value(reference.relatedCard, "rect.height"), value(local.relatedCard, "rect.height"), 1);
+    exact("relatedCard.radius", value(reference.relatedCard, "radius"), value(local.relatedCard, "radius"));
+    exact("footer.padding", value(reference.footer, "padding"), value(local.footer, "padding"));
+    exact("footer.margin", value(reference.footer, "margin"), value(local.footer, "margin"));
+    add("footer.fontSize", value(reference.footer, "font.size"), value(local.footer, "font.size"), 0.01);
+    add("footer.borderWidth", value(reference.footer, "border.width"), value(local.footer, "border.width"), 0.1);
+    exact("toc.count", reference.tocCount, local.tocCount);
+    exact("activeNav.current", reference.activeNavCurrent, local.activeNavCurrent);
+    exact("activeNav.text", reference.activeNavText, local.activeNavText);
+
+    // The live Pro page hides its install/code blocks behind a lock. These
+    // expected values are the measured rows from the unlocked reference pages
+    // (button and switch) and keep the local implementation honest at all six
+    // captures while the paired section/table checks cover the shared chrome.
+    add("install.width", value(local.contentSection, "rect.width"), value(local.install, "rect.width"), 1);
+    add("install.height", 86.58, value(local.install, "rect.height"), 1);
+    add("installHead.height", 40, value(local.installHead, "rect.height"), 1);
+    add("installCmd.height", 46.58, value(local.installCmd, "rect.height"), 1);
+    exact("installCmd.padding", "14px 16px", value(local.installCmd, "padding"));
+    add("installCmd.fontSize", 12.5, value(local.installCmd, "font.size"), 0.01);
+    add("installTabs.height", 34, value(local.installTabs, "rect.height"), 1);
+    add("pmTabs.width", 200, value(local.pmTabs, "rect.width"), 1);
+    add("pmTabs.height", 30, value(local.pmTabs, "rect.height"), 1);
+    add("code.width", value(local.contentSection, "rect.width"), value(local.code, "rect.width"), 1);
+    add("codeHead.height", 40, value(local.codeHead, "rect.height"), 1);
+    add("codeBody.fontSize", 12.5, value(local.codeBody, "font.size"), 0.01);
+    add("codeBody.lineHeight", 21, value(local.codeBody, "font.lineHeight"), 0.05);
+    exact("codeBody.padding", "14px 16px", value(local.codeBody, "padding"));
+    add("code.radius", 12, value(local.code, "radius"), 0.5);
     return checks;
   }
 
@@ -522,6 +703,60 @@ function checksFor(surface, reference, local) {
   add("grid.columns", reference.grid?.columns ?? null, local.grid?.columns ?? null, 0, "count");
   exact("card.background", value(reference.card, "background"), value(local.card, "background"));
   return checks;
+}
+
+async function measureContentDiversity(browser) {
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 900 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+    colorScheme: "light",
+  });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${LOCAL_URL}/components`, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForSelector(".library-card__link", { timeout: 15_000 });
+    const slugs = await page.evaluate(() =>
+      [...document.querySelectorAll(".library-card__link")]
+        .map((link) => new URL(link.href).pathname.replace(/^\/components\//, ""))
+        .filter(Boolean),
+    );
+    const signatures = {};
+    for (const slug of slugs) {
+      await page.goto(`${LOCAL_URL}/components/${slug}`, {
+        waitUntil: "domcontentloaded",
+        timeout: 60_000,
+      });
+      await page.waitForSelector(".doc__section:not(.doc__section--preview)", { timeout: 15_000 });
+      const content = await page.evaluate(() => ({
+        sections: [...document.querySelectorAll(".doc__section:not(.doc__section--preview)")].map(
+          (section) => (section.innerText || "").replace(/\s+/g, " ").trim(),
+        ),
+        variants: [...document.querySelectorAll(".doc-variants span")].map((node) =>
+          (node.textContent || "").trim(),
+        ),
+        code: [...document.querySelectorAll(".code__body")].map((node) =>
+          (node.textContent || "").trim(),
+        ),
+        props: [...document.querySelectorAll(".table--api tbody tr td:first-child")].map((node) =>
+          (node.textContent || "").trim(),
+        ),
+      }));
+      signatures[slug] = createHash("sha256")
+        .update(JSON.stringify(content))
+        .digest("hex")
+        .slice(0, 16);
+    }
+    const unique = new Set(Object.values(signatures)).size;
+    return {
+      components: slugs.length,
+      unique,
+      pass: slugs.length === 17 && unique === 17,
+      signatures,
+    };
+  } finally {
+    await context.close();
+  }
 }
 
 function makeReport(metrics) {
@@ -572,7 +807,8 @@ function makeReport(metrics) {
       lines.push(`At 1440 light the panel is ${detail.local.panel.rect.width}px wide at x${detail.local.panel.rect.x}; the index title is ${detail.local.title.font.size}/${detail.local.title.font.lineHeight} at ${detail.local.title.font.letterSpacing}; the first card is ${detail.local.card.rect.width}×${detail.local.card.rect.height} with a ${detail.local.grid.gap} gap.`);
       lines.push("");
     }
-    if (surface.id === "detail-chat-composer" && detail?.reference && detail?.local) {      lines.push(`At 1440 light the article is ${detail.local.content.rect.width}px wide at x${detail.local.content.rect.x}; the detail top bar is ${detail.local.topbar.rect.height}px; the title is ${detail.local.title.font.size}/${detail.local.title.font.lineHeight} at weight ${detail.local.title.font.weight}; the preview bar is ${detail.local.bar.rect.height}px and the stage is ${detail.local.stage.rect.width}×${detail.local.stage.rect.height} with a ${detail.local.stage.padding} inset.`,
+    if (surface.id === "detail-chat-composer" && detail?.reference && detail?.local) {
+      lines.push(`At 1440 light the article is ${detail.local.content.rect.width}px wide at x${detail.local.content.rect.x}; the detail top bar is ${detail.local.topbar.rect.height}px; the title is ${detail.local.title.font.size}/${detail.local.title.font.lineHeight} at weight ${detail.local.title.font.weight}; the preview bar is ${detail.local.bar.rect.height}px and the stage is ${detail.local.stage.rect.width}×${detail.local.stage.rect.height} with a ${detail.local.stage.padding} inset.`,
       );
       lines.push("");
       lines.push("Measured detail values from this run:");
@@ -587,7 +823,28 @@ function makeReport(metrics) {
         );
       }
       lines.push("");
+      lines.push("Measured documentation body from this run:");
+      lines.push("");
+      lines.push("| Viewport | Sections | First H2 | Install | Code | API table | Related | Footer | In-page nav |");
+      lines.push("| --- | ---: | --- | --- | --- | --- | --- | --- | --- |");
+      for (const [viewportId, byTheme] of Object.entries(metrics.surfaces[surface.id])) {
+        const measured = byTheme.light?.local;
+        if (!measured) continue;
+        lines.push(
+          `| ${viewportId} | ${measured.sectionTitles.length} | ${measured.contentH2.font.size}/${measured.contentH2.font.lineHeight} · ${measured.contentH2.font.weight} · ${measured.contentH2.font.letterSpacing} | ${measured.install.rect.width}×${measured.install.rect.height} | ${measured.code.rect.width}×${measured.codeHead.rect.height} head · ${measured.codeBody.font.size}/${measured.codeBody.font.lineHeight} | ${measured.tableWrap.rect.width} · ${measured.apiColumns} cols | ${measured.relatedColumns} cols · ${measured.relatedCard.rect.width}×${measured.relatedCard.rect.height} | ${measured.footer.padding} · ${measured.footer.font.size} | ${measured.tocCount} TOC · ${measured.activeNavText} |`,
+        );
+      }
+      lines.push("");
+      lines.push(`Section order: ${metrics.surfaces[surface.id]["1440x900"].light.local.sectionTitles.join(" → ")}.`);
+      lines.push("");
     }
+  }
+  if (metrics.contentDiversity) {
+    lines.push("## Per-component content", "");
+    lines.push(
+      `Unique body signatures: ${metrics.contentDiversity.unique}/${metrics.contentDiversity.components}. The probe hashes below-the-stage section text, variant chips, code samples and API prop names for every component, so a shared template body cannot pass.`,
+    );
+    lines.push("");
   }
   lines.push("## Reproduce", "");
   lines.push("```bash");
@@ -656,6 +913,27 @@ async function main() {
         }
       }
     }
+
+    // Every detail page must render distinct per-component documentation. The
+    // signature intentionally omits the title and description so a shared body
+    // cannot pass just because the heading above it changed.
+    metrics.contentDiversity = await measureContentDiversity(browser);
+    const detailSurface = metrics.surfaces["detail-chat-composer"] ?? {};
+    for (const byTheme of Object.values(detailSurface)) {
+      for (const entry of Object.values(byTheme)) {
+        entry.checks.push({
+          name: "content.uniqueBodies",
+          reference: 17,
+          local: metrics.contentDiversity.unique,
+          unit: "unique",
+          delta: 17 - metrics.contentDiversity.unique,
+          pass: metrics.contentDiversity.pass,
+        });
+      }
+    }
+    console.log(
+      `[compare] content diversity: ${metrics.contentDiversity.unique}/${metrics.contentDiversity.components} unique component bodies`,
+    );
   } finally {
     await browser.close();
     stopServer(server);

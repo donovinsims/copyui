@@ -315,6 +315,7 @@ export function App() {
                 theme={theme}
                 onTheme={setTheme}
                 onBack={() => navigate({ page: "components", component: null })}
+                onOpen={openComponent}
               />
             ) : (
               <ComponentsPage onOpenComponent={openComponent} />

@@ -1,3 +1,5 @@
+import { DETAIL_COPY, type DetailExample } from "./detailCopy";
+
 export interface DetailProp {
   name: string;
   type: string;
@@ -5,10 +7,22 @@ export interface DetailProp {
   description: string;
 }
 
-export interface DetailMeta {
+export interface DetailBase {
   description: string;
   props: DetailProp[];
   variants: string[];
+}
+
+export interface DetailMeta extends DetailBase {
+  whenToUse: string[];
+  whenNotToUse: string[];
+  usage: string;
+  examples: DetailExample[];
+  relatedTitle: string;
+  keyboard: Array<{ keys: string; action: string }>;
+  accessibility: string[];
+  motion: string[];
+  responsive: string[];
 }
 
 /**
@@ -16,7 +30,7 @@ export interface DetailMeta {
  * and navigation come from LIBRARY_ITEMS; this registry adds the API copy that
  * is specific to each component.
  */
-export const DETAIL_META: Record<string, DetailMeta> = {
+export const DETAIL_META: Record<string, DetailBase> = {
   "ai-answer": {
     description:
       "A streamed answer with sources, inline citations, feedback and follow-up prompts.",
@@ -217,10 +231,70 @@ export const DETAIL_META: Record<string, DetailMeta> = {
   },
 };
 
-export function detailFor(slug: string, note: string): DetailMeta {
-  return DETAIL_META[slug] ?? {
+function keyboardFor(slug: string, title: string, category: string) {
+  if (slug === "chat-composer") {
+    return [
+      { keys: "Enter", action: "Send the message" },
+      { keys: "Shift + Enter", action: "New line" },
+      { keys: "Enter / Space / ↓", action: `Open ${title}'s focused menu` },
+      { keys: "↑ / ↓", action: "Move through an open menu" },
+      { keys: "Esc", action: "Close a menu and return focus to its button" },
+    ];
+  }
+  if (slug === "field") {
+    return [
+      { keys: "Tab", action: "Move between the label, control and affix" },
+      { keys: "Enter", action: "Submit the surrounding form" },
+      { keys: "Esc", action: "Clear an open suggestion list" },
+    ];
+  }
+  if (category === "chat" || category === "agent") {
+    return [
+      { keys: "Tab", action: `Move through ${title}'s controls` },
+      { keys: "Enter / Space", action: "Activate the focused control" },
+      { keys: "Esc", action: "Close an open menu and return focus" },
+    ];
+  }
+  return [
+    { keys: "Tab", action: "Move focus into and through the component" },
+    { keys: "Enter / Space", action: "Activate the focused control" },
+    { keys: "Esc", action: "Dismiss a transient layer" },
+  ];
+}
+
+export function detailFor(slug: string, title: string, note: string, category: string): DetailMeta {
+  const base: DetailBase = DETAIL_META[slug] ?? {
     description: note,
     props: [],
     variants: ["Default"],
+  };
+  const copy = DETAIL_COPY[slug];
+  const name = title.replace(/[^a-zA-Z0-9]/g, "");
+
+  return {
+    ...base,
+    whenToUse: copy?.use ?? [note],
+    whenNotToUse: copy?.avoid ?? ["When a simpler native control already communicates the action."],
+    usage:
+      copy?.usage ??
+      `import { ${name} } from "@copyui/${slug}";\n\nexport function Example() {\n  return <${name} />;\n}`,
+    examples: copy?.examples ?? [],
+    relatedTitle: copy?.relatedTitle ?? "Related",
+    keyboard: keyboardFor(slug, title, category),
+    accessibility: [
+      `${title} keeps a native focus target, a visible focus ring and a readable label.`,
+      "State changes are announced through the shared polite live region.",
+      "Colour is paired with text or an icon, so meaning never depends on colour alone.",
+    ],
+    motion: [
+      `${title} uses the shared 120ms hover, 180ms state and 280ms indicator timings.`,
+      "Transforms and non-essential transitions collapse under prefers-reduced-motion.",
+      "The settled state is legible before the entrance animation begins.",
+    ],
+    responsive: [
+      `${title} fills its container and keeps the 13px interface scale at every breakpoint.`,
+      "Long labels truncate or wrap without widening the page.",
+      "Menus and tooltips stay inside the viewport and remain reachable by touch.",
+    ],
   };
 }
