@@ -10,10 +10,12 @@ Surfaces:
 | --- | --- | --- |
 | `home` | `/` | `/` |
 | `components` | `/components` | `/` → Components |
-| `detail-chat-composer` | `/components/chat-composer` | reference only (the template does not exist yet) |
+| `detail-chat-composer` | `/components/chat-composer` | `/components/chat-composer` |
 
 Viewports: `1440x900`, `1024x768`, `390x844`.
 Themes: `light`, `dark`.
+
+The detail surface exercises the shared `/components/:slug` template. All 17 gallery entries use it, but `chat-composer` is the frame-gated representative because it has the most chrome and a stage-only composer layout.
 
 For every paired surface/viewport/theme it writes:
 
@@ -29,7 +31,7 @@ Across all captures it writes:
 
 ```text
 artifacts/compare/metrics.json   # fixed selector map, deterministic; no timestamps
-artifacts/compare/report.md      # check table + missing-template note
+artifacts/compare/report.md      # check table, measured detail values and remaining gaps
 ```
 
 ## Conditions
@@ -46,9 +48,13 @@ Both sites go through the same sequence:
 
 The reference's pages are public; no authentication is used. Local navigation at mobile widths opens the app's own menu and then selects Components, so the capture follows the same UI path a user does.
 
+A capture retries up to three times only when a required selector is missing. A persistent miss is still a failing check; the retry exists because the live reference occasionally serves an HTML error for a JS module during a cold load.
+
 ## Selector map
 
-`components` is the alignment surface. The same semantic nodes are measured on both sites:
+### Index (`components`)
+
+The same semantic nodes are measured on both sites:
 
 | metric | reference | local |
 | --- | --- | --- |
@@ -64,9 +70,29 @@ The reference's pages are public; no authentication is used. Local navigation at
 
 Each node records its rect, font family/size/weight/line-height/letter-spacing, colour, background, border width/colour, radius, shadow, display and padding. The grid records columns count and gap; cards record count and the first 24 rects.
 
-`checksFor()` compares reference and local within explicit tolerances: 1px for frame geometry, 0.5px for radii, 0.05px for line-height, exact values for font sizes, weights, letter-spacing, colours and column count. Panels without a border at mobile widths do not compare border colour.
+### Component detail (`detail-chat-composer`)
 
-`home` is captured but not gated on frame checks: it intentionally keeps the larger marketing display scale. `detail-chat-composer` is reference-only until the detail template exists; the report records that as the next unit of work instead of pretending the index is that template.
+| metric | reference | local |
+| --- | --- | --- |
+| panel | `main.panel` | `.ds__panel` |
+| sidebar | `.sidebar` | `.ds__side` |
+| topbar | `.topbar` | `.ds__top` |
+| article | `.doc` | `.doc` |
+| breadcrumb | `.breadcrumb` | `.breadcrumb` |
+| header | `.doc__header` | `.doc__header` |
+| title | `h1.doc__title` | `.doc__title` |
+| lead | `.doc__lead` | `.doc__lead` |
+| preview section | `.doc__section--preview` | `.doc__section--preview` |
+| preview bar | `.preview-bar` | `.preview-bar` |
+| stage | `.stage` | `.stage` |
+| stage look | `.stage__look` | `.stage__look` |
+| composer | `.ui-ccc` | `.ui-cc` |
+| selected tab | `.preview-bar button` | `.preview-tab[aria-selected="true"]` |
+| body | `body` | `body` |
+
+The detail surface runs 55 frame checks per capture: panel and sidebar, article width/position, detail topbar height, breadcrumb, title/lead type and widths, preview section, bar height/padding, stage and stage-look inset, the 680/612/326px composer and tab/body frame. Values and tolerances are the same class as the index checks: 1px for frame geometry, 0.5px for radii, 0.05px for line-height, exact for font sizes, weights, letter-spacing, colours and column count. Panels without a border at mobile widths do not compare border colour.
+
+`home` is captured but not gated on frame checks: it intentionally keeps the larger marketing display scale. The index uses 30–31 checks per capture; the detail uses 55. The 18 captures total **514 checks**.
 
 ## Run
 
@@ -90,7 +116,13 @@ Those paths are environment-specific and are deliberately not checked in.
 
 ## Reproducibility
 
-On this host, two consecutive unchanged runs both passed 184/184 checks and produced byte-identical `metrics.json`. There are no timestamps, random ids or paths in the metrics. The PNGs are not a byte-stability gate: the reference is live and some previews can change between runs. Re-running after a source change keeps the same file layout, so visual differences can be reviewed against stable metrics.
+On this host, two consecutive unchanged runs both passed **514/514** checks and produced byte-identical `metrics.json`:
+
+```text
+ebfc70b20da68c251d0e0360f1326e289b3517664334e9d75dd78ae19d168148
+```
+
+There are no timestamps, random ids or paths in the metrics. The PNGs are not a byte-stability gate: the reference is live and some previews can change between runs. Re-running after a source change keeps the same file layout, so visual differences can be reviewed against stable metrics.
 
 ## Supplemental layout audit
 
@@ -99,16 +131,17 @@ The optional `replica-design` / `replica-diff` skill provides an edge-map layout
 ```bash
 git clone https://github.com/Jakeschincariol/replica-skill /tmp/replica-skill
 python3 /tmp/replica-skill/replica-diff/imgdiff.py \
-  artifacts/compare/components/1440x900/light/reference.png \
-  artifacts/compare/components/1440x900/light/local.png \
-  --out artifacts/compare/diffs/components-1440x900-light.png
+  artifacts/compare/detail-chat-composer/1440x900/light/reference.png \
+  artifacts/compare/detail-chat-composer/1440x900/light/local.png \
+  --mode layout \
+  --out artifacts/compare/diffs/detail-chat-composer-1440x900-light.png
 ```
 
-Current scores and limitations are recorded in [`artifacts/compare/layout-audit.md`](../../artifacts/compare/layout-audit.md). The six final diff images are under `artifacts/compare/diffs/`.
+Current scores and limitations are recorded in [`artifacts/compare/layout-audit.md`](../../artifacts/compare/layout-audit.md). The final diff images are under `artifacts/compare/diffs/`.
 
 ## Limits
 
-- These are visual captures, not behavioural parity tests. Interactions (keyboard, focus, timers) are not exercised.
+- These are visual captures, not behavioural parity tests. The detail route's card navigation, browser back/forward, tabs, copy affordances and 390px no-overflow state were smoke-tested separately; keyboard and timer behaviour are not part of the rig.
 - The reference site can change independently; a diff can be caused by affectui, not by copyui.
 - Font rendering depends on the host's font stack and installed fonts. Geometry and declared font metrics are compared; glyph rasterization is not.
-- The detail template is absent locally and is shown as a documented gap, not a passing capture.
+- The detail template's below-the-fold `Props & variants` content is data-driven local documentation, not a copy of the reference's long-form usage sections. The frame-gated region ends at the 900/768/844px viewport.

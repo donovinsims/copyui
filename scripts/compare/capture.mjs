@@ -52,9 +52,9 @@ const SURFACES = [
   {
     id: "detail-chat-composer",
     refPath: "/components/chat-composer",
-    local: null,
-    referenceOnly: true,
-    note: "The reference has a component-detail template; copyui does not yet. Reference-only captures document the next unit of work.",
+    local: { path: "/components/chat-composer", nav: null },
+    checks: true,
+    note: "Component detail: article width, detail-only top bar, title/lead type, preview bar, stage inset and tab chrome are all measured from the reference template.",
   },
 ];
 
@@ -66,9 +66,6 @@ const FREEZE_CSS = `
   }
   html { scroll-behavior: auto !important; }
 `;
-
-const DETAIL_NEXT_STEP =
-  "No local component-detail route/template. The components index currently substitutes full specimens below the gallery. The reference detail uses a 32px/44px/600 title, a breadcrumb, a Preview/Code switch, a control bar and a large preview stage inside the same 1176px panel.";
 
 function selectorsFor(site, surface) {
   const local = site === "local";
@@ -88,8 +85,20 @@ function selectorsFor(site, surface) {
   }
   if (surface.id === "detail-chat-composer") {
     return {
-      panel: "main.panel",
-      title: "h1.doc__title",
+      panel: local ? ".ds__panel" : "main.panel",
+      sidebar: local ? ".ds__side" : ".sidebar",
+      topbar: local ? ".ds__top" : ".topbar",
+      content: ".doc",
+      breadcrumb: ".breadcrumb",
+      header: ".doc__header",
+      title: local ? ".doc__title" : "h1.doc__title",
+      lead: ".doc__lead",
+      section: ".doc__section--preview",
+      bar: ".preview-bar",
+      stage: ".stage",
+      stageLook: ".stage__look",
+      composer: local ? ".ui-cc" : ".ui-ccc",
+      tab: local ? ".preview-tab[aria-selected=\"true\"]" : ".preview-bar button",
       body: "body",
     };
   }
@@ -323,6 +332,28 @@ async function captureSite(browser, site, surface, viewport, theme) {
   return { metrics, errors, file };
 }
 
+function missingRequired(surface, metrics) {
+  const required =
+    surface.id === "components"
+      ? ["panel", "sidebar", "content", "topbar", "title", "card"]
+      : surface.id === "detail-chat-composer"
+        ? ["panel", "content", "title", "bar", "stage", "stageLook", "composer"]
+        : ["title", "body"];
+  return required.filter((key) => !metrics[key]);
+}
+
+async function captureSiteStable(browser, site, surface, viewport, theme) {
+  let last = null;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    last = await captureSite(browser, site, surface, viewport, theme);
+    const missing = missingRequired(surface, last.metrics);
+    if (!missing.length) return last;
+    console.log(`[compare] ${site} retry ${attempt}/3 · ${surface.id} · ${viewport.id} · ${theme} · missing ${missing.join(", ")}`);
+    await new Promise((resolve) => setTimeout(resolve, 700));
+  }
+  return last;
+}
+
 async function imageData(file) {
   return `data:image/png;base64,${(await readFile(file)).toString("base64")}`;
 }
@@ -376,7 +407,7 @@ async function composeOverlay(page, viewport, referenceFile, localFile, outFile)
   await page.screenshot({ path: outFile, animations: "disabled", caret: "hide" });
 }
 
-function checksFor(reference, local) {
+function checksFor(surface, reference, local) {
   const checks = [];
   const add = (name, a, b, tolerance, unit = "px") => {
     if (a === null || a === undefined || b === null || b === undefined) {
@@ -397,6 +428,65 @@ function checksFor(reference, local) {
     checks.push({ name, reference: a ?? null, local: b ?? null, unit: "", delta: null, pass: a === b });
   };
   const value = (node, pathname) => pathname.split(".").reduce((current, key) => current?.[key], node) ?? null;
+
+  if (surface.id === "detail-chat-composer") {
+    add("panel.x", value(reference.panel, "rect.x"), value(local.panel, "rect.x"), 1);
+    add("panel.y", value(reference.panel, "rect.y"), value(local.panel, "rect.y"), 1);
+    add("panel.width", value(reference.panel, "rect.width"), value(local.panel, "rect.width"), 1);
+    add("panel.radius", value(reference.panel, "radius"), value(local.panel, "radius"), 0.5);
+    exact("panel.background", value(reference.panel, "background"), value(local.panel, "background"));
+    exact("panel.borderColor", value(reference.panel, "border.color"), value(local.panel, "border.color"));
+    add("sidebar.width", value(reference.sidebar, "rect.width"), value(local.sidebar, "rect.width"), 1);
+    add("topbar.height", value(reference.topbar, "rect.height"), value(local.topbar, "rect.height"), 1);
+    add("content.x", value(reference.content, "rect.x"), value(local.content, "rect.x"), 1);
+    add("content.y", value(reference.content, "rect.y"), value(local.content, "rect.y"), 1);
+    add("content.width", value(reference.content, "rect.width"), value(local.content, "rect.width"), 1);
+    add("breadcrumb.height", value(reference.breadcrumb, "rect.height"), value(local.breadcrumb, "rect.height"), 1);
+    exact("breadcrumb.color", value(reference.breadcrumb, "color"), value(local.breadcrumb, "color"));
+    add("header.y", value(reference.header, "rect.y"), value(local.header, "rect.y"), 1);
+    add("header.height", value(reference.header, "rect.height"), value(local.header, "rect.height"), 1);
+    add("title.x", value(reference.title, "rect.x"), value(local.title, "rect.x"), 1);
+    add("title.y", value(reference.title, "rect.y"), value(local.title, "rect.y"), 1);
+    add("title.width", value(reference.title, "rect.width"), value(local.title, "rect.width"), 1);
+    add("title.height", value(reference.title, "rect.height"), value(local.title, "rect.height"), 1);
+    add("title.fontSize", value(reference.title, "font.size"), value(local.title, "font.size"), 0.01);
+    add("title.lineHeight", value(reference.title, "font.lineHeight"), value(local.title, "font.lineHeight"), 0.05);
+    exact("title.fontWeight", value(reference.title, "font.weight"), value(local.title, "font.weight"));
+    exact("title.letterSpacing", value(reference.title, "font.letterSpacing"), value(local.title, "font.letterSpacing"));
+    exact("title.color", value(reference.title, "color"), value(local.title, "color"));
+    add("lead.y", value(reference.lead, "rect.y"), value(local.lead, "rect.y"), 1);
+    add("lead.width", value(reference.lead, "rect.width"), value(local.lead, "rect.width"), 1);
+    add("lead.height", value(reference.lead, "rect.height"), value(local.lead, "rect.height"), 1);
+    add("lead.fontSize", value(reference.lead, "font.size"), value(local.lead, "font.size"), 0.01);
+    add("lead.lineHeight", value(reference.lead, "font.lineHeight"), value(local.lead, "font.lineHeight"), 0.05);
+    exact("lead.color", value(reference.lead, "color"), value(local.lead, "color"));
+    add("section.y", value(reference.section, "rect.y"), value(local.section, "rect.y"), 1);
+    add("section.width", value(reference.section, "rect.width"), value(local.section, "rect.width"), 1);
+    add("section.height", value(reference.section, "rect.height"), value(local.section, "rect.height"), 1);
+    add("bar.y", value(reference.bar, "rect.y"), value(local.bar, "rect.y"), 1);
+    add("bar.width", value(reference.bar, "rect.width"), value(local.bar, "rect.width"), 1);
+    add("bar.height", value(reference.bar, "rect.height"), value(local.bar, "rect.height"), 1);
+    add("stage.y", value(reference.stage, "rect.y"), value(local.stage, "rect.y"), 1);
+    add("stage.width", value(reference.stage, "rect.width"), value(local.stage, "rect.width"), 1);
+    add("stage.height", value(reference.stage, "rect.height"), value(local.stage, "rect.height"), 1);
+    add("stage.radius", value(reference.stage, "radius"), value(local.stage, "radius"), 0.5);
+    exact("stage.background", value(reference.stage, "background"), value(local.stage, "background"));
+    exact("stage.padding", value(reference.stage, "padding"), value(local.stage, "padding"));
+    add("stageLook.x", value(reference.stageLook, "rect.x"), value(local.stageLook, "rect.x"), 1);
+    add("stageLook.y", value(reference.stageLook, "rect.y"), value(local.stageLook, "rect.y"), 1);
+    add("stageLook.width", value(reference.stageLook, "rect.width"), value(local.stageLook, "rect.width"), 1);
+    add("stageLook.height", value(reference.stageLook, "rect.height"), value(local.stageLook, "rect.height"), 1);
+    add("composer.x", value(reference.composer, "rect.x"), value(local.composer, "rect.x"), 1);
+    add("composer.y", value(reference.composer, "rect.y"), value(local.composer, "rect.y"), 1);
+    add("composer.width", value(reference.composer, "rect.width"), value(local.composer, "rect.width"), 1);
+    add("composer.height", value(reference.composer, "rect.height"), value(local.composer, "rect.height"), 1);
+    add("tab.height", value(reference.tab, "rect.height"), value(local.tab, "rect.height"), 1);
+    add("tab.fontSize", value(reference.tab, "font.size"), value(local.tab, "font.size"), 0.01);
+    exact("tab.weight", value(reference.tab, "font.weight"), value(local.tab, "font.weight"));
+    add("body.fontSize", value(reference.body, "font.size"), value(local.body, "font.size"), 0.01);
+    exact("body.background", value(reference.body, "background"), value(local.body, "background"));
+    return checks;
+  }
 
   add("panel.x", value(reference.panel, "rect.x"), value(local.panel, "rect.x"), 1);
   add("panel.y", value(reference.panel, "rect.y"), value(local.panel, "rect.y"), 1);
@@ -482,11 +572,19 @@ function makeReport(metrics) {
       lines.push(`At 1440 light the panel is ${detail.local.panel.rect.width}px wide at x${detail.local.panel.rect.x}; the index title is ${detail.local.title.font.size}/${detail.local.title.font.lineHeight} at ${detail.local.title.font.letterSpacing}; the first card is ${detail.local.card.rect.width}×${detail.local.card.rect.height} with a ${detail.local.grid.gap} gap.`);
       lines.push("");
     }
-    if (surface.referenceOnly) {
-      const entry = metrics.surfaces[surface.id]?.["1440x900"]?.light;
-      lines.push(`Local capture is unavailable: ${DETAIL_NEXT_STEP}`);
-      if (entry?.reference?.title) {
-        lines.push(`Reference detail title at 1440 light: ${entry.reference.title.font.size}/${entry.reference.title.font.lineHeight} weight ${entry.reference.title.font.weight}; panel ${entry.reference.panel?.rect.width}px.`);
+    if (surface.id === "detail-chat-composer" && detail?.reference && detail?.local) {      lines.push(`At 1440 light the article is ${detail.local.content.rect.width}px wide at x${detail.local.content.rect.x}; the detail top bar is ${detail.local.topbar.rect.height}px; the title is ${detail.local.title.font.size}/${detail.local.title.font.lineHeight} at weight ${detail.local.title.font.weight}; the preview bar is ${detail.local.bar.rect.height}px and the stage is ${detail.local.stage.rect.width}×${detail.local.stage.rect.height} with a ${detail.local.stage.padding} inset.`,
+      );
+      lines.push("");
+      lines.push("Measured detail values from this run:");
+      lines.push("");
+      lines.push("| Viewport | Article | Top bar | Title | Lead | Preview bar | Stage | Composer |");
+      lines.push("| --- | --- | ---: | --- | --- | ---: | --- | --- |");
+      for (const [viewportId, byTheme] of Object.entries(metrics.surfaces[surface.id])) {
+        const measured = byTheme.light?.local;
+        if (!measured) continue;
+        lines.push(
+          `| ${viewportId} | ${measured.content.rect.width}px @ x${measured.content.rect.x} | ${measured.topbar.rect.height}px | ${measured.title.font.size}/${measured.title.font.lineHeight} · ${measured.title.font.weight} | ${measured.lead.rect.width}×${measured.lead.rect.height} | ${measured.bar.rect.height}px | ${measured.stage.rect.width}×${measured.stage.rect.height} · ${measured.stage.padding} | ${measured.composer.rect.width}×${measured.composer.rect.height} |`,
+        );
       }
       lines.push("");
     }
@@ -527,17 +625,17 @@ async function main() {
         metrics.surfaces[surface.id][viewport.id] = {};
         for (const theme of THEMES) {
           console.log(`[compare] ${surface.id} · ${viewport.id} · ${theme}`);
-          const reference = await captureSite(browser, "reference", surface, viewport, theme);
+          const reference = await captureSiteStable(browser, "reference", surface, viewport, theme);
           const entry = { reference: reference.metrics, checks: [] };
           let local = null;
           if (!surface.referenceOnly) {
-            local = await captureSite(browser, "local", surface, viewport, theme);
+            local = await captureSiteStable(browser, "local", surface, viewport, theme);
             entry.local = local.metrics;
             entry.errors = { reference: reference.errors, local: local.errors };
             if (reference.errors.length || local.errors.length) {
               console.log(`[compare] console errors: reference=${reference.errors.length} local=${local.errors.length}`);
             }
-            entry.checks = surface.checks ? checksFor(reference.metrics, local.metrics) : [];
+            entry.checks = surface.checks ? checksFor(surface, reference.metrics, local.metrics) : [];
 
             const dir = path.join(OUT_DIR, surface.id, viewport.id, theme);
             const pairPage = await browser.newPage();
@@ -550,7 +648,7 @@ async function main() {
           } else {
             entry.local = {
               available: false,
-              reason: DETAIL_NEXT_STEP,
+              reason: "reference-only capture",
             };
             entry.checks = [];
           }

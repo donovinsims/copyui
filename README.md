@@ -142,9 +142,11 @@ accent: an approval is amber regardless of brand.
 frozen-animation conditions, then writes side-by-side composites, 50% overlays, fixed-selector
 metrics and a check report to `artifacts/compare/`.
 
-The latest run passes 184/184 frame checks across 1440x900, 1024x768 and 390x844 in light and dark.
-See `scripts/compare/README.md` for setup and `artifacts/compare/report.md` for the measured values
-and remaining gaps. The component-detail surface is reference-only until that template exists.
+The latest run passes **514/514** frame checks across 1440x900, 1024x768 and 390x844 in light and dark,
+including paired captures of the shared `/components/chat-composer` detail template. Two unchanged
+runs produced byte-identical `metrics.json`. See `scripts/compare/README.md` for setup,
+`artifacts/compare/report.md` for the measured values and `artifacts/compare/layout-audit.md` for the
+supplemental layout scores and remaining gaps.
 
 Screenshots are generated locally and ignored by Git; `metrics.json`, `report.md` and
 `layout-audit.md` are checked in.

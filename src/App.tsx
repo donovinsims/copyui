@@ -16,11 +16,38 @@ import {
 } from "./lib/icons";
 import { OverviewPage, FoundationsPage, TokensPage } from "./docs/Docs";
 import { ComponentsPage } from "./docs/ComponentStories";
+import { ComponentDetailPage } from "./docs/ComponentDetail";
 import { MotionPage } from "./docs/MotionStories";
 import { PatternsPage } from "./docs/PatternStories";
 
 type PageId = "overview" | "foundations" | "components" | "patterns" | "motion" | "tokens";
 type Theme = "light" | "dark";
+
+interface RouteState {
+  page: PageId;
+  component: string | null;
+}
+
+const PAGE_PATHS: Record<PageId, string> = {
+  overview: "/",
+  foundations: "/foundations",
+  tokens: "/tokens",
+  components: "/components",
+  patterns: "/patterns",
+  motion: "/motion",
+};
+
+function routeFromPath(pathname: string): RouteState {
+  const clean = pathname.replace(/\/+$/, "") || "/";
+  const match = /^\/components\/([^/]+)$/.exec(clean);
+  if (match) return { page: "components", component: decodeURIComponent(match[1]!) };
+  const entry = (Object.entries(PAGE_PATHS) as Array<[PageId, string]>).find(([, path]) => path === clean);
+  return { page: entry?.[0] ?? "overview", component: null };
+}
+
+function pathForRoute(route: RouteState) {
+  return route.component ? `/components/${route.component}` : PAGE_PATHS[route.page];
+}
 
 interface AccentDef {
   id: string;
@@ -72,7 +99,9 @@ const PAGES: Array<{ id: PageId; label: string; icon: ReactNode; group: string; 
 const GROUPS = ["Start", "Design", "Library"];
 
 export function App() {
-  const [page, setPage] = useState<PageId>("overview");
+  const [route, setRoute] = useState<RouteState>(() => routeFromPath(window.location.pathname));
+  const page = route.page;
+  const isDetail = page === "components" && Boolean(route.component);
   const [theme, setTheme] = useState<Theme>(() =>
     typeof document !== "undefined" && document.documentElement.dataset.theme === "dark" ? "dark" : "light",
   );
@@ -85,6 +114,12 @@ export function App() {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem("copyui-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    const onPopState = () => setRoute(routeFromPath(window.location.pathname));
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -102,16 +137,24 @@ export function App() {
     entry.label.toLowerCase().includes(navQuery.trim().toLowerCase()),
   );
 
-  const openComponent = (slug: string) => {
-    setPage("components");
+  const navigate = (next: RouteState) => {
+    const path = pathForRoute(next);
+    if (window.location.pathname !== path) window.history.pushState({}, "", path);
+    setRoute(next);
     setNavOpen(false);
-    window.setTimeout(() => {
-      document.getElementById(`spec-${slug}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 80);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const openComponent = (slug: string) => {
+    navigate({ page: "components", component: slug });
   };
 
   return (
-    <div className={`ds ${page === "overview" ? "ds--home" : "ds--docs"}${navOpen ? " ds--nav-open" : ""}`}>
+    <div
+      className={`ds ${isDetail ? "ds--detail" : page === "overview" ? "ds--home" : "ds--docs"}${
+        navOpen ? " ds--nav-open" : ""
+      }`}
+    >
       <aside className="ds__side" id="sidebar">
         <div className="ds__brand">
           <span className="ds__mark" aria-hidden="true">
@@ -144,11 +187,7 @@ export function App() {
                 type="button"
                 className="ds__nav-item"
                 aria-current={page === entry.id ? "page" : undefined}
-                onClick={() => {
-                  setPage(entry.id);
-                  setNavOpen(false);
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                }}
+                onClick={() => navigate({ page: entry.id, component: null })}
               >
                 {entry.icon}
                 <span>{entry.label}</span>
@@ -165,6 +204,7 @@ export function App() {
               key={entry.slug}
               type="button"
               className="ds__nav-item ds__nav-item--sub"
+              aria-current={route.component === entry.slug ? "page" : undefined}
               onClick={() => openComponent(entry.slug)}
             >
               <span>{entry.label}</span>
@@ -260,16 +300,29 @@ export function App() {
           </div>
         </header>
 
-        <main className="ds__content" id="content">
+        <main className={`ds__content${isDetail ? " ds__content--doc" : ""}`} id="content">
           {page === "overview" ? (
             <OverviewPage
-              onBrowse={() => setPage("components")}
-              onTokens={() => setPage("tokens")}
+              onBrowse={() => navigate({ page: "components", component: null })}
+              onTokens={() => navigate({ page: "tokens", component: null })}
             />
           ) : null}
           {page === "foundations" ? <FoundationsPage accent={accent} /> : null}
-          {page === "components" ? <ComponentsPage /> : null}
-          {page === "patterns" ? <PatternsPage onComponents={() => setPage("components")} /> : null}
+          {page === "components" ? (
+            isDetail && route.component ? (
+              <ComponentDetailPage
+                slug={route.component}
+                theme={theme}
+                onTheme={setTheme}
+                onBack={() => navigate({ page: "components", component: null })}
+              />
+            ) : (
+              <ComponentsPage onOpenComponent={openComponent} />
+            )
+          ) : null}
+          {page === "patterns" ? (
+            <PatternsPage onComponents={() => navigate({ page: "components", component: null })} />
+          ) : null}
           {page === "motion" ? <MotionPage /> : null}
           {page === "tokens" ? <TokensPage /> : null}
 

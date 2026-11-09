@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState, type MouseEvent, type ReactNode } from "react";
 import { Specimen, Row, Col, DemoLabel, Snippet } from "./Specimen";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
@@ -42,19 +42,27 @@ const LIBRARY_FILTERS: Array<{ id: LibraryFilter; label: string }> = [
   { id: "surfaces", label: "Surfaces" },
 ];
 
-const LIBRARY_CATEGORY: Record<LibraryCategory, string> = {
+export const LIBRARY_CATEGORY: Record<LibraryCategory, string> = {
   chat: "Chat",
   agent: "Agent",
   inputs: "Inputs",
   surfaces: "Surfaces",
 };
 
-interface LibraryItem {
+const MODELS: ModelOption[] = [
+  { id: "auto", name: "Auto", description: "Picks per task", speed: 0.8, quality: 0.82, cost: 0.5, firstTokenMs: 380, priceIn: 3, priceOut: 15 },
+  { id: "sonnet", name: "Sonnet 5.5", description: "Balanced, long context", speed: 0.68, quality: 0.9, cost: 0.62, firstTokenMs: 520, priceIn: 3, priceOut: 15, tag: "default" },
+  { id: "sol", name: "GPT-6 Sol", description: "Fast tools, short answers", speed: 0.94, quality: 0.74, cost: 0.28, firstTokenMs: 240, priceIn: 1.5, priceOut: 8 },
+  { id: "opus", name: "Opus 4.5", description: "Hardest reasoning", speed: 0.34, quality: 0.98, cost: 0.95, firstTokenMs: 1100, priceIn: 15, priceOut: 75, tag: "pro" },
+];
+
+export interface LibraryItem {
   slug: string;
   title: string;
   note: string;
   category: LibraryCategory;
   preview: ReactNode;
+  detailPreview?: ReactNode;
 }
 
 function LibraryCard({
@@ -63,41 +71,47 @@ function LibraryCard({
   note,
   category,
   children,
-}: Omit<LibraryItem, "preview"> & { children: ReactNode }) {
+  onOpen,
+}: Omit<LibraryItem, "preview"> & { children: ReactNode; onOpen: (slug: string) => void }) {
   const isPro = category === "chat" || category === "agent";
+  const onLinkClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+    event.preventDefault();
+    onOpen(slug);
+  };
 
   return (
     <article className={`library-card library-card--${slug}`}>
-      <div className="library-card__stage" aria-hidden="true" inert>
-        <div className="library-card__head">
-          <span className="library-card__kind">{LIBRARY_CATEGORY[category]}</span>
-          <span className="library-card__styles">2 styles</span>
-          {isPro ? (
-            <span className="library-card__badge is-pro">
-              <BoltIcon size={10} /> Pro
-            </span>
-          ) : null}
+      <a className="library-card__link" href={`/components/${slug}`} onClick={onLinkClick}>
+        <div className="library-card__stage" aria-hidden="true" inert>
+          <div className="library-card__head">
+            <span className="library-card__kind">{LIBRARY_CATEGORY[category]}</span>
+            <span className="library-card__styles">2 styles</span>
+            {isPro ? (
+              <span className="library-card__badge is-pro">
+                <BoltIcon size={10} /> Pro
+              </span>
+            ) : null}
+          </div>
+          <div className="library-card__preview">
+            <div className={`library-card__preview-inner preview-${slug}`}>{children}</div>
+          </div>
         </div>
-        <div className="library-card__preview">
-          <div className={`library-card__preview-inner preview-${slug}`}>{children}</div>
+        <div className="library-card__meta">
+          <div className="library-card__info">
+            <h3 className="library-card__title">{title}</h3>
+            <p className="library-card__desc">{note}</p>
+          </div>
+          <span className="library-card__copy" aria-hidden="true">
+            <CopyIcon size={14} />
+          </span>
         </div>
-      </div>
-      <div className="library-card__meta">
-        <a className="library-card__info" href={`#spec-${slug}`}>
-          <h3 className="library-card__title">{title}</h3>
-          <p className="library-card__desc">{note}</p>
-        </a>
-        <span className="library-card__copy" aria-hidden="true">
-          <CopyIcon size={14} />
-        </span>
-      </div>
+      </a>
     </article>
   );
 }
 
-function LibraryIndex() {
-  const [filter, setFilter] = useState<LibraryFilter>("all");
-  const items: LibraryItem[] = [
+export const LIBRARY_ITEMS: LibraryItem[] = [
     {
       slug: "ai-answer",
       title: "AI Answer",
@@ -146,6 +160,7 @@ function LibraryIndex() {
           <ChatComposer onSend={() => undefined} />
         </div>
       ),
+      detailPreview: <ChatComposer stageLayout onSend={() => undefined} />,
     },
     {
       slug: "thinking-loader",
@@ -371,7 +386,11 @@ function LibraryIndex() {
         </div>
       ),
     },
-  ];
+];
+
+function LibraryIndex({ onOpenComponent }: { onOpenComponent: (slug: string) => void }) {
+  const [filter, setFilter] = useState<LibraryFilter>("all");
+  const items = LIBRARY_ITEMS;
 
   const counts: Record<LibraryFilter, number> = {
     all: items.length,
@@ -400,8 +419,8 @@ function LibraryIndex() {
         ))}
       </div>
       <div className="library-grid">
-        {visible.map(({ preview, ...item }) => (
-          <LibraryCard key={item.slug} {...item}>
+        {visible.map(({ preview, detailPreview: _detailPreview, ...item }) => (
+          <LibraryCard key={item.slug} {...item} onOpen={onOpenComponent}>
             {preview}
           </LibraryCard>
         ))}
@@ -410,10 +429,10 @@ function LibraryIndex() {
   );
 }
 
-export function ComponentsPage() {
+export function ComponentsPage({ onOpenComponent }: { onOpenComponent: (slug: string) => void }) {
   return (
     <>
-      <LibraryIndex />
+      <LibraryIndex onOpenComponent={onOpenComponent} />
 
       <ComponentSection
         title="Actions & input"
@@ -952,13 +971,6 @@ function ToolCallSpecimen() {
     </Specimen>
   );
 }
-
-const MODELS: ModelOption[] = [
-  { id: "auto", name: "Auto", description: "Picks per task", speed: 0.8, quality: 0.82, cost: 0.5, firstTokenMs: 380, priceIn: 3, priceOut: 15 },
-  { id: "sonnet", name: "Sonnet 5.5", description: "Balanced, long context", speed: 0.68, quality: 0.9, cost: 0.62, firstTokenMs: 520, priceIn: 3, priceOut: 15, tag: "default" },
-  { id: "sol", name: "GPT-6 Sol", description: "Fast tools, short answers", speed: 0.94, quality: 0.74, cost: 0.28, firstTokenMs: 240, priceIn: 1.5, priceOut: 8 },
-  { id: "opus", name: "Opus 4.5", description: "Hardest reasoning", speed: 0.34, quality: 0.98, cost: 0.95, firstTokenMs: 1100, priceIn: 15, priceOut: 75, tag: "pro" },
-];
 
 function ModelPickerSpecimen() {
   return (

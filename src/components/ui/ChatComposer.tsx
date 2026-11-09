@@ -207,6 +207,46 @@ const CSS = `
   60% { box-shadow: 0 0 0 4px transparent; opacity: .6; }
 }
 
+.ui-cc[data-stage="true"] {
+  min-height: 172px;
+  padding-bottom: 0;
+}
+.ui-cc[data-stage="true"] .ui-cc__field { min-height: 72px; }
+.ui-cc__stage-footer {
+  margin: auto -10px 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-top: 1px solid var(--ui-line);
+  border-radius: 0 0 var(--ui-cc-radius) var(--ui-cc-radius);
+  background: var(--ui-tray);
+}
+.ui-cc__stage-item {
+  min-width: 0;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 8px 0 7px;
+  border-radius: 8px;
+  color: var(--ui-ink-soft);
+  font-size: 12px;
+  font-weight: var(--weight-regular);
+  white-space: nowrap;
+}
+.ui-cc__stage-item:hover { background: var(--ui-hover); }
+.ui-cc__stage-item:focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 1px; }
+.ui-cc__stage-item > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ui-cc__stage-item svg { flex: none; opacity: 0.72; }
+.ui-cc__stage-item--apps { margin-left: auto; gap: 8px; }
+.ui-cc__stage-item--apps .ui-cc__apps { padding: 0; }
+
 @media (max-width: 520px) {
   .ui-cc__approval span { display: none; }
   .ui-cc__approval { width: 26px; padding: 0; justify-content: center; }
@@ -251,6 +291,7 @@ export interface ChatComposerProps {
   onRequestApproval?: () => void;
   onFolderChange?: (folder: string | null) => void;
   onAppsChange?: (connected: string[]) => void;
+  stageLayout?: boolean;
   className?: string;
 }
 
@@ -286,6 +327,7 @@ export function ChatComposer({
   onRequestApproval,
   onFolderChange,
   onAppsChange,
+  stageLayout = false,
   className,
 }: ChatComposerProps) {
   const [value, setValue] = useState("");
@@ -436,6 +478,7 @@ export function ChatComposer({
     <div
       ref={root}
       className={cx("ui-cc", className)}
+      data-stage={stageLayout || undefined}
       onClick={() => textarea.current?.focus()}
     >
       <textarea
@@ -488,23 +531,25 @@ export function ChatComposer({
             <ChevronDownIcon size={12} />
           </button>
 
-          <button
-            type="button"
-            className="ui-cc__tool"
-            data-folder="true"
-            data-menu="folder"
-            aria-haspopup="listbox"
-            aria-expanded={menu === "folder"}
-            aria-controls="ui-cc-folder-menu"
-            onClick={(event) => {
-              event.stopPropagation();
-              openMenu("folder");
-            }}
-            onKeyDown={(event) => onMenuKeyDown(event, folders.length)}
-          >
-            <FolderIcon size={14} />
-            <span className="ui-cc__tool-label">{folder ?? "Work in a folder"}</span>
-          </button>
+          {!stageLayout ? (
+            <button
+              type="button"
+              className="ui-cc__tool"
+              data-folder="true"
+              data-menu="folder"
+              aria-haspopup="listbox"
+              aria-expanded={menu === "folder"}
+              aria-controls="ui-cc-folder-menu"
+              onClick={(event) => {
+                event.stopPropagation();
+                openMenu("folder");
+              }}
+              onKeyDown={(event) => onMenuKeyDown(event, folders.length)}
+            >
+              <FolderIcon size={14} />
+              <span className="ui-cc__tool-label">{folder ?? "Work in a folder"}</span>
+            </button>
+          ) : null}
 
           {recording ? (
             <span className="ui-cc__recording" aria-hidden="true">
@@ -529,37 +574,39 @@ export function ChatComposer({
             <span>{approvalBusy ? "Requesting…" : "Request approval"}</span>
           </button>
 
-          <button
-            type="button"
-            className="ui-cc__apps"
-            data-menu="apps"
-            aria-label="Connect apps"
-            aria-haspopup="menu"
-            aria-expanded={menu === "apps"}
-            aria-controls="ui-cc-apps-menu"
-            onClick={(event) => {
-              event.stopPropagation();
-              openMenu("apps");
-            }}
-            onKeyDown={(event) => onMenuKeyDown(event, apps.length)}
-          >
-            {shownApps.length ? (
-              shownApps.map((app) => (
-                <span
-                  key={app.id}
-                  className="ui-cc__app"
-                  style={{ background: app.color }}
-                  title={app.name}
-                >
-                  {app.mark}
+          {!stageLayout ? (
+            <button
+              type="button"
+              className="ui-cc__apps"
+              data-menu="apps"
+              aria-label="Connect apps"
+              aria-haspopup="menu"
+              aria-expanded={menu === "apps"}
+              aria-controls="ui-cc-apps-menu"
+              onClick={(event) => {
+                event.stopPropagation();
+                openMenu("apps");
+              }}
+              onKeyDown={(event) => onMenuKeyDown(event, apps.length)}
+            >
+              {shownApps.length ? (
+                shownApps.map((app) => (
+                  <span
+                    key={app.id}
+                    className="ui-cc__app"
+                    style={{ background: app.color }}
+                    title={app.name}
+                  >
+                    {app.mark}
+                  </span>
+                ))
+              ) : (
+                <span className="ui-cc__tool" style={{ pointerEvents: "none" }}>
+                  <PlugIcon size={14} />
                 </span>
-              ))
-            ) : (
-              <span className="ui-cc__tool" style={{ pointerEvents: "none" }}>
-                <PlugIcon size={14} />
-              </span>
-            )}
-          </button>
+              )}
+            </button>
+          ) : null}
 
           <button
             type="button"
@@ -589,6 +636,58 @@ export function ChatComposer({
           </button>
         </div>
       </div>
+
+      {stageLayout ? (
+        <div className="ui-cc__stage-footer">
+          <button
+            type="button"
+            className="ui-cc__stage-item"
+            data-menu="folder"
+            aria-haspopup="listbox"
+            aria-expanded={menu === "folder"}
+            aria-controls="ui-cc-folder-menu"
+            onClick={(event) => {
+              event.stopPropagation();
+              openMenu("folder");
+            }}
+            onKeyDown={(event) => onMenuKeyDown(event, folders.length)}
+          >
+            <FolderIcon size={14} />
+            <span>{folder ?? "Work in a folder"}</span>
+          </button>
+          <button
+            type="button"
+            className="ui-cc__stage-item ui-cc__stage-item--apps"
+            data-menu="apps"
+            aria-haspopup="menu"
+            aria-expanded={menu === "apps"}
+            aria-controls="ui-cc-apps-menu"
+            onClick={(event) => {
+              event.stopPropagation();
+              openMenu("apps");
+            }}
+            onKeyDown={(event) => onMenuKeyDown(event, apps.length)}
+          >
+            <span>Connect apps</span>
+            <span className="ui-cc__apps">
+              {shownApps.length ? (
+                shownApps.map((app) => (
+                  <span
+                    key={app.id}
+                    className="ui-cc__app"
+                    style={{ background: app.color }}
+                    title={app.name}
+                  >
+                    {app.mark}
+                  </span>
+                ))
+              ) : (
+                <PlugIcon size={14} />
+              )}
+            </span>
+          </button>
+        </div>
+      ) : null}
 
       {menu === "model" ? (
         <div
