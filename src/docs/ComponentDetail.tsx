@@ -483,16 +483,18 @@ export function ComponentDetailPage({
         <CodeBlock code={code} copyKey="usage" copied={copied} onCopy={copy} />
       </section>
 
-      <section className="doc__section">
+      <section className="doc__section doc__section--examples">
         <h2 className="doc__h2">Examples</h2>
-        <div className="doc__variants-row">
-          <span className="doc__variants-label">Variants</span>
-          <div className="doc-variants">
-            {meta.variants.map((variant) => (
-              <span key={variant}>{variant}</span>
-            ))}
+        {slug !== "chat-composer" && (
+          <div className="doc__variants-row">
+            <span className="doc__variants-label">Variants</span>
+            <div className="doc-variants">
+              {meta.variants.map((variant) => (
+                <span key={variant}>{variant}</span>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
         {meta.examples.map((example, index) => (
           <div className="doc__example" key={example.title}>
             <h3 className="doc__h3">{example.title}</h3>

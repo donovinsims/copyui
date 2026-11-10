@@ -6,25 +6,25 @@ A single, repeatable capture path for **affectui.com** and the local **copyui** 
 
 Surfaces:
 
-| id | Reference URL | Local URL |
-| --- | --- | --- |
-| `home` | `/` | `/` |
-| `components` | `/components` | `/` → Components |
-| `detail-chat-composer` | `/components/chat-composer` | `/components/chat-composer` |
+| id | Reference URL | Local URL | Capture |
+| --- | --- | --- | --- |
+| `home` | `/` | `/` | first viewport |
+| `components` | `/components` | `/` → Components | first viewport |
+| `detail-chat-composer` | `/components/chat-composer` | `/components/chat-composer` | full page |
 
 Viewports: `1440x900`, `1024x768`, `390x844`.
 Themes: `light`, `dark`.
 
-The detail surface exercises the shared `/components/:slug` template. All 17 gallery entries use it, but `chat-composer` is the frame-gated representative because it has the most chrome and a stage-only composer layout.
+The detail surface exercises the shared `/components/:slug` template. All 17 gallery entries use it, but `chat-composer` is the frame-gated representative because it has the most chrome and a stage-only composer layout. Its reference and local screenshots, and both composites, cover the complete document so below-the-fold layout is scored at all six captures. The full extent is recorded as `capture.width`, `capture.height`, `capture.documentHeight` and `capture.coversDocument` in `metrics.json`.
 
 For every paired surface/viewport/theme it writes:
 
 ```text
 artifacts/compare/<surface>/<viewport>/<theme>/
-  reference.png
+  reference.png  # full page for the detail surface, first viewport otherwise
   local.png
-  pair.png       # labelled side-by-side, native pixel size
-  overlay.png    # reference at 100% + local at 50%
+  pair.png       # labelled side-by-side, native pixel size; full height for detail
+  overlay.png    # reference at 100% + local at 50%; full height for detail
 ```
 
 Across all captures it writes:
@@ -44,7 +44,7 @@ Both sites go through the same sequence:
 4. The requested theme is activated (the local app is seeded through `localStorage` before scripts run).
 5. Animations and transitions are disabled with injected CSS; all `document.getAnimations()` are paused.
 6. Scroll is forced to `scrollY: 0`; caret is hidden by screenshot options; animations are disabled in the screenshot call itself.
-7. Screenshot the viewport at 1× (no retina scaling).
+7. Screenshot at 1× (no retina scaling). The detail surface uses Playwright's `fullPage` capture after measuring `document.scrollHeight`; the index and home keep the first viewport.
 
 The reference's pages are public; no authentication is used. Local navigation at mobile widths opens the app's own menu and then selects Components, so the capture follows the same UI path a user does.
 
@@ -100,9 +100,15 @@ Each node records its rect, font family/size/weight/line-height/letter-spacing, 
 | active sidebar link | `.sidebar .nav-link[aria-current="page"]` | `.ds__nav-item--sub[aria-current="page"]` |
 | table of contents | no in-page TOC | no in-page TOC |
 
-The detail surface runs 134 frame checks per capture: the measured top frame plus 11 section headings and their 48px padding, first-section y/width, heading and list type, install width/height/tabs, code width/header/body, API heading/table cells/columns, the 3/1-column related grid and card boxes, the footer spacing, active sidebar state, no-TOC invariant and 17-component body uniqueness. Values and tolerances are the same class as the index checks: 1px for frame geometry, 0.5px for radii, 0.05px for line-height, exact for font sizes, weights, letter-spacing, colours and column count. Panels without a border at mobile widths do not compare border colour.
+The detail surface runs 136 frame checks per capture: the measured top frame plus 11 section headings and their 48px padding, first-section y/width, heading and list type, install width/height/tabs, code width/header/body, API heading/table cells/columns, the 3/1-column related grid and card boxes, the footer spacing, active sidebar state, no-TOC invariant, full-page coverage and 17-component body uniqueness. Values and tolerances are the same class as the index checks: 1px for frame geometry, 0.5px for radii, 0.05px for line-height, exact for font sizes, weights, letter-spacing, colours and column count. Panels without a border at mobile widths do not compare border colour.
 
-`home` is captured but not gated on frame checks: it intentionally keeps the larger marketing display scale. The index uses 30–31 checks per capture; the detail uses 134. The 18 captures total **988 checks**.
+The separate **document-height gate** compares reference and local `capture.documentHeight` for all six detail captures. It requires the local total to stay within ±3% of the reference and is stored as `metrics.detailHeight`; it is intentionally outside the 1000 frame checks so the fixed check count remains stable. The detail body uses the reference's measured 629px mobile API table and 220px mobile key column.
+
+The **section-height gate** compares each stable documentation section at every capture using `metrics.detailSections`. It uses a 3% tolerance with a 4px floor. Installation and Usage are explicit exemptions because the reference blocks are Pro-locked; the nine gateable sections pass **54/54**. It is also outside the 1000 check count.
+
+The **component-structure gate** visits all 17 detail routes at 390x844 and checks 11 sections, footer, API table, keyboard rows, usage code, related cards and page-level horizontal overflow. It passes **17/17** and is stored in `metrics.componentStructure`.
+
+`home` is captured but not gated on frame checks: it intentionally keeps the larger marketing display scale. The index uses 30–31 checks per capture; the detail uses 136. The 18 captures total **1000 checks**, plus 6/6 height, 54/54 section and 17/17 structure gates.
 
 ## Run
 
@@ -112,7 +118,7 @@ npx playwright install chromium
 npm run compare
 ```
 
-The rig starts the local Vite server on `127.0.0.1:3000` if one is not already running, and stops only a server it started. Override targets with `COMPARE_LOCAL_URL` and `COMPARE_REFERENCE_URL`.
+The rig starts the local Vite server on `127.0.0.1:3000` if one is not already running, and stops only a server it started. Override targets with `COMPARE_LOCAL_URL` and `COMPARE_REFERENCE_URL`. If the Playwright browser cache is unavailable, point `COMPARE_CHROMIUM_EXECUTABLE` at a compatible Chromium binary; the default remains Playwright-managed.
 
 The current Linux sandbox needs its Chromium shared libraries and fonts on the environment:
 
@@ -126,10 +132,10 @@ Those paths are environment-specific and are deliberately not checked in.
 
 ## Reproducibility
 
-On this host, two consecutive unchanged runs both passed **988/988** checks and produced byte-identical `metrics.json`:
+On this host, two consecutive unchanged full-page runs both passed **1000/1000** frame checks, the **6/6 ±3% document-height gate**, the **54/54** gateable section-height checks, the **17/17** structural probe and 17/17 unique bodies, with byte-identical `metrics.json`:
 
 ```text
-faf2b2e2f4117991d138f104f004ac6ab3c170ea16d4e963f965c4fdce5b5dc3
+b86dec59d6e80a9f44c39453d1b93553cedc7e3e25b5ed34ea00f2e68effa0c6
 ```
 
 There are no timestamps, random ids or paths in the metrics. The PNGs are not a byte-stability gate: the reference is live and some previews can change between runs. Re-running after a source change keeps the same file layout, so visual differences can be reviewed against stable metrics.
@@ -144,10 +150,10 @@ python3 /tmp/replica-skill/replica-diff/imgdiff.py \
   artifacts/compare/detail-chat-composer/1440x900/light/reference.png \
   artifacts/compare/detail-chat-composer/1440x900/light/local.png \
   --mode layout \
-  --out artifacts/compare/diffs/detail-chat-composer-1440x900-light.png
+  --out artifacts/compare/diffs/detail-chat-composer-1440x900-light-full.png
 ```
 
-Current scores and limitations are recorded in [`artifacts/compare/layout-audit.md`](../../artifacts/compare/layout-audit.md). The final diff images are under `artifacts/compare/diffs/`.
+Current scores and limitations are recorded in [`artifacts/compare/layout-audit.md`](../../artifacts/compare/layout-audit.md), and the 274-cluster section triage is in [`artifacts/compare/diff-triage.md`](../../artifacts/compare/diff-triage.md). The final diff images are under `artifacts/compare/diffs/`.
 
 ## Limits
 
@@ -155,4 +161,4 @@ Current scores and limitations are recorded in [`artifacts/compare/layout-audit.
 - The reference site can change independently; a diff can be caused by affectui, not by copyui.
 - Font rendering depends on the host's font stack and installed fonts. Geometry and declared font metrics are compared; glyph rasterization is not.
 - The detail route renders 11 measured doc sections from a shared data registry; every component has its own body. The chat-composer install/usage panels are generated locally from the measured unlocked button/switch values because the reference page is Pro-locked.
-- The layout screenshots capture the first viewport. At 1024 the document body starts below the screenshot, so those scores exercise the top frame and measured toolbar; the 390 capture includes several body sections.
+- The detail layout screenshots capture the full page. The local chat-composer document is within 1.87–2.34% of the reference (5625/5732, 6174/6322 and 7157/7317px); the rig's separate ±3% gate passes 6/6. The full-page scores are 45.7/45.5 at 1440, 39.7/39.7 at 1024 and 28.5/28.6 at 390. Remaining score loss comes from the functional local install/usage blocks versus the reference Pro locks, the 17-versus-90 card inventory, and the different sidebar tree. The section and structure gates pass 54/54 and 17/17; the diff triage classifies 196 of 274 regions as intentional/accepted and 78 as review candidates.

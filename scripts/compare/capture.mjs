@@ -13,6 +13,7 @@
  * Env:
  *   COMPARE_LOCAL_URL       default http://127.0.0.1:3000
  *   COMPARE_REFERENCE_URL   default https://www.affectui.com
+ *   COMPARE_CHROMIUM_EXECUTABLE  optional Chromium binary; default Playwright browser
  */
 
 import { chromium } from "playwright";
@@ -55,7 +56,8 @@ const SURFACES = [
     refPath: "/components/chat-composer",
     local: { path: "/components/chat-composer", nav: null },
     checks: true,
-    note: "Component detail: article width, detail-only top bar, title/lead type, preview bar, stage inset and tab chrome are all measured from the reference template.",
+    fullPage: true,
+    note: "Component detail: article width, detail-only top bar, title/lead type, preview bar, stage inset, tab chrome and the complete below-the-fold documentation body are measured from the reference template. Both screenshots and both composites cover the full page.",
   },
 ];
 
@@ -186,6 +188,14 @@ function stopServer(child) {
   }, 2500).unref();
 }
 
+async function pngSize(file) {
+  const buffer = await readFile(file);
+  if (buffer.toString("ascii", 1, 4) !== "PNG") {
+    throw new Error(`Screenshot is not a PNG: ${file}`);
+  }
+  return { width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20) };
+}
+
 async function collectMetrics(page, selectors) {
   return page.evaluate(({ selectors }) => {
     const styleSnapshot = (el) => {
@@ -258,6 +268,7 @@ async function collectMetrics(page, selectors) {
         x: Number(r.x.toFixed(2)),
         y: Number(r.y.toFixed(2)),
         width: Number(r.width.toFixed(2)),
+        height: Number(r.height.toFixed(2)),
       };
     });
     const activeNav = selectors.activeNav ? document.querySelector(selectors.activeNav) : null;
@@ -385,11 +396,25 @@ async function captureSite(browser, site, surface, viewport, theme) {
   });
   await settle(page);
 
+  const documentHeight = await page.evaluate(() =>
+    Math.max(document.documentElement.scrollHeight, document.body.scrollHeight),
+  );
   const metrics = await collectMetrics(page, selectorsFor(site, surface));
   const dir = path.join(OUT_DIR, surface.id, viewport.id, theme);
   await mkdir(dir, { recursive: true });
   const file = path.join(dir, `${site}.png`);
-  await page.screenshot({ path: file, animations: "disabled", caret: "hide" });
+  const fullPage = surface.fullPage === true;
+  await page.screenshot({ path: file, fullPage, animations: "disabled", caret: "hide" });
+  const image = await pngSize(file);
+  metrics.capture = {
+    fullPage,
+    viewportWidth: viewport.width,
+    viewportHeight: viewport.height,
+    width: image.width,
+    height: image.height,
+    documentHeight,
+    coversDocument: fullPage && image.height >= documentHeight - 1,
+  };
   await context.close();
   return { metrics, errors, file };
 }
@@ -446,6 +471,9 @@ async function imageData(file) {
 async function composePair(page, surface, viewport, theme, referenceFile, localFile, outFile) {
   const ref = await imageData(referenceFile);
   const local = await imageData(localFile);
+  const refSize = await pngSize(referenceFile);
+  const localSize = await pngSize(localFile);
+  const fullPage = surface.fullPage === true;
   await page.setViewportSize({
     width: viewport.width * 2 + 48,
     height: viewport.height + 100,
@@ -459,31 +487,35 @@ async function composePair(page, surface, viewport, theme, referenceFile, localF
     figure { background: #fff; border: 1px solid #d8d8d8; border-radius: 10px; overflow: hidden; }
     figcaption { display: flex; justify-content: space-between; gap: 12px; padding: 7px 10px; border-bottom: 1px solid #eee; color: #777; }
     figcaption b { color: #111; font-weight: 500; }
-    img { display: block; width: ${viewport.width}px; height: ${viewport.height}px; }
+    img { display: block; width: ${viewport.width}px; ${fullPage ? "height: auto;" : `height: ${viewport.height}px;`} }
     .note { padding-top: 10px; color: #777; }
   </style>
   <div class="wrap">
     <div class="row">
-      <figure><figcaption><b>Reference · affectui.com</b><span>${surface.id} · ${viewport.id} · ${theme}</span></figcaption><img src="${ref}" alt=""></figure>
-      <figure><figcaption><b>Recreation · copyui</b><span>${surface.id} · ${viewport.id} · ${theme}</span></figcaption><img src="${local}" alt=""></figure>
+      <figure><figcaption><b>Reference · affectui.com</b><span>${surface.id} · ${viewport.id} · ${theme}${fullPage ? " · full page" : ""}</span></figcaption><img src="${ref}" alt=""></figure>
+      <figure><figcaption><b>Recreation · copyui</b><span>${surface.id} · ${viewport.id} · ${theme}${fullPage ? " · full page" : ""}</span></figcaption><img src="${local}" alt=""></figure>
     </div>
-    <div class="note">Same viewport, theme, font wait, reduced-motion + frozen animation state, caret hidden, scrollY 0.</div>
+    <div class="note">Same viewport, theme, font wait, reduced-motion + frozen animation state, caret hidden, scrollY 0. ${fullPage ? `Full-page capture: reference ${refSize.width}×${refSize.height}, local ${localSize.width}×${localSize.height}.` : "First viewport only."}</div>
   </div>`;
   await page.setContent(html, { waitUntil: "load" });
   await page.evaluate(() => Promise.all([...document.images].map((image) => image.decode().catch(() => {}))));
   await page.screenshot({ path: outFile, fullPage: true, animations: "disabled", caret: "hide" });
 }
 
-async function composeOverlay(page, viewport, referenceFile, localFile, outFile) {
+async function composeOverlay(page, surface, viewport, theme, referenceFile, localFile, outFile) {
   const ref = await imageData(referenceFile);
   const local = await imageData(localFile);
-  await page.setViewportSize({ width: viewport.width, height: viewport.height });
+  const refSize = await pngSize(referenceFile);
+  const localSize = await pngSize(localFile);
+  const fullPage = surface.fullPage === true;
+  const height = fullPage ? Math.max(refSize.height, localSize.height) : viewport.height;
+  await page.setViewportSize({ width: viewport.width, height });
   const html = `<!doctype html>
   <style>
     * { box-sizing: border-box; }
-    html, body { width: ${viewport.width}px; height: ${viewport.height}px; margin: 0; overflow: hidden; background: #fff; }
-    .stack { position: relative; width: ${viewport.width}px; height: ${viewport.height}px; }
-    img { position: absolute; inset: 0; display: block; width: ${viewport.width}px; height: ${viewport.height}px; }
+    html, body { width: ${viewport.width}px; height: ${height}px; margin: 0; overflow: hidden; background: ${theme === "dark" ? "#0a0a0a" : "#fff"}; }
+    .stack { position: relative; width: ${viewport.width}px; height: ${height}px; }
+    img { position: absolute; inset: 0; display: block; width: ${viewport.width}px; ${fullPage ? "height: auto;" : `height: ${viewport.height}px;`} }
     img:last-child { opacity: .5; }
   </style>
   <div class="stack"><img src="${ref}" alt=""><img src="${local}" alt=""></div>`;
@@ -580,6 +612,11 @@ function checksFor(surface, reference, local) {
     exact("tab.weight", value(reference.tab, "font.weight"), value(local.tab, "font.weight"));
     add("body.fontSize", value(reference.body, "font.size"), value(local.body, "font.size"), 0.01);
     exact("body.background", value(reference.body, "background"), value(local.body, "background"));
+
+    // The layout score reads the generated PNGs. Both detail screenshots must
+    // cover the complete document, not only the first viewport.
+    exact("capture.fullPage", value(reference, "capture.fullPage"), value(local, "capture.fullPage"));
+    exact("capture.coversDocument", value(reference, "capture.coversDocument"), value(local, "capture.coversDocument"));
 
     // Documentation body: section order and spacing measured from the live
     // button, switch and chat-composer pages at all three viewports.
@@ -759,6 +796,97 @@ async function measureContentDiversity(browser) {
   }
 }
 
+async function measureComponentStructure(browser) {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+    colorScheme: "light",
+  });
+  const page = await context.newPage();
+  try {
+    await page.goto(`${LOCAL_URL}/components`, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForSelector(".library-card__link", { timeout: 15_000 });
+    const slugs = await page.evaluate(() =>
+      [...document.querySelectorAll(".library-card__link")]
+        .map((link) => new URL(link.href).pathname.replace(/^\/components\//, ""))
+        .filter(Boolean),
+    );
+    const results = [];
+    for (const slug of slugs) {
+      await page.goto(`${LOCAL_URL}/components/${slug}`, {
+        waitUntil: "domcontentloaded",
+        timeout: 60_000,
+      });
+      await page.waitForSelector(".doc__section:not(.doc__section--preview)", { timeout: 15_000 });
+      await page.evaluate(async () => { await document.fonts.ready; return true; }).catch(() => {});
+      const result = await page.evaluate(() => {
+        const sections = [...document.querySelectorAll(".doc__section:not(.doc__section--preview)")];
+        const titles = sections
+          .map((section) => (section.querySelector(".doc__h2")?.textContent ?? "").trim())
+          .filter(Boolean);
+        const footer = document.querySelector(".doc__footer");
+        const api = document.querySelector(".table--api");
+        const keys = document.querySelector(".table--keys");
+        const code = document.querySelector(".code__body");
+        const related = document.querySelector(".related");
+        const wrap = document.querySelector(".table-wrap");
+        const firstKey = keys?.querySelector("tbody tr td:first-child");
+        const failures = [];
+        if (sections.length !== 11) failures.push(`sections=${sections.length}`);
+        if (titles.length !== 11) failures.push(`headings=${titles.length}`);
+        if (!footer) failures.push("footer missing");
+        if (document.documentElement.scrollWidth > window.innerWidth + 1) {
+          failures.push(`page overflow=${document.documentElement.scrollWidth - window.innerWidth}px`);
+        }
+        if (document.body.scrollWidth > window.innerWidth + 1) {
+          failures.push(`body overflow=${document.body.scrollWidth - window.innerWidth}px`);
+        }
+        if (!api || api.querySelectorAll("tbody tr").length === 0) failures.push("API rows missing");
+        if (!keys || keys.querySelectorAll("tbody tr").length === 0) failures.push("keyboard rows missing");
+        if (!code || !code.textContent.trim()) failures.push("usage code missing");
+        if (!related) failures.push("related cards missing");
+        return {
+          sections: sections.length,
+          headings: titles.length,
+          footer: Boolean(footer),
+          pageScrollWidth: document.documentElement.scrollWidth,
+          bodyScrollWidth: document.body.scrollWidth,
+          viewportWidth: window.innerWidth,
+          documentHeight: Math.max(document.documentElement.scrollHeight, document.body.scrollHeight),
+          apiRows: api?.querySelectorAll("tbody tr").length ?? 0,
+          keyRows: keys?.querySelectorAll("tbody tr").length ?? 0,
+          relatedCards: related?.querySelectorAll(".related__card").length ?? 0,
+          apiTable: api
+            ? {
+                width: Number(api.getBoundingClientRect().width.toFixed(2)),
+                wrapWidth: Number((wrap?.clientWidth ?? 0).toFixed(2)),
+                wrapScrollWidth: Number((wrap?.scrollWidth ?? 0).toFixed(2)),
+              }
+            : null,
+          keyTable: keys
+            ? {
+                width: Number(keys.getBoundingClientRect().width.toFixed(2)),
+                firstWidth: Number((firstKey?.getBoundingClientRect().width ?? 0).toFixed(2)),
+              }
+            : null,
+          failures,
+          pass: failures.length === 0,
+        };
+      });
+      results.push({ slug, ...result });
+    }
+    return {
+      viewport: "390x844",
+      components: slugs.length,
+      pass: slugs.length === 17 && results.every((result) => result.pass),
+      results,
+    };
+  } finally {
+    await context.close();
+  }
+}
+
 function makeReport(metrics) {
   const lines = [
     "# Two-site comparison report",
@@ -773,6 +901,9 @@ function makeReport(metrics) {
     `- Themes: ${metrics.conditions.themes.join(", ")}`,
     "- Reference cookie banner: declined when visible.",
     "- Both contexts: `prefers-reduced-motion: reduce`, CSS animations/transitions frozen, caret hidden, scrollY 0.",
+    `- Full-page capture surfaces: ${metrics.conditions.fullPageSurfaces.join(", ") || "none"}. Their screenshots and composites include the entire document; other surfaces capture the first viewport.`,
+    "- Detail document-height gate: local and reference totals within ±3% at all six captures.",
+    "- Detail section-height gate: nine stable sections within ±3% (4px floor); Installation and Usage are exempt because the reference content is Pro-locked.",
     "",
     "## Frame checks",
     "",
@@ -837,6 +968,49 @@ function makeReport(metrics) {
       lines.push("");
       lines.push(`Section order: ${metrics.surfaces[surface.id]["1440x900"].light.local.sectionTitles.join(" → ")}.`);
       lines.push("");
+      lines.push("Full-page capture extent from this run (light theme):");
+      lines.push("");
+      lines.push("| Viewport | Reference PNG | Local PNG | Reference document | Local document | Δ | Gate |");
+      lines.push("| --- | --- | --- | ---: | ---: | ---: | --- |");
+      for (const [viewportId, byTheme] of Object.entries(metrics.surfaces[surface.id])) {
+        const measured = byTheme.light;
+        if (!measured) continue;
+        const refHeight = measured.reference.capture.documentHeight;
+        const localHeight = measured.local.capture.documentHeight;
+        const deltaPct = ((localHeight - refHeight) / refHeight) * 100;
+        lines.push(
+          `| ${viewportId} | ${measured.reference.capture.width}×${measured.reference.capture.height} | ${measured.local.capture.width}×${measured.local.capture.height} | ${refHeight}px | ${localHeight}px | ${deltaPct >= 0 ? "+" : ""}${deltaPct.toFixed(2)}% | ${Math.abs(deltaPct) <= 3 ? "pass" : "fail"} |`,
+        );
+      }
+      lines.push("");
+      lines.push(
+        `Document-height gate: ${metrics.detailHeight.pass ? "pass" : "fail"} — ${metrics.detailHeight.pairs.filter((pair) => pair.pass).length}/${metrics.detailHeight.pairs.length} captures within ±${metrics.detailHeight.tolerancePct}%.`,
+      );
+      lines.push("");
+      lines.push("Section-height gate by documentation section:");
+      lines.push("");
+      lines.push("| Section | Max gap | Status |");
+      lines.push("| --- | ---: | --- |");
+      const sectionTitles = metrics.detailSections.captures[0]?.sections.map((section) => section.title) ?? [];
+      for (const title of sectionTitles) {
+        const rows = metrics.detailSections.captures.flatMap((capture) =>
+          capture.sections.filter((section) => section.title === title),
+        );
+        const gaps = rows
+          .map((row) => row.deltaPct)
+          .filter((value) => value !== null)
+          .map((value) => Math.abs(value));
+        const maxGap = gaps.length ? Math.max(...gaps) : null;
+        const exempt = metrics.detailSections.exemptions.includes(title);
+        lines.push(
+          `| ${title} | ${maxGap === null ? "—" : `${maxGap.toFixed(2)}%`} | ${exempt ? "exempt (Pro-locked)" : rows.every((row) => row.pass) ? "pass" : "fail"} |`,
+        );
+      }
+      lines.push("");
+      lines.push(
+        `Section-height gate: ${metrics.detailSections.pass ? "pass" : "fail"} — ${metrics.detailSections.passed}/${metrics.detailSections.gateable} gateable sections within ±${metrics.detailSections.tolerancePct}% (${metrics.detailSections.tolerancePx}px floor); ${metrics.detailSections.exemptions.length} exemptions per capture.`,
+      );
+      lines.push("");
     }
   }
   if (metrics.contentDiversity) {
@@ -845,6 +1019,22 @@ function makeReport(metrics) {
       `Unique body signatures: ${metrics.contentDiversity.unique}/${metrics.contentDiversity.components}. The probe hashes below-the-stage section text, variant chips, code samples and API prop names for every component, so a shared template body cannot pass.`,
     );
     lines.push("");
+  }
+  if (metrics.componentStructure) {
+    const failures = metrics.componentStructure.results.filter((result) => !result.pass);
+    lines.push("## Component structure", "");
+    lines.push(
+      `At 390x844, ${metrics.componentStructure.results.filter((result) => result.pass).length}/${metrics.componentStructure.components} detail routes passed the structural probe: 11 sections, footer, API table, keyboard rows, usage code and related cards, with no page-level horizontal overflow.`,
+    );
+    lines.push("");
+    if (failures.length) {
+      lines.push("| Route | Failures |");
+      lines.push("| --- | --- |");
+      for (const failure of failures) {
+        lines.push(`| ${failure.slug} | ${failure.failures.join("; ")} |`);
+      }
+      lines.push("");
+    }
   }
   lines.push("## Reproduce", "");
   lines.push("```bash");
@@ -860,7 +1050,12 @@ function makeReport(metrics) {
 async function main() {
   await mkdir(OUT_DIR, { recursive: true });
   const server = await ensureLocalServer();
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({
+    headless: true,
+    ...(process.env.COMPARE_CHROMIUM_EXECUTABLE
+      ? { executablePath: process.env.COMPARE_CHROMIUM_EXECUTABLE }
+      : {}),
+  });
   const metrics = {
     conditions: {
       reference: REFERENCE_URL,
@@ -871,6 +1066,7 @@ async function main() {
       animations: "frozen",
       caret: "hidden",
       scrollY: 0,
+      fullPageSurfaces: SURFACES.filter((surface) => surface.fullPage).map((surface) => surface.id),
     },
     surfaces: {},
   };
@@ -898,7 +1094,7 @@ async function main() {
             const pairPage = await browser.newPage();
             try {
               await composePair(pairPage, surface, viewport, theme, reference.file, local.file, path.join(dir, "pair.png"));
-              await composeOverlay(pairPage, viewport, reference.file, local.file, path.join(dir, "overlay.png"));
+              await composeOverlay(pairPage, surface, viewport, theme, reference.file, local.file, path.join(dir, "overlay.png"));
             } finally {
               await pairPage.close();
             }
@@ -931,8 +1127,103 @@ async function main() {
         });
       }
     }
+    const heightPairs = [];
+    for (const [viewportId, byTheme] of Object.entries(detailSurface)) {
+      for (const [theme, entry] of Object.entries(byTheme)) {
+        const referenceHeight = entry.reference.capture.documentHeight;
+        const localHeight = entry.local.capture.documentHeight;
+        const deltaPct = ((localHeight - referenceHeight) / referenceHeight) * 100;
+        heightPairs.push({
+          viewport: viewportId,
+          theme,
+          reference: referenceHeight,
+          local: localHeight,
+          deltaPct: Number(deltaPct.toFixed(2)),
+          pass: Math.abs(deltaPct) <= 3,
+        });
+      }
+    }
+    metrics.detailHeight = {
+      tolerancePct: 3,
+      pass: heightPairs.every((pair) => pair.pass),
+      pairs: heightPairs,
+    };
+    if (!metrics.detailHeight.pass) process.exitCode = 1;
+
+    // Section heights expose distribution drift that the total can hide. The
+    // reference replaces Installation and Usage with Pro-lock blocks, so those
+    // two sections are recorded as exemptions rather than treated as failures.
+    const sectionExemptions = ["Installation", "Usage"];
+    const sectionCaptures = [];
+    for (const [viewportId, byTheme] of Object.entries(detailSurface)) {
+      for (const [theme, entry] of Object.entries(byTheme)) {
+        const referenceTitles = entry.reference.sectionTitles;
+        const localTitles = entry.local.sectionTitles;
+        const titlesMatch =
+          referenceTitles.length === localTitles.length &&
+          referenceTitles.every((title, index) => title === localTitles[index]);
+        const sections = entry.reference.sectionRects.map((referenceRect, index) => {
+          const localRect = entry.local.sectionRects[index] ?? null;
+          const title = referenceTitles[index] ?? `Section ${index + 1}`;
+          const referenceHeight = Number(referenceRect.height);
+          const localHeight = Number(localRect?.height);
+          const deltaPct =
+            referenceHeight > 0 && Number.isFinite(localHeight)
+              ? ((localHeight - referenceHeight) / referenceHeight) * 100
+              : null;
+          const exempt = sectionExemptions.includes(title);
+          const allowedPx = Math.max(4, referenceHeight * 0.03);
+          const pass =
+            exempt ||
+            (deltaPct !== null && Math.abs(localHeight - referenceHeight) <= allowedPx);
+          return {
+            title,
+            reference: referenceHeight,
+            local: Number.isFinite(localHeight) ? localHeight : null,
+            deltaPct: deltaPct === null ? null : Number(deltaPct.toFixed(2)),
+            allowedPx: Number(allowedPx.toFixed(2)),
+            exempt,
+            pass,
+          };
+        });
+        sectionCaptures.push({
+          viewport: viewportId,
+          theme,
+          titlesMatch,
+          pass: titlesMatch && sections.every((section) => section.pass),
+          sections,
+        });
+      }
+    }
+    const gateableSections = sectionCaptures.flatMap((capture) =>
+      capture.sections.filter((section) => !section.exempt),
+    );
+    const gateablePass = gateableSections.filter((section) => section.pass).length;
+    metrics.detailSections = {
+      tolerancePct: 3,
+      tolerancePx: 4,
+      exemptions: sectionExemptions,
+      pass: sectionCaptures.every((capture) => capture.pass),
+      gateable: gateableSections.length,
+      passed: gateablePass,
+      captures: sectionCaptures,
+    };
+    if (!metrics.detailSections.pass) process.exitCode = 1;
+
+    metrics.componentStructure = await measureComponentStructure(browser);
+    if (!metrics.componentStructure.pass) process.exitCode = 1;
+
     console.log(
       `[compare] content diversity: ${metrics.contentDiversity.unique}/${metrics.contentDiversity.components} unique component bodies`,
+    );
+    console.log(
+      `[compare] detail document heights within ±3%: ${heightPairs.filter((pair) => pair.pass).length}/${heightPairs.length}`,
+    );
+    console.log(
+      `[compare] detail section heights: ${gateablePass}/${gateableSections.length} gateable sections within ±3% (${sectionExemptions.join(", ")} exempt)`,
+    );
+    console.log(
+      `[compare] component structure: ${metrics.componentStructure.pass ? "pass" : "fail"} — ${metrics.componentStructure.results.filter((result) => result.pass).length}/${metrics.componentStructure.components} detail routes`,
     );
   } finally {
     await browser.close();

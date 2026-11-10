@@ -46,14 +46,23 @@ export const DETAIL_META: Record<string, DetailBase> = {
     description:
       "Prompt composer with model picker, voice input, app connections and approval request.",
     props: [
-      { name: "placeholder", type: "string", defaultValue: '"Start by typing..."', description: "Prompt shown when the field is empty." },
-      { name: "models", type: "ChatModel[]", defaultValue: "Auto, Claude, ChatGPT", description: "Models exposed by the picker." },
-      { name: "defaultModelId", type: "string", defaultValue: "first model", description: "Initially selected model." },
-      { name: "defaultFolder", type: "string | null", defaultValue: "null", description: "Working folder shown in the tray." },
-      { name: "loadMs", type: "number", defaultValue: "1300", description: "How long dictation takes to resolve." },
-      { name: "onSend", type: "(message, details) => void", description: "Called with the prompt and selected model." },
-      { name: "onRequestApproval", type: "() => void", description: "Opens the approval request flow." },
-      { name: "onAppsChange", type: "(connected) => void", description: "Called when an app connection changes." },
+      { name: "placeholder", type: "string", defaultValue: '"Start by typing..."', description: "Placeholder of the message field" },
+      { name: "models", type: "ChatModel[]", defaultValue: "defaultModels", description: "Entries of the model picker (Auto, the Claude 5 models, GPT-5) – id, name, logo and an optional description; the first is selected" },
+      { name: "dictation", type: "string", defaultValue: '"Draft a short update…"', description: "Demo transcript that appears word by word in gray while recording – replace with real speech-to-text" },
+      { name: "onSend", type: "(message: string, details: { model: string }) => void", description: "Called on send or Enter" },
+      { name: "onModelChange", type: "(model: ChatModel) => void", description: "Called when a model is picked" },
+      { name: "onAttach", type: "(item: string) => void", description: "Called with the entry picked in the plus menu – files, claude, folder (also opens the folder picker), goal, plan (toggles plan mode), skill, draw, documents or pdf" },
+      { name: "approval", type: '"ask" | "auto" | "full"', defaultValue: '"ask"', description: "The approval mode to start with: Request approval, Approve for me or Full access" },
+      { name: "onApprovalChange", type: "(mode: ApprovalMode) => void", description: "Called when a mode is picked in the approval menu" },
+      { name: "onLearnMore", type: "() => void", description: "Called by “Learn more” in the approval menu" },
+      { name: "folders", type: "string[]", defaultValue: "defaultFolders", description: "Folders in the “Work in a folder” picker at the bottom left; an empty list leaves it out" },
+      { name: "folder", type: "string", description: "The folder to start in – the row shows its name instead of “Work in a folder”" },
+      { name: "onFolderChange", type: "(folder: string | null) => void", description: "Called when a folder is picked; null when the picked folder is picked again to leave it" },
+      { name: "apps", type: "ChatApp[]", defaultValue: "defaultApps", description: "Apps in the “Connect apps” menu at the bottom right (Gmail, Slack, ClickUp) – id, name and logo; the first three show their marks in the row" },
+      { name: "connectedApps", type: "string[]", defaultValue: '["gmail"]', description: "Ids of the apps that are connected to start with" },
+      { name: "onAppsChange", type: "(connected: string[]) => void", description: "Called when an app is connected or disconnected, with the ids of all connected apps" },
+      { name: "foot", type: "ReactNode", description: "Your own last row on the gray layer, in place of “Work in a folder” and “Connect apps”" },
+      { name: "tray", type: "boolean", defaultValue: "true", description: "The gray layer with the folder and the apps. Turn it off once a chat has started: no folder to pick any more, the apps move into the plus menu" },
     ],
     variants: ["Default", "Folder selected", "Recording", "Approval request"],
   },
@@ -236,9 +245,12 @@ function keyboardFor(slug: string, title: string, category: string) {
     return [
       { keys: "Enter", action: "Send the message" },
       { keys: "Shift + Enter", action: "New line" },
-      { keys: "Enter / Space / ↓", action: `Open ${title}'s focused menu` },
-      { keys: "↑ / ↓", action: "Move through an open menu" },
-      { keys: "Esc", action: "Close a menu and return focus to its button" },
+      { keys: "Enter or Space or ↓", action: "Open the menu of the focused button – plus, approval, model, folder or apps" },
+      { keys: "↑ or ↓", action: "Move through an open menu" },
+      { keys: "Home or End", action: "Jump to the first or last entry of a menu" },
+      { keys: "Enter or Space", action: "Pick the highlighted entry (in a menu); in the apps menu it connects or disconnects the app" },
+      { keys: "Esc", action: "Close a menu and return to its button, or discard a recording" },
+      { keys: "Tab", action: "Close a menu and move on from its button" },
     ];
   }
   if (slug === "field") {
@@ -281,17 +293,17 @@ export function detailFor(slug: string, title: string, note: string, category: s
     examples: copy?.examples ?? [],
     relatedTitle: copy?.relatedTitle ?? "Related",
     keyboard: keyboardFor(slug, title, category),
-    accessibility: [
+    accessibility: copy?.accessibility ?? [
       `${title} keeps a native focus target, a visible focus ring and a readable label.`,
       "State changes are announced through the shared polite live region.",
       "Colour is paired with text or an icon, so meaning never depends on colour alone.",
     ],
-    motion: [
+    motion: copy?.motion ?? [
       `${title} uses the shared 120ms hover, 180ms state and 280ms indicator timings.`,
       "Transforms and non-essential transitions collapse under prefers-reduced-motion.",
       "The settled state is legible before the entrance animation begins.",
     ],
-    responsive: [
+    responsive: copy?.responsive ?? [
       `${title} fills its container and keeps the 13px interface scale at every breakpoint.`,
       "Long labels truncate or wrap without widening the page.",
       "Menus and tooltips stay inside the viewport and remain reachable by touch.",

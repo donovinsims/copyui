@@ -1931,6 +1931,7 @@
   font-size: 11px;
 }
 .doc__example + .doc__example { padding-top: 16px; }
+.doc__section--examples .doc__example + .doc__example { padding-top: 0; }
 
 .table-wrap {
   max-width: 100%;
@@ -2117,6 +2118,12 @@
   .doc__install-code { display: none; }
   .related { grid-template-columns: minmax(0, 1fr); }
   .related:not(.related--guides) .related__card:nth-child(2) { display: none; }
-  .table--keys td:first-child { width: 150px; }
+  .table--api { min-width: 629px; }
+  .table--api th:nth-child(1) { width: 155px; }
+  .table--api th:nth-child(2) { width: 128px; }
+  .table--api th:nth-child(3) { width: 126px; }
+  .table--api th:nth-child(4) { width: 220px; }
+  .table--keys { min-width: 0; width: 100%; }
+  .table--keys td:first-child { width: 220px; min-width: 220px; }
   .doc__footer { flex-direction: column; gap: 4px; margin-top: 96px; }
 }

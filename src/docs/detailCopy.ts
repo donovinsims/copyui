@@ -9,6 +9,9 @@ export interface DetailCopy {
   usage: string;
   examples: DetailExample[];
   relatedTitle?: string;
+  accessibility?: string[];
+  motion?: string[];
+  responsive?: string[];
 }
 
 /**
@@ -83,22 +86,46 @@ export function Composer() {
 }`,
     examples: [
       {
-        title: "Folder and apps",
+        title: "Your own models",
         code: `<ChatComposer
-  defaultFolder="Design"
-  connectedApps={["gmail", "linear"]}
-  onAppsChange={(connected) => saveApps(connected)}
-/>`,
+  models={models} onModelChange={setModel} />`,
       },
       {
-        title: "Approval request",
+        title: "React to the plus menu",
         code: `<ChatComposer
-  onRequestApproval={() => openApproval("edit-files")}
-  onSend={(message, details) => runAgent(message, details)}
-/>`,
+  onAttach={(item) => handleAttach(item)} />`,
+      },
+      {
+        title: "Start with approvals handled by the agent",
+        code: `<ChatComposer
+  approval="auto" onApprovalChange={setApproval} />`,
+      },
+      {
+        title: "Your own folders and apps in the last row",
+        code: `<ChatComposer
+  folders={folders} connectedApps={["gmail", "slack"]} />`,
       },
     ],
     relatedTitle: "Guides",
+    accessibility: [
+      "Picked modes, models, folders and connected apps are announced through a polite live region",
+      "The plus button opens a menu (menuitems, plan mode a menuitemcheckbox); approval, model and folder open listboxes; the apps menu uses menuitemcheckboxes; each button reports aria-expanded",
+      "A long folder name shortens with an ellipsis – the full name is in its tooltip and in the picker",
+      "Clicking anywhere on the white writing area focuses the message field; the last row sits on a gray layer under it",
+      "Menus use aria-activedescendant, so screen readers follow the highlight; a closed menu leaves the layout",
+    ],
+    motion: [
+      "Picking an approval mode blurs the new icon and label into the button; Full access turns it red",
+      "The menus morph out of the corner next to their button, open toward the side with more room and stay inside the visible frame; the plus menu spans the composer; the folder menu lines up with its button's left edge, the apps menu with its right edge",
+      "A hover fill fades in under the pointer and glides between rows",
+      "While recording, the heard words appear in gray and turn dark once confirmed; a dotted audio trace scrolls next to the controls",
+      "All transitions collapse to instant changes with prefers-reduced-motion",
+    ],
+    responsive: [
+      "Fills its container up to 560px wide; fixed 13px type and 28px controls; below 400px the approval button keeps just its icon",
+      "In the last row the folder's name shortens first, so “Connect apps” and its marks always keep their place on the right",
+      'Dark mode built in: switches when an ancestor (usually <html>) has the class dark or data-theme="dark"',
+    ],
   },
   "thinking-loader": {
     use: [

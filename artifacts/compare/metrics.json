@@ -14,7 +14,10 @@
     "reducedMotion": "reduce",
     "animations": "frozen",
     "caret": "hidden",
-    "scrollY": 0
+    "scrollY": 0,
+    "fullPageSurfaces": [
+      "detail-chat-composer"
+    ]
   },
   "surfaces": {
     "home": {
@@ -86,7 +89,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1440,
+              "viewportHeight": 900,
+              "width": 1440,
+              "height": 900,
+              "documentHeight": 7997,
+              "coversDocument": false
+            }
           },
           "checks": [],
           "local": {
@@ -155,11 +167,22 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1440,
+              "viewportHeight": 900,
+              "width": 1440,
+              "height": 900,
+              "documentHeight": 1799,
+              "coversDocument": false
+            }
           },
           "errors": {
             "reference": [],
-            "local": []
+            "local": [
+              "Failed to load resource: the server responded with a status of 404 (Not Found)"
+            ]
           }
         },
         "dark": {
@@ -229,7 +252,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1440,
+              "viewportHeight": 900,
+              "width": 1440,
+              "height": 900,
+              "documentHeight": 7997,
+              "coversDocument": false
+            }
           },
           "checks": [],
           "local": {
@@ -298,7 +330,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1440,
+              "viewportHeight": 900,
+              "width": 1440,
+              "height": 900,
+              "documentHeight": 1799,
+              "coversDocument": false
+            }
           },
           "errors": {
             "reference": [],
@@ -374,7 +415,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1024,
+              "viewportHeight": 768,
+              "width": 1024,
+              "height": 768,
+              "documentHeight": 8207,
+              "coversDocument": false
+            }
           },
           "checks": [],
           "local": {
@@ -443,7 +493,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1024,
+              "viewportHeight": 768,
+              "width": 1024,
+              "height": 768,
+              "documentHeight": 1928,
+              "coversDocument": false
+            }
           },
           "errors": {
             "reference": [],
@@ -517,7 +576,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1024,
+              "viewportHeight": 768,
+              "width": 1024,
+              "height": 768,
+              "documentHeight": 8207,
+              "coversDocument": false
+            }
           },
           "checks": [],
           "local": {
@@ -586,7 +654,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1024,
+              "viewportHeight": 768,
+              "width": 1024,
+              "height": 768,
+              "documentHeight": 1928,
+              "coversDocument": false
+            }
           },
           "errors": {
             "reference": [],
@@ -662,7 +739,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 390,
+              "viewportHeight": 844,
+              "width": 390,
+              "height": 844,
+              "documentHeight": 8073,
+              "coversDocument": false
+            }
           },
           "checks": [],
           "local": {
@@ -731,7 +817,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 390,
+              "viewportHeight": 844,
+              "width": 390,
+              "height": 844,
+              "documentHeight": 3065,
+              "coversDocument": false
+            }
           },
           "errors": {
             "reference": [],
@@ -805,7 +900,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 390,
+              "viewportHeight": 844,
+              "width": 390,
+              "height": 844,
+              "documentHeight": 8073,
+              "coversDocument": false
+            }
           },
           "checks": [],
           "local": {
@@ -874,7 +978,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 390,
+              "viewportHeight": 844,
+              "width": 390,
+              "height": 844,
+              "documentHeight": 3065,
+              "coversDocument": false
+            }
           },
           "errors": {
             "reference": [],
@@ -1186,7 +1299,7 @@
               "columns": 3,
               "gap": "14px"
             },
-            "cardCount": 171,
+            "cardCount": 172,
             "cards": [
               {
                 "x": 285,
@@ -1341,7 +1454,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1440,
+              "viewportHeight": 900,
+              "width": 1440,
+              "height": 900,
+              "documentHeight": 22674,
+              "coversDocument": false
+            }
           },
           "checks": [
             {
@@ -2006,7 +2128,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1440,
+              "viewportHeight": 900,
+              "width": 1440,
+              "height": 900,
+              "documentHeight": 8348,
+              "coversDocument": false
+            }
           },
           "errors": {
             "reference": [],
@@ -2314,7 +2445,7 @@
               "columns": 3,
               "gap": "14px"
             },
-            "cardCount": 171,
+            "cardCount": 172,
             "cards": [
               {
                 "x": 285,
@@ -2469,7 +2600,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1440,
+              "viewportHeight": 900,
+              "width": 1440,
+              "height": 900,
+              "documentHeight": 22674,
+              "coversDocument": false
+            }
           },
           "checks": [
             {
@@ -3134,7 +3274,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1440,
+              "viewportHeight": 900,
+              "width": 1440,
+              "height": 900,
+              "documentHeight": 8348,
+              "coversDocument": false
+            }
           },
           "errors": {
             "reference": [],
@@ -3444,7 +3593,7 @@
               "columns": 2,
               "gap": "14px"
             },
-            "cardCount": 171,
+            "cardCount": 172,
             "cards": [
               {
                 "x": 285,
@@ -3599,7 +3748,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1024,
+              "viewportHeight": 768,
+              "width": 1024,
+              "height": 768,
+              "documentHeight": 30232,
+              "coversDocument": false
+            }
           },
           "checks": [
             {
@@ -4264,7 +4422,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1024,
+              "viewportHeight": 768,
+              "width": 1024,
+              "height": 768,
+              "documentHeight": 9362,
+              "coversDocument": false
+            }
           },
           "errors": {
             "reference": [],
@@ -4572,7 +4739,7 @@
               "columns": 2,
               "gap": "14px"
             },
-            "cardCount": 171,
+            "cardCount": 172,
             "cards": [
               {
                 "x": 285,
@@ -4727,7 +4894,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1024,
+              "viewportHeight": 768,
+              "width": 1024,
+              "height": 768,
+              "documentHeight": 30232,
+              "coversDocument": false
+            }
           },
           "checks": [
             {
@@ -5392,7 +5568,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 1024,
+              "viewportHeight": 768,
+              "width": 1024,
+              "height": 768,
+              "documentHeight": 9362,
+              "coversDocument": false
+            }
           },
           "errors": {
             "reference": [],
@@ -5410,7 +5595,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 390,
-                "height": 59060.25
+                "height": 59402.25
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, sans-serif",
@@ -5545,7 +5730,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 390,
-                "height": 59513.27
+                "height": 59855.27
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, sans-serif",
@@ -5702,7 +5887,7 @@
               "columns": 1,
               "gap": "14px"
             },
-            "cardCount": 171,
+            "cardCount": 172,
             "cards": [
               {
                 "x": 16,
@@ -5857,7 +6042,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 390,
+              "viewportHeight": 844,
+              "width": 390,
+              "height": 844,
+              "documentHeight": 59855,
+              "coversDocument": false
+            }
           },
           "checks": [
             {
@@ -6514,7 +6708,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 390,
+              "viewportHeight": 844,
+              "width": 390,
+              "height": 844,
+              "documentHeight": 13528,
+              "coversDocument": false
+            }
           },
           "errors": {
             "reference": [],
@@ -6530,7 +6733,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 390,
-                "height": 59060.25
+                "height": 59402.25
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, sans-serif",
@@ -6665,7 +6868,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 390,
-                "height": 59513.27
+                "height": 59855.27
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, sans-serif",
@@ -6822,7 +7025,7 @@
               "columns": 1,
               "gap": "14px"
             },
-            "cardCount": 171,
+            "cardCount": 172,
             "cards": [
               {
                 "x": 16,
@@ -6977,7 +7180,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 390,
+              "viewportHeight": 844,
+              "width": 390,
+              "height": 844,
+              "documentHeight": 59855,
+              "coversDocument": false
+            }
           },
           "checks": [
             {
@@ -7634,7 +7846,16 @@
             "tocCount": 0,
             "apiRows": 0,
             "apiColumns": 0,
-            "relatedColumns": null
+            "relatedColumns": null,
+            "capture": {
+              "fullPage": false,
+              "viewportWidth": 390,
+              "viewportHeight": 844,
+              "width": 390,
+              "height": 844,
+              "documentHeight": 13528,
+              "coversDocument": false
+            }
           },
           "errors": {
             "reference": [],
@@ -8634,57 +8855,68 @@
               {
                 "x": 397,
                 "y": 845,
-                "width": 894
+                "width": 894,
+                "height": 140
               },
               {
                 "x": 397,
                 "y": 985,
-                "width": 894
+                "width": 894,
+                "height": 140
               },
               {
                 "x": 397,
                 "y": 1125,
-                "width": 894
+                "width": 894,
+                "height": 414
               },
               {
                 "x": 397,
                 "y": 1539,
-                "width": 894
+                "width": 894,
+                "height": 175
               },
               {
                 "x": 397,
                 "y": 1714,
-                "width": 894
+                "width": 894,
+                "height": 646.31
               },
               {
                 "x": 397,
                 "y": 2360.31,
-                "width": 894
+                "width": 894,
+                "height": 1315.08
               },
               {
                 "x": 397,
                 "y": 3675.39,
-                "width": 894
+                "width": 894,
+                "height": 471
               },
               {
                 "x": 397,
                 "y": 4146.39,
-                "width": 894
+                "width": 894,
+                "height": 252
               },
               {
                 "x": 397,
                 "y": 4398.39,
-                "width": 894
+                "width": 894,
+                "height": 252
               },
               {
                 "x": 397,
                 "y": 4650.39,
-                "width": 894
+                "width": 894,
+                "height": 170
               },
               {
                 "x": 397,
                 "y": 4820.39,
-                "width": 894
+                "width": 894,
+                "height": 247.16
               }
             ],
             "activeNavText": "Chat Composer",
@@ -8692,7 +8924,16 @@
             "tocCount": 0,
             "apiRows": 25,
             "apiColumns": 4,
-            "relatedColumns": 3
+            "relatedColumns": 3,
+            "capture": {
+              "fullPage": true,
+              "viewportWidth": 1440,
+              "viewportHeight": 900,
+              "width": 1440,
+              "height": 5732,
+              "documentHeight": 5732,
+              "coversDocument": true
+            }
           },
           "checks": [
             {
@@ -9131,6 +9372,22 @@
               "name": "body.background",
               "reference": "rgb(245, 245, 245)",
               "local": "rgb(245, 245, 245)",
+              "unit": "",
+              "delta": null,
+              "pass": true
+            },
+            {
+              "name": "capture.fullPage",
+              "reference": true,
+              "local": true,
+              "unit": "",
+              "delta": null,
+              "pass": true
+            },
+            {
+              "name": "capture.coversDocument",
+              "reference": true,
+              "local": true,
               "unit": "",
               "delta": null,
               "pass": true
@@ -9824,7 +10081,7 @@
                 "x": 256,
                 "y": 8,
                 "width": 1176,
-                "height": 4363.97
+                "height": 5609.13
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -9905,7 +10162,7 @@
                 "x": 397,
                 "y": 89,
                 "width": 894,
-                "height": 4066.55
+                "height": 5311.7
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -10548,12 +10805,12 @@
             },
             "examplesSection": {
               "tag": "section",
-              "cls": "doc__section",
+              "cls": "doc__section doc__section--examples",
               "rect": {
                 "x": 397,
                 "y": 1829.58,
                 "width": 894,
-                "height": 538.16
+                "height": 658.31
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -10578,9 +10835,9 @@
               "cls": "doc__section",
               "rect": {
                 "x": 397,
-                "y": 2367.73,
+                "y": 2487.89,
                 "width": 894,
-                "height": 522.08
+                "height": 1336.08
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -10605,7 +10862,7 @@
               "cls": "doc__h2",
               "rect": {
                 "x": 397,
-                "y": 2415.73,
+                "y": 2535.89,
                 "width": 894,
                 "height": 32
               },
@@ -10632,7 +10889,7 @@
               "cls": "doc__h3 doc__h3--code",
               "rect": {
                 "x": 397,
-                "y": 2447.73,
+                "y": 2567.89,
                 "width": 894,
                 "height": 34.58
               },
@@ -10659,9 +10916,9 @@
               "cls": "table-wrap",
               "rect": {
                 "x": 397,
-                "y": 2482.31,
+                "y": 2602.47,
                 "width": 894,
-                "height": 407.5
+                "height": 1221.5
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -10686,9 +10943,9 @@
               "cls": "table table--api",
               "rect": {
                 "x": 397,
-                "y": 2482.31,
+                "y": 2602.47,
                 "width": 894,
-                "height": 407.5
+                "height": 1221.5
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -10713,7 +10970,7 @@
               "cls": "",
               "rect": {
                 "x": 397,
-                "y": 2482.31,
+                "y": 2602.47,
                 "width": 894,
                 "height": 40
               },
@@ -10740,8 +10997,8 @@
               "cls": "",
               "rect": {
                 "x": 397,
-                "y": 2482.31,
-                "width": 158.14,
+                "y": 2602.47,
+                "width": 140,
                 "height": 40
               },
               "font": {
@@ -10767,9 +11024,9 @@
               "cls": "",
               "rect": {
                 "x": 397,
-                "y": 2522.31,
-                "width": 158.14,
-                "height": 46
+                "y": 2642.47,
+                "width": 140,
+                "height": 67
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -10794,9 +11051,9 @@
               "cls": "doc__section",
               "rect": {
                 "x": 397,
-                "y": 2889.81,
+                "y": 3823.97,
                 "width": 894,
-                "height": 325
+                "height": 472
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -10821,7 +11078,7 @@
               "cls": "doc__section",
               "rect": {
                 "x": 397,
-                "y": 3724.81,
+                "y": 4969.97,
                 "width": 894,
                 "height": 247.16
               },
@@ -10848,7 +11105,7 @@
               "cls": "related related--guides",
               "rect": {
                 "x": 397,
-                "y": 3804.81,
+                "y": 5049.97,
                 "width": 894,
                 "height": 167.16
               },
@@ -10875,7 +11132,7 @@
               "cls": "related__card",
               "rect": {
                 "x": 397,
-                "y": 3812.81,
+                "y": 5057.97,
                 "width": 291.33,
                 "height": 159.16
               },
@@ -10902,7 +11159,7 @@
               "cls": "doc__footer",
               "rect": {
                 "x": 397,
-                "y": 4083.97,
+                "y": 5329.13,
                 "width": 894,
                 "height": 71.58
               },
@@ -10959,7 +11216,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 1440,
-                "height": 4379.97
+                "height": 5625.13
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -11012,65 +11269,85 @@
               {
                 "x": 397,
                 "y": 845,
-                "width": 894
+                "width": 894,
+                "height": 140
               },
               {
                 "x": 397,
                 "y": 985,
-                "width": 894
+                "width": 894,
+                "height": 140
               },
               {
                 "x": 397,
                 "y": 1125,
-                "width": 894
+                "width": 894,
+                "height": 304.58
               },
               {
                 "x": 397,
                 "y": 1429.58,
-                "width": 894
+                "width": 894,
+                "height": 400
               },
               {
                 "x": 397,
                 "y": 1829.58,
-                "width": 894
+                "width": 894,
+                "height": 658.31
               },
               {
                 "x": 397,
-                "y": 2367.73,
-                "width": 894
+                "y": 2487.89,
+                "width": 894,
+                "height": 1336.08
               },
               {
                 "x": 397,
-                "y": 2889.81,
-                "width": 894
+                "y": 3823.97,
+                "width": 894,
+                "height": 472
               },
               {
                 "x": 397,
-                "y": 3214.81,
-                "width": 894
+                "y": 4295.97,
+                "width": 894,
+                "height": 252
               },
               {
                 "x": 397,
-                "y": 3384.81,
-                "width": 894
+                "y": 4547.97,
+                "width": 894,
+                "height": 252
               },
               {
                 "x": 397,
-                "y": 3554.81,
-                "width": 894
+                "y": 4799.97,
+                "width": 894,
+                "height": 170
               },
               {
                 "x": 397,
-                "y": 3724.81,
-                "width": 894
+                "y": 4969.97,
+                "width": 894,
+                "height": 247.16
               }
             ],
             "activeNavText": "Chat Composer",
             "activeNavCurrent": "page",
             "tocCount": 0,
-            "apiRows": 13,
+            "apiRows": 25,
             "apiColumns": 4,
-            "relatedColumns": 3
+            "relatedColumns": 3,
+            "capture": {
+              "fullPage": true,
+              "viewportWidth": 1440,
+              "viewportHeight": 900,
+              "width": 1440,
+              "height": 5625,
+              "documentHeight": 5625,
+              "coversDocument": true
+            }
           },
           "errors": {
             "reference": [],
@@ -12066,57 +12343,68 @@
               {
                 "x": 397,
                 "y": 845,
-                "width": 894
+                "width": 894,
+                "height": 140
               },
               {
                 "x": 397,
                 "y": 985,
-                "width": 894
+                "width": 894,
+                "height": 140
               },
               {
                 "x": 397,
                 "y": 1125,
-                "width": 894
+                "width": 894,
+                "height": 414
               },
               {
                 "x": 397,
                 "y": 1539,
-                "width": 894
+                "width": 894,
+                "height": 175
               },
               {
                 "x": 397,
                 "y": 1714,
-                "width": 894
+                "width": 894,
+                "height": 646.31
               },
               {
                 "x": 397,
                 "y": 2360.31,
-                "width": 894
+                "width": 894,
+                "height": 1315.08
               },
               {
                 "x": 397,
                 "y": 3675.39,
-                "width": 894
+                "width": 894,
+                "height": 471
               },
               {
                 "x": 397,
                 "y": 4146.39,
-                "width": 894
+                "width": 894,
+                "height": 252
               },
               {
                 "x": 397,
                 "y": 4398.39,
-                "width": 894
+                "width": 894,
+                "height": 252
               },
               {
                 "x": 397,
                 "y": 4650.39,
-                "width": 894
+                "width": 894,
+                "height": 170
               },
               {
                 "x": 397,
                 "y": 4820.39,
-                "width": 894
+                "width": 894,
+                "height": 247.16
               }
             ],
             "activeNavText": "Chat Composer",
@@ -12124,7 +12412,16 @@
             "tocCount": 0,
             "apiRows": 25,
             "apiColumns": 4,
-            "relatedColumns": 3
+            "relatedColumns": 3,
+            "capture": {
+              "fullPage": true,
+              "viewportWidth": 1440,
+              "viewportHeight": 900,
+              "width": 1440,
+              "height": 5732,
+              "documentHeight": 5732,
+              "coversDocument": true
+            }
           },
           "checks": [
             {
@@ -12563,6 +12860,22 @@
               "name": "body.background",
               "reference": "rgb(12, 12, 13)",
               "local": "rgb(12, 12, 13)",
+              "unit": "",
+              "delta": null,
+              "pass": true
+            },
+            {
+              "name": "capture.fullPage",
+              "reference": true,
+              "local": true,
+              "unit": "",
+              "delta": null,
+              "pass": true
+            },
+            {
+              "name": "capture.coversDocument",
+              "reference": true,
+              "local": true,
               "unit": "",
               "delta": null,
               "pass": true
@@ -13256,7 +13569,7 @@
                 "x": 256,
                 "y": 8,
                 "width": 1176,
-                "height": 4363.97
+                "height": 5609.13
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -13337,7 +13650,7 @@
                 "x": 397,
                 "y": 89,
                 "width": 894,
-                "height": 4066.55
+                "height": 5311.7
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -13980,12 +14293,12 @@
             },
             "examplesSection": {
               "tag": "section",
-              "cls": "doc__section",
+              "cls": "doc__section doc__section--examples",
               "rect": {
                 "x": 397,
                 "y": 1829.58,
                 "width": 894,
-                "height": 538.16
+                "height": 658.31
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -14010,9 +14323,9 @@
               "cls": "doc__section",
               "rect": {
                 "x": 397,
-                "y": 2367.73,
+                "y": 2487.89,
                 "width": 894,
-                "height": 522.08
+                "height": 1336.08
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -14037,7 +14350,7 @@
               "cls": "doc__h2",
               "rect": {
                 "x": 397,
-                "y": 2415.73,
+                "y": 2535.89,
                 "width": 894,
                 "height": 32
               },
@@ -14064,7 +14377,7 @@
               "cls": "doc__h3 doc__h3--code",
               "rect": {
                 "x": 397,
-                "y": 2447.73,
+                "y": 2567.89,
                 "width": 894,
                 "height": 34.58
               },
@@ -14091,9 +14404,9 @@
               "cls": "table-wrap",
               "rect": {
                 "x": 397,
-                "y": 2482.31,
+                "y": 2602.47,
                 "width": 894,
-                "height": 407.5
+                "height": 1221.5
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -14118,9 +14431,9 @@
               "cls": "table table--api",
               "rect": {
                 "x": 397,
-                "y": 2482.31,
+                "y": 2602.47,
                 "width": 894,
-                "height": 407.5
+                "height": 1221.5
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -14145,7 +14458,7 @@
               "cls": "",
               "rect": {
                 "x": 397,
-                "y": 2482.31,
+                "y": 2602.47,
                 "width": 894,
                 "height": 40
               },
@@ -14172,8 +14485,8 @@
               "cls": "",
               "rect": {
                 "x": 397,
-                "y": 2482.31,
-                "width": 158.14,
+                "y": 2602.47,
+                "width": 140,
                 "height": 40
               },
               "font": {
@@ -14199,9 +14512,9 @@
               "cls": "",
               "rect": {
                 "x": 397,
-                "y": 2522.31,
-                "width": 158.14,
-                "height": 46
+                "y": 2642.47,
+                "width": 140,
+                "height": 67
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -14226,9 +14539,9 @@
               "cls": "doc__section",
               "rect": {
                 "x": 397,
-                "y": 2889.81,
+                "y": 3823.97,
                 "width": 894,
-                "height": 325
+                "height": 472
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -14253,7 +14566,7 @@
               "cls": "doc__section",
               "rect": {
                 "x": 397,
-                "y": 3724.81,
+                "y": 4969.97,
                 "width": 894,
                 "height": 247.16
               },
@@ -14280,7 +14593,7 @@
               "cls": "related related--guides",
               "rect": {
                 "x": 397,
-                "y": 3804.81,
+                "y": 5049.97,
                 "width": 894,
                 "height": 167.16
               },
@@ -14307,7 +14620,7 @@
               "cls": "related__card",
               "rect": {
                 "x": 397,
-                "y": 3812.81,
+                "y": 5057.97,
                 "width": 291.33,
                 "height": 159.16
               },
@@ -14334,7 +14647,7 @@
               "cls": "doc__footer",
               "rect": {
                 "x": 397,
-                "y": 4083.97,
+                "y": 5329.13,
                 "width": 894,
                 "height": 71.58
               },
@@ -14391,7 +14704,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 1440,
-                "height": 4379.97
+                "height": 5625.13
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -14444,65 +14757,85 @@
               {
                 "x": 397,
                 "y": 845,
-                "width": 894
+                "width": 894,
+                "height": 140
               },
               {
                 "x": 397,
                 "y": 985,
-                "width": 894
+                "width": 894,
+                "height": 140
               },
               {
                 "x": 397,
                 "y": 1125,
-                "width": 894
+                "width": 894,
+                "height": 304.58
               },
               {
                 "x": 397,
                 "y": 1429.58,
-                "width": 894
+                "width": 894,
+                "height": 400
               },
               {
                 "x": 397,
                 "y": 1829.58,
-                "width": 894
+                "width": 894,
+                "height": 658.31
               },
               {
                 "x": 397,
-                "y": 2367.73,
-                "width": 894
+                "y": 2487.89,
+                "width": 894,
+                "height": 1336.08
               },
               {
                 "x": 397,
-                "y": 2889.81,
-                "width": 894
+                "y": 3823.97,
+                "width": 894,
+                "height": 472
               },
               {
                 "x": 397,
-                "y": 3214.81,
-                "width": 894
+                "y": 4295.97,
+                "width": 894,
+                "height": 252
               },
               {
                 "x": 397,
-                "y": 3384.81,
-                "width": 894
+                "y": 4547.97,
+                "width": 894,
+                "height": 252
               },
               {
                 "x": 397,
-                "y": 3554.81,
-                "width": 894
+                "y": 4799.97,
+                "width": 894,
+                "height": 170
               },
               {
                 "x": 397,
-                "y": 3724.81,
-                "width": 894
+                "y": 4969.97,
+                "width": 894,
+                "height": 247.16
               }
             ],
             "activeNavText": "Chat Composer",
             "activeNavCurrent": "page",
             "tocCount": 0,
-            "apiRows": 13,
+            "apiRows": 25,
             "apiColumns": 4,
-            "relatedColumns": 3
+            "relatedColumns": 3,
+            "capture": {
+              "fullPage": true,
+              "viewportWidth": 1440,
+              "viewportHeight": 900,
+              "width": 1440,
+              "height": 5625,
+              "documentHeight": 5625,
+              "coversDocument": true
+            }
           },
           "errors": {
             "reference": [],
@@ -15500,57 +15833,68 @@
               {
                 "x": 285,
                 "y": 877,
-                "width": 702
+                "width": 702,
+                "height": 140
               },
               {
                 "x": 285,
                 "y": 1017,
-                "width": 702
+                "width": 702,
+                "height": 140
               },
               {
                 "x": 285,
                 "y": 1157,
-                "width": 702
+                "width": 702,
+                "height": 414
               },
               {
                 "x": 285,
                 "y": 1571,
-                "width": 702
+                "width": 702,
+                "height": 175
               },
               {
                 "x": 285,
                 "y": 1746,
-                "width": 702
+                "width": 702,
+                "height": 646.31
               },
               {
                 "x": 285,
                 "y": 2392.31,
-                "width": 702
+                "width": 702,
+                "height": 1669.08
               },
               {
                 "x": 285,
                 "y": 4061.39,
-                "width": 702
+                "width": 702,
+                "height": 503
               },
               {
                 "x": 285,
                 "y": 4564.39,
-                "width": 702
+                "width": 702,
+                "height": 296
               },
               {
                 "x": 285,
                 "y": 4860.39,
-                "width": 702
+                "width": 702,
+                "height": 296
               },
               {
                 "x": 285,
                 "y": 5156.39,
-                "width": 702
+                "width": 702,
+                "height": 236
               },
               {
                 "x": 285,
                 "y": 5392.39,
-                "width": 702
+                "width": 702,
+                "height": 265.16
               }
             ],
             "activeNavText": "Chat Composer",
@@ -15558,7 +15902,16 @@
             "tocCount": 0,
             "apiRows": 25,
             "apiColumns": 4,
-            "relatedColumns": 3
+            "relatedColumns": 3,
+            "capture": {
+              "fullPage": true,
+              "viewportWidth": 1024,
+              "viewportHeight": 768,
+              "width": 1024,
+              "height": 6322,
+              "documentHeight": 6322,
+              "coversDocument": true
+            }
           },
           "checks": [
             {
@@ -15997,6 +16350,22 @@
               "name": "body.background",
               "reference": "rgb(245, 245, 245)",
               "local": "rgb(245, 245, 245)",
+              "unit": "",
+              "delta": null,
+              "pass": true
+            },
+            {
+              "name": "capture.fullPage",
+              "reference": true,
+              "local": true,
+              "unit": "",
+              "delta": null,
+              "pass": true
+            },
+            {
+              "name": "capture.coversDocument",
+              "reference": true,
+              "local": true,
               "unit": "",
               "delta": null,
               "pass": true
@@ -16690,7 +17059,7 @@
                 "x": 256,
                 "y": 8,
                 "width": 760,
-                "height": 4552.97
+                "height": 6158.13
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -16771,7 +17140,7 @@
                 "x": 285,
                 "y": 89,
                 "width": 702,
-                "height": 4255.55
+                "height": 5860.7
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -17414,12 +17783,12 @@
             },
             "examplesSection": {
               "tag": "section",
-              "cls": "doc__section",
+              "cls": "doc__section doc__section--examples",
               "rect": {
                 "x": 285,
                 "y": 1861.58,
                 "width": 702,
-                "height": 538.16
+                "height": 658.31
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -17444,9 +17813,9 @@
               "cls": "doc__section",
               "rect": {
                 "x": 285,
-                "y": 2399.73,
+                "y": 2519.89,
                 "width": 702,
-                "height": 661.08
+                "height": 1649.08
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -17471,7 +17840,7 @@
               "cls": "doc__h2",
               "rect": {
                 "x": 285,
-                "y": 2447.73,
+                "y": 2567.89,
                 "width": 702,
                 "height": 32
               },
@@ -17498,7 +17867,7 @@
               "cls": "doc__h3 doc__h3--code",
               "rect": {
                 "x": 285,
-                "y": 2479.73,
+                "y": 2599.89,
                 "width": 702,
                 "height": 34.58
               },
@@ -17525,9 +17894,9 @@
               "cls": "table-wrap",
               "rect": {
                 "x": 285,
-                "y": 2514.31,
+                "y": 2634.47,
                 "width": 702,
-                "height": 546.5
+                "height": 1534.5
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -17552,9 +17921,9 @@
               "cls": "table table--api",
               "rect": {
                 "x": 285,
-                "y": 2514.31,
+                "y": 2634.47,
                 "width": 702,
-                "height": 546.5
+                "height": 1534.5
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -17579,7 +17948,7 @@
               "cls": "",
               "rect": {
                 "x": 285,
-                "y": 2514.31,
+                "y": 2634.47,
                 "width": 702,
                 "height": 40
               },
@@ -17606,8 +17975,8 @@
               "cls": "",
               "rect": {
                 "x": 285,
-                "y": 2514.31,
-                "width": 147,
+                "y": 2634.47,
+                "width": 140,
                 "height": 40
               },
               "font": {
@@ -17633,8 +18002,8 @@
               "cls": "",
               "rect": {
                 "x": 285,
-                "y": 2554.31,
-                "width": 147,
+                "y": 2674.47,
+                "width": 140,
                 "height": 67
               },
               "font": {
@@ -17660,9 +18029,9 @@
               "cls": "doc__section",
               "rect": {
                 "x": 285,
-                "y": 3060.81,
+                "y": 4168.97,
                 "width": 702,
-                "height": 325
+                "height": 504
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -17687,7 +18056,7 @@
               "cls": "doc__section",
               "rect": {
                 "x": 285,
-                "y": 3895.81,
+                "y": 5500.97,
                 "width": 702,
                 "height": 265.16
               },
@@ -17714,7 +18083,7 @@
               "cls": "related related--guides",
               "rect": {
                 "x": 285,
-                "y": 3975.81,
+                "y": 5580.97,
                 "width": 702,
                 "height": 185.16
               },
@@ -17741,7 +18110,7 @@
               "cls": "related__card",
               "rect": {
                 "x": 285,
-                "y": 3983.81,
+                "y": 5588.97,
                 "width": 227.33,
                 "height": 177.16
               },
@@ -17768,7 +18137,7 @@
               "cls": "doc__footer",
               "rect": {
                 "x": 285,
-                "y": 4272.97,
+                "y": 5878.13,
                 "width": 702,
                 "height": 71.58
               },
@@ -17825,7 +18194,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 1024,
-                "height": 4568.97
+                "height": 6174.13
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -17878,65 +18247,85 @@
               {
                 "x": 285,
                 "y": 877,
-                "width": 702
+                "width": 702,
+                "height": 140
               },
               {
                 "x": 285,
                 "y": 1017,
-                "width": 702
+                "width": 702,
+                "height": 140
               },
               {
                 "x": 285,
                 "y": 1157,
-                "width": 702
+                "width": 702,
+                "height": 304.58
               },
               {
                 "x": 285,
                 "y": 1461.58,
-                "width": 702
+                "width": 702,
+                "height": 400
               },
               {
                 "x": 285,
                 "y": 1861.58,
-                "width": 702
+                "width": 702,
+                "height": 658.31
               },
               {
                 "x": 285,
-                "y": 2399.73,
-                "width": 702
+                "y": 2519.89,
+                "width": 702,
+                "height": 1649.08
               },
               {
                 "x": 285,
-                "y": 3060.81,
-                "width": 702
+                "y": 4168.97,
+                "width": 702,
+                "height": 504
               },
               {
                 "x": 285,
-                "y": 3385.81,
-                "width": 702
+                "y": 4672.97,
+                "width": 702,
+                "height": 296
               },
               {
                 "x": 285,
-                "y": 3555.81,
-                "width": 702
+                "y": 4968.97,
+                "width": 702,
+                "height": 296
               },
               {
                 "x": 285,
-                "y": 3725.81,
-                "width": 702
+                "y": 5264.97,
+                "width": 702,
+                "height": 236
               },
               {
                 "x": 285,
-                "y": 3895.81,
-                "width": 702
+                "y": 5500.97,
+                "width": 702,
+                "height": 265.16
               }
             ],
             "activeNavText": "Chat Composer",
             "activeNavCurrent": "page",
             "tocCount": 0,
-            "apiRows": 13,
+            "apiRows": 25,
             "apiColumns": 4,
-            "relatedColumns": 3
+            "relatedColumns": 3,
+            "capture": {
+              "fullPage": true,
+              "viewportWidth": 1024,
+              "viewportHeight": 768,
+              "width": 1024,
+              "height": 6174,
+              "documentHeight": 6174,
+              "coversDocument": true
+            }
           },
           "errors": {
             "reference": [],
@@ -18932,57 +19321,68 @@
               {
                 "x": 285,
                 "y": 877,
-                "width": 702
+                "width": 702,
+                "height": 140
               },
               {
                 "x": 285,
                 "y": 1017,
-                "width": 702
+                "width": 702,
+                "height": 140
               },
               {
                 "x": 285,
                 "y": 1157,
-                "width": 702
+                "width": 702,
+                "height": 414
               },
               {
                 "x": 285,
                 "y": 1571,
-                "width": 702
+                "width": 702,
+                "height": 175
               },
               {
                 "x": 285,
                 "y": 1746,
-                "width": 702
+                "width": 702,
+                "height": 646.31
               },
               {
                 "x": 285,
                 "y": 2392.31,
-                "width": 702
+                "width": 702,
+                "height": 1669.08
               },
               {
                 "x": 285,
                 "y": 4061.39,
-                "width": 702
+                "width": 702,
+                "height": 503
               },
               {
                 "x": 285,
                 "y": 4564.39,
-                "width": 702
+                "width": 702,
+                "height": 296
               },
               {
                 "x": 285,
                 "y": 4860.39,
-                "width": 702
+                "width": 702,
+                "height": 296
               },
               {
                 "x": 285,
                 "y": 5156.39,
-                "width": 702
+                "width": 702,
+                "height": 236
               },
               {
                 "x": 285,
                 "y": 5392.39,
-                "width": 702
+                "width": 702,
+                "height": 265.16
               }
             ],
             "activeNavText": "Chat Composer",
@@ -18990,7 +19390,16 @@
             "tocCount": 0,
             "apiRows": 25,
             "apiColumns": 4,
-            "relatedColumns": 3
+            "relatedColumns": 3,
+            "capture": {
+              "fullPage": true,
+              "viewportWidth": 1024,
+              "viewportHeight": 768,
+              "width": 1024,
+              "height": 6322,
+              "documentHeight": 6322,
+              "coversDocument": true
+            }
           },
           "checks": [
             {
@@ -19429,6 +19838,22 @@
               "name": "body.background",
               "reference": "rgb(12, 12, 13)",
               "local": "rgb(12, 12, 13)",
+              "unit": "",
+              "delta": null,
+              "pass": true
+            },
+            {
+              "name": "capture.fullPage",
+              "reference": true,
+              "local": true,
+              "unit": "",
+              "delta": null,
+              "pass": true
+            },
+            {
+              "name": "capture.coversDocument",
+              "reference": true,
+              "local": true,
               "unit": "",
               "delta": null,
               "pass": true
@@ -20122,7 +20547,7 @@
                 "x": 256,
                 "y": 8,
                 "width": 760,
-                "height": 4552.97
+                "height": 6158.13
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -20203,7 +20628,7 @@
                 "x": 285,
                 "y": 89,
                 "width": 702,
-                "height": 4255.55
+                "height": 5860.7
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -20846,12 +21271,12 @@
             },
             "examplesSection": {
               "tag": "section",
-              "cls": "doc__section",
+              "cls": "doc__section doc__section--examples",
               "rect": {
                 "x": 285,
                 "y": 1861.58,
                 "width": 702,
-                "height": 538.16
+                "height": 658.31
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -20876,9 +21301,9 @@
               "cls": "doc__section",
               "rect": {
                 "x": 285,
-                "y": 2399.73,
+                "y": 2519.89,
                 "width": 702,
-                "height": 661.08
+                "height": 1649.08
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -20903,7 +21328,7 @@
               "cls": "doc__h2",
               "rect": {
                 "x": 285,
-                "y": 2447.73,
+                "y": 2567.89,
                 "width": 702,
                 "height": 32
               },
@@ -20930,7 +21355,7 @@
               "cls": "doc__h3 doc__h3--code",
               "rect": {
                 "x": 285,
-                "y": 2479.73,
+                "y": 2599.89,
                 "width": 702,
                 "height": 34.58
               },
@@ -20957,9 +21382,9 @@
               "cls": "table-wrap",
               "rect": {
                 "x": 285,
-                "y": 2514.31,
+                "y": 2634.47,
                 "width": 702,
-                "height": 546.5
+                "height": 1534.5
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -20984,9 +21409,9 @@
               "cls": "table table--api",
               "rect": {
                 "x": 285,
-                "y": 2514.31,
+                "y": 2634.47,
                 "width": 702,
-                "height": 546.5
+                "height": 1534.5
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -21011,7 +21436,7 @@
               "cls": "",
               "rect": {
                 "x": 285,
-                "y": 2514.31,
+                "y": 2634.47,
                 "width": 702,
                 "height": 40
               },
@@ -21038,8 +21463,8 @@
               "cls": "",
               "rect": {
                 "x": 285,
-                "y": 2514.31,
-                "width": 147,
+                "y": 2634.47,
+                "width": 140,
                 "height": 40
               },
               "font": {
@@ -21065,8 +21490,8 @@
               "cls": "",
               "rect": {
                 "x": 285,
-                "y": 2554.31,
-                "width": 147,
+                "y": 2674.47,
+                "width": 140,
                 "height": 67
               },
               "font": {
@@ -21092,9 +21517,9 @@
               "cls": "doc__section",
               "rect": {
                 "x": 285,
-                "y": 3060.81,
+                "y": 4168.97,
                 "width": 702,
-                "height": 325
+                "height": 504
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -21119,7 +21544,7 @@
               "cls": "doc__section",
               "rect": {
                 "x": 285,
-                "y": 3895.81,
+                "y": 5500.97,
                 "width": 702,
                 "height": 265.16
               },
@@ -21146,7 +21571,7 @@
               "cls": "related related--guides",
               "rect": {
                 "x": 285,
-                "y": 3975.81,
+                "y": 5580.97,
                 "width": 702,
                 "height": 185.16
               },
@@ -21173,7 +21598,7 @@
               "cls": "related__card",
               "rect": {
                 "x": 285,
-                "y": 3983.81,
+                "y": 5588.97,
                 "width": 227.33,
                 "height": 177.16
               },
@@ -21200,7 +21625,7 @@
               "cls": "doc__footer",
               "rect": {
                 "x": 285,
-                "y": 4272.97,
+                "y": 5878.13,
                 "width": 702,
                 "height": 71.58
               },
@@ -21257,7 +21682,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 1024,
-                "height": 4568.97
+                "height": 6174.13
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -21310,65 +21735,85 @@
               {
                 "x": 285,
                 "y": 877,
-                "width": 702
+                "width": 702,
+                "height": 140
               },
               {
                 "x": 285,
                 "y": 1017,
-                "width": 702
+                "width": 702,
+                "height": 140
               },
               {
                 "x": 285,
                 "y": 1157,
-                "width": 702
+                "width": 702,
+                "height": 304.58
               },
               {
                 "x": 285,
                 "y": 1461.58,
-                "width": 702
+                "width": 702,
+                "height": 400
               },
               {
                 "x": 285,
                 "y": 1861.58,
-                "width": 702
+                "width": 702,
+                "height": 658.31
               },
               {
                 "x": 285,
-                "y": 2399.73,
-                "width": 702
+                "y": 2519.89,
+                "width": 702,
+                "height": 1649.08
               },
               {
                 "x": 285,
-                "y": 3060.81,
-                "width": 702
+                "y": 4168.97,
+                "width": 702,
+                "height": 504
               },
               {
                 "x": 285,
-                "y": 3385.81,
-                "width": 702
+                "y": 4672.97,
+                "width": 702,
+                "height": 296
               },
               {
                 "x": 285,
-                "y": 3555.81,
-                "width": 702
+                "y": 4968.97,
+                "width": 702,
+                "height": 296
               },
               {
                 "x": 285,
-                "y": 3725.81,
-                "width": 702
+                "y": 5264.97,
+                "width": 702,
+                "height": 236
               },
               {
                 "x": 285,
-                "y": 3895.81,
-                "width": 702
+                "y": 5500.97,
+                "width": 702,
+                "height": 265.16
               }
             ],
             "activeNavText": "Chat Composer",
             "activeNavCurrent": "page",
             "tocCount": 0,
-            "apiRows": 13,
+            "apiRows": 25,
             "apiColumns": 4,
-            "relatedColumns": 3
+            "relatedColumns": 3,
+            "capture": {
+              "fullPage": true,
+              "viewportWidth": 1024,
+              "viewportHeight": 768,
+              "width": 1024,
+              "height": 6174,
+              "documentHeight": 6174,
+              "coversDocument": true
+            }
           },
           "errors": {
             "reference": [],
@@ -22366,57 +22811,68 @@
               {
                 "x": 16,
                 "y": 783,
-                "width": 358
+                "width": 358,
+                "height": 184
               },
               {
                 "x": 16,
                 "y": 967,
-                "width": 358
+                "width": 358,
+                "height": 184
               },
               {
                 "x": 16,
                 "y": 1151,
-                "width": 358
+                "width": 358,
+                "height": 414
               },
               {
                 "x": 16,
                 "y": 1565,
-                "width": 358
+                "width": 358,
+                "height": 175
               },
               {
                 "x": 16,
                 "y": 1740,
-                "width": 358
+                "width": 358,
+                "height": 646.31
               },
               {
                 "x": 16,
                 "y": 2386.31,
-                "width": 358
+                "width": 358,
+                "height": 1811.08
               },
               {
                 "x": 16,
                 "y": 4197.39,
-                "width": 358
+                "width": 358,
+                "height": 823
               },
               {
                 "x": 16,
                 "y": 5020.39,
-                "width": 358
+                "width": 358,
+                "height": 450
               },
               {
                 "x": 16,
                 "y": 5470.39,
-                "width": 358
+                "width": 358,
+                "height": 450
               },
               {
                 "x": 16,
                 "y": 5920.39,
-                "width": 358
+                "width": 358,
+                "height": 302
               },
               {
                 "x": 16,
                 "y": 6222.39,
-                "width": 358
+                "width": 358,
+                "height": 343.16
               }
             ],
             "activeNavText": "Chat Composer",
@@ -22424,7 +22880,16 @@
             "tocCount": 0,
             "apiRows": 25,
             "apiColumns": 4,
-            "relatedColumns": 1
+            "relatedColumns": 1,
+            "capture": {
+              "fullPage": true,
+              "viewportWidth": 390,
+              "viewportHeight": 844,
+              "width": 390,
+              "height": 7317,
+              "documentHeight": 7317,
+              "coversDocument": true
+            }
           },
           "checks": [
             {
@@ -22863,6 +23328,22 @@
               "name": "body.background",
               "reference": "rgb(245, 245, 245)",
               "local": "rgb(245, 245, 245)",
+              "unit": "",
+              "delta": null,
+              "pass": true
+            },
+            {
+              "name": "capture.fullPage",
+              "reference": true,
+              "local": true,
+              "unit": "",
+              "delta": null,
+              "pass": true
+            },
+            {
+              "name": "capture.coversDocument",
+              "reference": true,
+              "local": true,
               "unit": "",
               "delta": null,
               "pass": true
@@ -23556,7 +24037,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 390,
-                "height": 5060.83
+                "height": 7156.98
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -23637,7 +24118,7 @@
                 "x": 16,
                 "y": 81,
                 "width": 358,
-                "height": 4750.13
+                "height": 6846.28
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -24280,12 +24761,12 @@
             },
             "examplesSection": {
               "tag": "section",
-              "cls": "doc__section",
+              "cls": "doc__section doc__section--examples",
               "rect": {
                 "x": 16,
                 "y": 1877.58,
                 "width": 358,
-                "height": 567.16
+                "height": 658.31
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -24310,9 +24791,9 @@
               "cls": "doc__section",
               "rect": {
                 "x": 16,
-                "y": 2444.73,
+                "y": 2535.89,
                 "width": 358,
-                "height": 820.08
+                "height": 1832.08
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -24337,7 +24818,7 @@
               "cls": "doc__h2",
               "rect": {
                 "x": 16,
-                "y": 2492.73,
+                "y": 2583.89,
                 "width": 358,
                 "height": 32
               },
@@ -24364,7 +24845,7 @@
               "cls": "doc__h3 doc__h3--code",
               "rect": {
                 "x": 16,
-                "y": 2524.73,
+                "y": 2615.89,
                 "width": 358,
                 "height": 34.58
               },
@@ -24391,9 +24872,9 @@
               "cls": "table-wrap",
               "rect": {
                 "x": 16,
-                "y": 2559.31,
+                "y": 2650.47,
                 "width": 358,
-                "height": 705.5
+                "height": 1717.5
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -24418,9 +24899,9 @@
               "cls": "table table--api",
               "rect": {
                 "x": 16,
-                "y": 2559.31,
-                "width": 525,
-                "height": 705.5
+                "y": 2650.47,
+                "width": 629,
+                "height": 1717.5
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -24445,8 +24926,8 @@
               "cls": "",
               "rect": {
                 "x": 16,
-                "y": 2559.31,
-                "width": 525,
+                "y": 2650.47,
+                "width": 629,
                 "height": 40
               },
               "font": {
@@ -24472,8 +24953,8 @@
               "cls": "",
               "rect": {
                 "x": 16,
-                "y": 2559.31,
-                "width": 147,
+                "y": 2650.47,
+                "width": 155,
                 "height": 40
               },
               "font": {
@@ -24499,9 +24980,9 @@
               "cls": "",
               "rect": {
                 "x": 16,
-                "y": 2599.31,
-                "width": 147,
-                "height": 85
+                "y": 2690.47,
+                "width": 155,
+                "height": 67
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -24526,9 +25007,9 @@
               "cls": "doc__section",
               "rect": {
                 "x": 16,
-                "y": 3264.81,
+                "y": 4367.97,
                 "width": 358,
-                "height": 325
+                "height": 824
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -24553,7 +25034,7 @@
               "cls": "doc__section",
               "rect": {
                 "x": 16,
-                "y": 4297.81,
+                "y": 6393.97,
                 "width": 358,
                 "height": 343.16
               },
@@ -24580,7 +25061,7 @@
               "cls": "related related--guides",
               "rect": {
                 "x": 16,
-                "y": 4377.81,
+                "y": 6473.97,
                 "width": 358,
                 "height": 263.16
               },
@@ -24607,7 +25088,7 @@
               "cls": "related__card",
               "rect": {
                 "x": 16,
-                "y": 4385.81,
+                "y": 6481.97,
                 "width": 358,
                 "height": 122.58
               },
@@ -24634,7 +25115,7 @@
               "cls": "doc__footer",
               "rect": {
                 "x": 16,
-                "y": 4736.97,
+                "y": 6833.13,
                 "width": 358,
                 "height": 94.16
               },
@@ -24691,7 +25172,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 390,
-                "height": 5060.83
+                "height": 7156.98
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -24744,65 +25225,85 @@
               {
                 "x": 16,
                 "y": 783,
-                "width": 358
+                "width": 358,
+                "height": 184
               },
               {
                 "x": 16,
                 "y": 967,
-                "width": 358
+                "width": 358,
+                "height": 184
               },
               {
                 "x": 16,
                 "y": 1151,
-                "width": 358
+                "width": 358,
+                "height": 326.58
               },
               {
                 "x": 16,
                 "y": 1477.58,
-                "width": 358
+                "width": 358,
+                "height": 400
               },
               {
                 "x": 16,
                 "y": 1877.58,
-                "width": 358
+                "width": 358,
+                "height": 658.31
               },
               {
                 "x": 16,
-                "y": 2444.73,
-                "width": 358
+                "y": 2535.89,
+                "width": 358,
+                "height": 1832.08
               },
               {
                 "x": 16,
-                "y": 3264.81,
-                "width": 358
+                "y": 4367.97,
+                "width": 358,
+                "height": 824
               },
               {
                 "x": 16,
-                "y": 3589.81,
-                "width": 358
+                "y": 5191.97,
+                "width": 358,
+                "height": 450
               },
               {
                 "x": 16,
-                "y": 3825.81,
-                "width": 358
+                "y": 5641.97,
+                "width": 358,
+                "height": 450
               },
               {
                 "x": 16,
-                "y": 4061.81,
-                "width": 358
+                "y": 6091.97,
+                "width": 358,
+                "height": 302
               },
               {
                 "x": 16,
-                "y": 4297.81,
-                "width": 358
+                "y": 6393.97,
+                "width": 358,
+                "height": 343.16
               }
             ],
             "activeNavText": "Chat Composer",
             "activeNavCurrent": "page",
             "tocCount": 0,
-            "apiRows": 13,
+            "apiRows": 25,
             "apiColumns": 4,
-            "relatedColumns": 1
+            "relatedColumns": 1,
+            "capture": {
+              "fullPage": true,
+              "viewportWidth": 390,
+              "viewportHeight": 844,
+              "width": 390,
+              "height": 7157,
+              "documentHeight": 7157,
+              "coversDocument": true
+            }
           },
           "errors": {
             "reference": [],
@@ -25798,57 +26299,68 @@
               {
                 "x": 16,
                 "y": 783,
-                "width": 358
+                "width": 358,
+                "height": 184
               },
               {
                 "x": 16,
                 "y": 967,
-                "width": 358
+                "width": 358,
+                "height": 184
               },
               {
                 "x": 16,
                 "y": 1151,
-                "width": 358
+                "width": 358,
+                "height": 414
               },
               {
                 "x": 16,
                 "y": 1565,
-                "width": 358
+                "width": 358,
+                "height": 175
               },
               {
                 "x": 16,
                 "y": 1740,
-                "width": 358
+                "width": 358,
+                "height": 646.31
               },
               {
                 "x": 16,
                 "y": 2386.31,
-                "width": 358
+                "width": 358,
+                "height": 1811.08
               },
               {
                 "x": 16,
                 "y": 4197.39,
-                "width": 358
+                "width": 358,
+                "height": 823
               },
               {
                 "x": 16,
                 "y": 5020.39,
-                "width": 358
+                "width": 358,
+                "height": 450
               },
               {
                 "x": 16,
                 "y": 5470.39,
-                "width": 358
+                "width": 358,
+                "height": 450
               },
               {
                 "x": 16,
                 "y": 5920.39,
-                "width": 358
+                "width": 358,
+                "height": 302
               },
               {
                 "x": 16,
                 "y": 6222.39,
-                "width": 358
+                "width": 358,
+                "height": 343.16
               }
             ],
             "activeNavText": "Chat Composer",
@@ -25856,7 +26368,16 @@
             "tocCount": 0,
             "apiRows": 25,
             "apiColumns": 4,
-            "relatedColumns": 1
+            "relatedColumns": 1,
+            "capture": {
+              "fullPage": true,
+              "viewportWidth": 390,
+              "viewportHeight": 844,
+              "width": 390,
+              "height": 7317,
+              "documentHeight": 7317,
+              "coversDocument": true
+            }
           },
           "checks": [
             {
@@ -26295,6 +26816,22 @@
               "name": "body.background",
               "reference": "rgb(12, 12, 13)",
               "local": "rgb(12, 12, 13)",
+              "unit": "",
+              "delta": null,
+              "pass": true
+            },
+            {
+              "name": "capture.fullPage",
+              "reference": true,
+              "local": true,
+              "unit": "",
+              "delta": null,
+              "pass": true
+            },
+            {
+              "name": "capture.coversDocument",
+              "reference": true,
+              "local": true,
               "unit": "",
               "delta": null,
               "pass": true
@@ -26988,7 +27525,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 390,
-                "height": 5060.83
+                "height": 7156.98
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -27069,7 +27606,7 @@
                 "x": 16,
                 "y": 81,
                 "width": 358,
-                "height": 4750.13
+                "height": 6846.28
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -27712,12 +28249,12 @@
             },
             "examplesSection": {
               "tag": "section",
-              "cls": "doc__section",
+              "cls": "doc__section doc__section--examples",
               "rect": {
                 "x": 16,
                 "y": 1877.58,
                 "width": 358,
-                "height": 567.16
+                "height": 658.31
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -27742,9 +28279,9 @@
               "cls": "doc__section",
               "rect": {
                 "x": 16,
-                "y": 2444.73,
+                "y": 2535.89,
                 "width": 358,
-                "height": 820.08
+                "height": 1832.08
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -27769,7 +28306,7 @@
               "cls": "doc__h2",
               "rect": {
                 "x": 16,
-                "y": 2492.73,
+                "y": 2583.89,
                 "width": 358,
                 "height": 32
               },
@@ -27796,7 +28333,7 @@
               "cls": "doc__h3 doc__h3--code",
               "rect": {
                 "x": 16,
-                "y": 2524.73,
+                "y": 2615.89,
                 "width": 358,
                 "height": 34.58
               },
@@ -27823,9 +28360,9 @@
               "cls": "table-wrap",
               "rect": {
                 "x": 16,
-                "y": 2559.31,
+                "y": 2650.47,
                 "width": 358,
-                "height": 705.5
+                "height": 1717.5
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -27850,9 +28387,9 @@
               "cls": "table table--api",
               "rect": {
                 "x": 16,
-                "y": 2559.31,
-                "width": 525,
-                "height": 705.5
+                "y": 2650.47,
+                "width": 629,
+                "height": 1717.5
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -27877,8 +28414,8 @@
               "cls": "",
               "rect": {
                 "x": 16,
-                "y": 2559.31,
-                "width": 525,
+                "y": 2650.47,
+                "width": 629,
                 "height": 40
               },
               "font": {
@@ -27904,8 +28441,8 @@
               "cls": "",
               "rect": {
                 "x": 16,
-                "y": 2559.31,
-                "width": 147,
+                "y": 2650.47,
+                "width": 155,
                 "height": 40
               },
               "font": {
@@ -27931,9 +28468,9 @@
               "cls": "",
               "rect": {
                 "x": 16,
-                "y": 2599.31,
-                "width": 147,
-                "height": 85
+                "y": 2690.47,
+                "width": 155,
+                "height": 67
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -27958,9 +28495,9 @@
               "cls": "doc__section",
               "rect": {
                 "x": 16,
-                "y": 3264.81,
+                "y": 4367.97,
                 "width": 358,
-                "height": 325
+                "height": 824
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -27985,7 +28522,7 @@
               "cls": "doc__section",
               "rect": {
                 "x": 16,
-                "y": 4297.81,
+                "y": 6393.97,
                 "width": 358,
                 "height": 343.16
               },
@@ -28012,7 +28549,7 @@
               "cls": "related related--guides",
               "rect": {
                 "x": 16,
-                "y": 4377.81,
+                "y": 6473.97,
                 "width": 358,
                 "height": 263.16
               },
@@ -28039,7 +28576,7 @@
               "cls": "related__card",
               "rect": {
                 "x": 16,
-                "y": 4385.81,
+                "y": 6481.97,
                 "width": 358,
                 "height": 122.58
               },
@@ -28066,7 +28603,7 @@
               "cls": "doc__footer",
               "rect": {
                 "x": 16,
-                "y": 4736.97,
+                "y": 6833.13,
                 "width": 358,
                 "height": 94.16
               },
@@ -28123,7 +28660,7 @@
                 "x": 0,
                 "y": 0,
                 "width": 390,
-                "height": 5060.83
+                "height": 7156.98
               },
               "font": {
                 "family": "Inter, ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif",
@@ -28176,65 +28713,85 @@
               {
                 "x": 16,
                 "y": 783,
-                "width": 358
+                "width": 358,
+                "height": 184
               },
               {
                 "x": 16,
                 "y": 967,
-                "width": 358
+                "width": 358,
+                "height": 184
               },
               {
                 "x": 16,
                 "y": 1151,
-                "width": 358
+                "width": 358,
+                "height": 326.58
               },
               {
                 "x": 16,
                 "y": 1477.58,
-                "width": 358
+                "width": 358,
+                "height": 400
               },
               {
                 "x": 16,
                 "y": 1877.58,
-                "width": 358
+                "width": 358,
+                "height": 658.31
               },
               {
                 "x": 16,
-                "y": 2444.73,
-                "width": 358
+                "y": 2535.89,
+                "width": 358,
+                "height": 1832.08
               },
               {
                 "x": 16,
-                "y": 3264.81,
-                "width": 358
+                "y": 4367.97,
+                "width": 358,
+                "height": 824
               },
               {
                 "x": 16,
-                "y": 3589.81,
-                "width": 358
+                "y": 5191.97,
+                "width": 358,
+                "height": 450
               },
               {
                 "x": 16,
-                "y": 3825.81,
-                "width": 358
+                "y": 5641.97,
+                "width": 358,
+                "height": 450
               },
               {
                 "x": 16,
-                "y": 4061.81,
-                "width": 358
+                "y": 6091.97,
+                "width": 358,
+                "height": 302
               },
               {
                 "x": 16,
-                "y": 4297.81,
-                "width": 358
+                "y": 6393.97,
+                "width": 358,
+                "height": 343.16
               }
             ],
             "activeNavText": "Chat Composer",
             "activeNavCurrent": "page",
             "tocCount": 0,
-            "apiRows": 13,
+            "apiRows": 25,
             "apiColumns": 4,
-            "relatedColumns": 1
+            "relatedColumns": 1,
+            "capture": {
+              "fullPage": true,
+              "viewportWidth": 390,
+              "viewportHeight": 844,
+              "width": 390,
+              "height": 7157,
+              "documentHeight": 7157,
+              "coversDocument": true
+            }
           },
           "errors": {
             "reference": [],
@@ -28250,7 +28807,7 @@
     "pass": true,
     "signatures": {
       "ai-answer": "9cba20abb9118324",
-      "chat-composer": "ab5057d4262fe5b5",
+      "chat-composer": "c522cb9a6688f0cd",
       "thinking-loader": "cbe20d7556292746",
       "message-actions": "5fa5bac83d99fe98",
       "tool-call-card": "a96232d83c910f11",
@@ -28267,5 +28824,1129 @@
       "tooltip": "d72f221a70c5e545",
       "meter": "479538986c1c2793"
     }
+  },
+  "detailHeight": {
+    "tolerancePct": 3,
+    "pass": true,
+    "pairs": [
+      {
+        "viewport": "1440x900",
+        "theme": "light",
+        "reference": 5732,
+        "local": 5625,
+        "deltaPct": -1.87,
+        "pass": true
+      },
+      {
+        "viewport": "1440x900",
+        "theme": "dark",
+        "reference": 5732,
+        "local": 5625,
+        "deltaPct": -1.87,
+        "pass": true
+      },
+      {
+        "viewport": "1024x768",
+        "theme": "light",
+        "reference": 6322,
+        "local": 6174,
+        "deltaPct": -2.34,
+        "pass": true
+      },
+      {
+        "viewport": "1024x768",
+        "theme": "dark",
+        "reference": 6322,
+        "local": 6174,
+        "deltaPct": -2.34,
+        "pass": true
+      },
+      {
+        "viewport": "390x844",
+        "theme": "light",
+        "reference": 7317,
+        "local": 7157,
+        "deltaPct": -2.19,
+        "pass": true
+      },
+      {
+        "viewport": "390x844",
+        "theme": "dark",
+        "reference": 7317,
+        "local": 7157,
+        "deltaPct": -2.19,
+        "pass": true
+      }
+    ]
+  },
+  "detailSections": {
+    "tolerancePct": 3,
+    "tolerancePx": 4,
+    "exemptions": [
+      "Installation",
+      "Usage"
+    ],
+    "pass": true,
+    "gateable": 54,
+    "passed": 54,
+    "captures": [
+      {
+        "viewport": "1440x900",
+        "theme": "light",
+        "titlesMatch": true,
+        "pass": true,
+        "sections": [
+          {
+            "title": "When to use",
+            "reference": 140,
+            "local": 140,
+            "deltaPct": 0,
+            "allowedPx": 4.2,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "When not to use",
+            "reference": 140,
+            "local": 140,
+            "deltaPct": 0,
+            "allowedPx": 4.2,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Installation",
+            "reference": 414,
+            "local": 304.58,
+            "deltaPct": -26.43,
+            "allowedPx": 12.42,
+            "exempt": true,
+            "pass": true
+          },
+          {
+            "title": "Usage",
+            "reference": 175,
+            "local": 400,
+            "deltaPct": 128.57,
+            "allowedPx": 5.25,
+            "exempt": true,
+            "pass": true
+          },
+          {
+            "title": "Examples",
+            "reference": 646.31,
+            "local": 658.31,
+            "deltaPct": 1.86,
+            "allowedPx": 19.39,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "API reference",
+            "reference": 1315.08,
+            "local": 1336.08,
+            "deltaPct": 1.6,
+            "allowedPx": 39.45,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Keyboard interactions",
+            "reference": 471,
+            "local": 472,
+            "deltaPct": 0.21,
+            "allowedPx": 14.13,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Accessibility",
+            "reference": 252,
+            "local": 252,
+            "deltaPct": 0,
+            "allowedPx": 7.56,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Motion",
+            "reference": 252,
+            "local": 252,
+            "deltaPct": 0,
+            "allowedPx": 7.56,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Responsive behavior",
+            "reference": 170,
+            "local": 170,
+            "deltaPct": 0,
+            "allowedPx": 5.1,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Guides",
+            "reference": 247.16,
+            "local": 247.16,
+            "deltaPct": 0,
+            "allowedPx": 7.41,
+            "exempt": false,
+            "pass": true
+          }
+        ]
+      },
+      {
+        "viewport": "1440x900",
+        "theme": "dark",
+        "titlesMatch": true,
+        "pass": true,
+        "sections": [
+          {
+            "title": "When to use",
+            "reference": 140,
+            "local": 140,
+            "deltaPct": 0,
+            "allowedPx": 4.2,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "When not to use",
+            "reference": 140,
+            "local": 140,
+            "deltaPct": 0,
+            "allowedPx": 4.2,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Installation",
+            "reference": 414,
+            "local": 304.58,
+            "deltaPct": -26.43,
+            "allowedPx": 12.42,
+            "exempt": true,
+            "pass": true
+          },
+          {
+            "title": "Usage",
+            "reference": 175,
+            "local": 400,
+            "deltaPct": 128.57,
+            "allowedPx": 5.25,
+            "exempt": true,
+            "pass": true
+          },
+          {
+            "title": "Examples",
+            "reference": 646.31,
+            "local": 658.31,
+            "deltaPct": 1.86,
+            "allowedPx": 19.39,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "API reference",
+            "reference": 1315.08,
+            "local": 1336.08,
+            "deltaPct": 1.6,
+            "allowedPx": 39.45,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Keyboard interactions",
+            "reference": 471,
+            "local": 472,
+            "deltaPct": 0.21,
+            "allowedPx": 14.13,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Accessibility",
+            "reference": 252,
+            "local": 252,
+            "deltaPct": 0,
+            "allowedPx": 7.56,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Motion",
+            "reference": 252,
+            "local": 252,
+            "deltaPct": 0,
+            "allowedPx": 7.56,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Responsive behavior",
+            "reference": 170,
+            "local": 170,
+            "deltaPct": 0,
+            "allowedPx": 5.1,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Guides",
+            "reference": 247.16,
+            "local": 247.16,
+            "deltaPct": 0,
+            "allowedPx": 7.41,
+            "exempt": false,
+            "pass": true
+          }
+        ]
+      },
+      {
+        "viewport": "1024x768",
+        "theme": "light",
+        "titlesMatch": true,
+        "pass": true,
+        "sections": [
+          {
+            "title": "When to use",
+            "reference": 140,
+            "local": 140,
+            "deltaPct": 0,
+            "allowedPx": 4.2,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "When not to use",
+            "reference": 140,
+            "local": 140,
+            "deltaPct": 0,
+            "allowedPx": 4.2,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Installation",
+            "reference": 414,
+            "local": 304.58,
+            "deltaPct": -26.43,
+            "allowedPx": 12.42,
+            "exempt": true,
+            "pass": true
+          },
+          {
+            "title": "Usage",
+            "reference": 175,
+            "local": 400,
+            "deltaPct": 128.57,
+            "allowedPx": 5.25,
+            "exempt": true,
+            "pass": true
+          },
+          {
+            "title": "Examples",
+            "reference": 646.31,
+            "local": 658.31,
+            "deltaPct": 1.86,
+            "allowedPx": 19.39,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "API reference",
+            "reference": 1669.08,
+            "local": 1649.08,
+            "deltaPct": -1.2,
+            "allowedPx": 50.07,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Keyboard interactions",
+            "reference": 503,
+            "local": 504,
+            "deltaPct": 0.2,
+            "allowedPx": 15.09,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Accessibility",
+            "reference": 296,
+            "local": 296,
+            "deltaPct": 0,
+            "allowedPx": 8.88,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Motion",
+            "reference": 296,
+            "local": 296,
+            "deltaPct": 0,
+            "allowedPx": 8.88,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Responsive behavior",
+            "reference": 236,
+            "local": 236,
+            "deltaPct": 0,
+            "allowedPx": 7.08,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Guides",
+            "reference": 265.16,
+            "local": 265.16,
+            "deltaPct": 0,
+            "allowedPx": 7.95,
+            "exempt": false,
+            "pass": true
+          }
+        ]
+      },
+      {
+        "viewport": "1024x768",
+        "theme": "dark",
+        "titlesMatch": true,
+        "pass": true,
+        "sections": [
+          {
+            "title": "When to use",
+            "reference": 140,
+            "local": 140,
+            "deltaPct": 0,
+            "allowedPx": 4.2,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "When not to use",
+            "reference": 140,
+            "local": 140,
+            "deltaPct": 0,
+            "allowedPx": 4.2,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Installation",
+            "reference": 414,
+            "local": 304.58,
+            "deltaPct": -26.43,
+            "allowedPx": 12.42,
+            "exempt": true,
+            "pass": true
+          },
+          {
+            "title": "Usage",
+            "reference": 175,
+            "local": 400,
+            "deltaPct": 128.57,
+            "allowedPx": 5.25,
+            "exempt": true,
+            "pass": true
+          },
+          {
+            "title": "Examples",
+            "reference": 646.31,
+            "local": 658.31,
+            "deltaPct": 1.86,
+            "allowedPx": 19.39,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "API reference",
+            "reference": 1669.08,
+            "local": 1649.08,
+            "deltaPct": -1.2,
+            "allowedPx": 50.07,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Keyboard interactions",
+            "reference": 503,
+            "local": 504,
+            "deltaPct": 0.2,
+            "allowedPx": 15.09,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Accessibility",
+            "reference": 296,
+            "local": 296,
+            "deltaPct": 0,
+            "allowedPx": 8.88,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Motion",
+            "reference": 296,
+            "local": 296,
+            "deltaPct": 0,
+            "allowedPx": 8.88,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Responsive behavior",
+            "reference": 236,
+            "local": 236,
+            "deltaPct": 0,
+            "allowedPx": 7.08,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Guides",
+            "reference": 265.16,
+            "local": 265.16,
+            "deltaPct": 0,
+            "allowedPx": 7.95,
+            "exempt": false,
+            "pass": true
+          }
+        ]
+      },
+      {
+        "viewport": "390x844",
+        "theme": "light",
+        "titlesMatch": true,
+        "pass": true,
+        "sections": [
+          {
+            "title": "When to use",
+            "reference": 184,
+            "local": 184,
+            "deltaPct": 0,
+            "allowedPx": 5.52,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "When not to use",
+            "reference": 184,
+            "local": 184,
+            "deltaPct": 0,
+            "allowedPx": 5.52,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Installation",
+            "reference": 414,
+            "local": 326.58,
+            "deltaPct": -21.12,
+            "allowedPx": 12.42,
+            "exempt": true,
+            "pass": true
+          },
+          {
+            "title": "Usage",
+            "reference": 175,
+            "local": 400,
+            "deltaPct": 128.57,
+            "allowedPx": 5.25,
+            "exempt": true,
+            "pass": true
+          },
+          {
+            "title": "Examples",
+            "reference": 646.31,
+            "local": 658.31,
+            "deltaPct": 1.86,
+            "allowedPx": 19.39,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "API reference",
+            "reference": 1811.08,
+            "local": 1832.08,
+            "deltaPct": 1.16,
+            "allowedPx": 54.33,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Keyboard interactions",
+            "reference": 823,
+            "local": 824,
+            "deltaPct": 0.12,
+            "allowedPx": 24.69,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Accessibility",
+            "reference": 450,
+            "local": 450,
+            "deltaPct": 0,
+            "allowedPx": 13.5,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Motion",
+            "reference": 450,
+            "local": 450,
+            "deltaPct": 0,
+            "allowedPx": 13.5,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Responsive behavior",
+            "reference": 302,
+            "local": 302,
+            "deltaPct": 0,
+            "allowedPx": 9.06,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Guides",
+            "reference": 343.16,
+            "local": 343.16,
+            "deltaPct": 0,
+            "allowedPx": 10.29,
+            "exempt": false,
+            "pass": true
+          }
+        ]
+      },
+      {
+        "viewport": "390x844",
+        "theme": "dark",
+        "titlesMatch": true,
+        "pass": true,
+        "sections": [
+          {
+            "title": "When to use",
+            "reference": 184,
+            "local": 184,
+            "deltaPct": 0,
+            "allowedPx": 5.52,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "When not to use",
+            "reference": 184,
+            "local": 184,
+            "deltaPct": 0,
+            "allowedPx": 5.52,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Installation",
+            "reference": 414,
+            "local": 326.58,
+            "deltaPct": -21.12,
+            "allowedPx": 12.42,
+            "exempt": true,
+            "pass": true
+          },
+          {
+            "title": "Usage",
+            "reference": 175,
+            "local": 400,
+            "deltaPct": 128.57,
+            "allowedPx": 5.25,
+            "exempt": true,
+            "pass": true
+          },
+          {
+            "title": "Examples",
+            "reference": 646.31,
+            "local": 658.31,
+            "deltaPct": 1.86,
+            "allowedPx": 19.39,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "API reference",
+            "reference": 1811.08,
+            "local": 1832.08,
+            "deltaPct": 1.16,
+            "allowedPx": 54.33,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Keyboard interactions",
+            "reference": 823,
+            "local": 824,
+            "deltaPct": 0.12,
+            "allowedPx": 24.69,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Accessibility",
+            "reference": 450,
+            "local": 450,
+            "deltaPct": 0,
+            "allowedPx": 13.5,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Motion",
+            "reference": 450,
+            "local": 450,
+            "deltaPct": 0,
+            "allowedPx": 13.5,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Responsive behavior",
+            "reference": 302,
+            "local": 302,
+            "deltaPct": 0,
+            "allowedPx": 9.06,
+            "exempt": false,
+            "pass": true
+          },
+          {
+            "title": "Guides",
+            "reference": 343.16,
+            "local": 343.16,
+            "deltaPct": 0,
+            "allowedPx": 10.29,
+            "exempt": false,
+            "pass": true
+          }
+        ]
+      }
+    ]
+  },
+  "componentStructure": {
+    "viewport": "390x844",
+    "components": 17,
+    "pass": true,
+    "results": [
+      {
+        "slug": "ai-answer",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4790,
+        "apiRows": 4,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "chat-composer",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 7157,
+        "apiRows": 17,
+        "keyRows": 8,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "thinking-loader",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4641,
+        "apiRows": 5,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "message-actions",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4716,
+        "apiRows": 4,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "tool-call-card",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4871,
+        "apiRows": 6,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "model-picker",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4746,
+        "apiRows": 5,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "approval-card",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4765,
+        "apiRows": 5,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "agent-inbox",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4596,
+        "apiRows": 4,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "button",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4667,
+        "apiRows": 4,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "segmented-control",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4833,
+        "apiRows": 5,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "switch",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4724,
+        "apiRows": 4,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "field",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4662,
+        "apiRows": 5,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "card",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4596,
+        "apiRows": 4,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "badge",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4436,
+        "apiRows": 4,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "avatar",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4490,
+        "apiRows": 4,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "tooltip",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4382,
+        "apiRows": 3,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      },
+      {
+        "slug": "meter",
+        "sections": 11,
+        "headings": 11,
+        "footer": true,
+        "pageScrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "viewportWidth": 390,
+        "documentHeight": 4707,
+        "apiRows": 5,
+        "keyRows": 3,
+        "relatedCards": 2,
+        "apiTable": {
+          "width": 629,
+          "wrapWidth": 358,
+          "wrapScrollWidth": 629
+        },
+        "keyTable": {
+          "width": 358,
+          "firstWidth": 220
+        },
+        "failures": [],
+        "pass": true
+      }
+    ]
   }
 }
