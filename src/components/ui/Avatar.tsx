@@ -1,3 +1,5 @@
+"use client";
+
 import { injectCss } from "../../lib/css";
 import { cx, initials, tintFor } from "../../lib/utils";
 

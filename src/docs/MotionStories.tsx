@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Specimen, Row, Col, DemoLabel, Snippet } from "./Specimen";
 import { Button } from "../components/ui/Button";

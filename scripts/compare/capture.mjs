@@ -159,18 +159,18 @@ async function ensureLocalServer() {
     return null;
   }
 
-  const viteBin = path.join(ROOT, "node_modules", "vite", "bin", "vite.js");
+  const nextBin = path.join(ROOT, "node_modules", "next", "dist", "bin", "next");
   console.log(`[compare] starting local server at ${LOCAL_URL}`);
-  const child = spawn(process.execPath, [viteBin, "--host", "127.0.0.1", "--port", "3000"], {
+  const child = spawn(process.execPath, [nextBin, "dev", "-H", "127.0.0.1", "-p", "3000"], {
     cwd: ROOT,
-    env: process.env,
+    env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1" },
     stdio: ["ignore", "pipe", "pipe"],
   });
   let output = "";
   child.stdout?.on("data", (chunk) => { output += String(chunk); });
   child.stderr?.on("data", (chunk) => { output += String(chunk); });
 
-  const deadline = Date.now() + 45_000;
+  const deadline = Date.now() + 90_000;
   while (Date.now() < deadline) {
     if (await reachable(LOCAL_URL)) return child;
     if (child.exitCode !== null) break;

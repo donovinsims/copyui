@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Row, DemoLabel, Specimen } from "./Specimen";
 import { Badge } from "../components/ui/Badge";

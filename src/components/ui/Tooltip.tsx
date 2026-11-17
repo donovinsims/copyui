@@ -1,3 +1,5 @@
+"use client";
+
 import { useId, type ReactNode } from "react";
 import { injectCss } from "../../lib/css";
 import { cx } from "../../lib/utils";

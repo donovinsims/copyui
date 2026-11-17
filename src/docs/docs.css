@@ -2127,3 +2127,17 @@
   .table--keys td:first-child { width: 220px; min-width: 220px; }
   .doc__footer { flex-direction: column; gap: 4px; margin-top: 112px; }
 }
+
+/* Category pages + registry previews (appended for the self-hosted registry) */
+.library-tabs--cats { margin-top: -4px; }
+.library-tabs--cats .library-tab { text-decoration: none; }
+.lib-code { width: 100%; max-width: 360px; }
+.install__source { font-size: var(--text-sm); color: var(--ui-muted); letter-spacing: 0.01em; }
+.lib-ticker { font-size: var(--text-2xl); font-weight: var(--weight-semibold); letter-spacing: var(--tracking-heading); }
+.lib-reveal { font-size: var(--text-lg); font-weight: var(--weight-medium); letter-spacing: var(--tracking-heading); }
+.lib-shimmer { width: 100%; max-width: 220px; }
+.lib-tilt { display: flex; flex-direction: column; gap: 2px; padding: 14px 18px; border-radius: var(--ui-r-md); background: var(--ui-card); box-shadow: var(--ui-shadow); font-size: var(--text-sm); }
+.lib-tilt strong { font-size: var(--text-base); font-weight: var(--weight-medium); }
+.lib-tilt span { color: var(--ui-muted); }
+.lib-gradient { font-size: var(--text-xl); font-weight: var(--weight-semibold); letter-spacing: var(--tracking-heading); }
+.lib-gridbg { width: 100%; height: 86px; border-radius: var(--ui-r-md); overflow: hidden; }

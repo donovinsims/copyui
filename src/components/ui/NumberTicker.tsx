@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { injectCss } from "../../lib/css";
 import { cx } from "../../lib/utils";

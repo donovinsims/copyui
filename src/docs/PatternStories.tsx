@@ -1,3 +1,5 @@
+"use client";
+
 import { Row, DemoLabel } from "./Specimen";
 import { Avatar } from "../components/ui/Avatar";
 import { Badge } from "../components/ui/Badge";

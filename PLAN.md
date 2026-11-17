@@ -73,7 +73,8 @@ expected value, and the assumption that the "local" side is this one React app.
 
 ## 3. Target architecture
 
-One package, Node ESM, no build step for the tool itself. `src/` remains the Vite app.
+One package, Node ESM, no build step for the tool itself. `app/` (Next.js App Router) and
+`src/` remain the clean-room app and gallery.
 
 ```text
 tool/
@@ -438,7 +439,7 @@ npm run typecheck
 npm test
 npm run compare:fixtures              # fixtures only, deterministic (script added in Phase 0)
 npm run compare                       # affectui flagship regression (needs network + Chromium)
-npm run build                         # Vite app still builds
+npm run build                         # Next.js app still builds
 node tool/cli.mjs clone  <fixture> --mode mirror  --out out/fixture-mirror
 node tool/cli.mjs verify out/fixture-mirror/clone/mirror  --ref <fixture-url>
 node tool/cli.mjs clone  <fixture> --mode rebuild --out out/fixture-rebuild

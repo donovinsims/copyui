@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { injectCss } from "../../lib/css";
 import { cx } from "../../lib/utils";

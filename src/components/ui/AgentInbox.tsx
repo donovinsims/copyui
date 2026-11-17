@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo, useState } from "react";
 import { injectCss } from "../../lib/css";
 import { cx, formatDuration, formatMoney } from "../../lib/utils";

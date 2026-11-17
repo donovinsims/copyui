@@ -10,3 +10,7 @@ out/
 
 # Generated comparison screenshots are local evidence; keep the rig output itself regenerable.
 artifacts/**/*.png
+
+# Next.js build output and type cache
+.next/
+*.tsbuildinfo

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, type MouseEvent, type ReactNode } from "react";
 import { Specimen, Row, Col, DemoLabel, Snippet } from "./Specimen";
 import { Button } from "../components/ui/Button";
@@ -5,7 +7,33 @@ import { Badge } from "../components/ui/Badge";
 import { Card, CardHeader, CardBody, CardFooter } from "../components/ui/Card";
 import { SegmentedControl } from "../components/ui/SegmentedControl";
 import { Switch } from "../components/ui/Switch";
-import { Field } from "../components/ui/Field";
+import { TextField } from "../components/ui/TextField";
+import { TextArea } from "../components/ui/TextArea";
+import { Select } from "../components/ui/Select";
+import { Checkbox } from "../components/ui/Checkbox";
+import { CodeBlock } from "../components/ui/CodeBlock";
+import { ReactionBar } from "../components/ui/ReactionBar";
+import { NumberTicker } from "../components/ui/NumberTicker";
+import { TextReveal } from "../components/ui/TextReveal";
+import { ShimmerStack } from "../components/ui/Shimmer";
+import { TiltCard } from "../components/ui/TiltCard";
+import { GradientText } from "../components/ui/GradientText";
+import { GridBackground } from "../components/ui/GridBackground";
+import { BlurCrossfade } from "../components/ui/BlurCrossfade";
+import {
+  CodeBlockSpecimen,
+  ComboboxPreview,
+  ComboboxSpecimen,
+  CheckboxSpecimen,
+  OTPInputSpecimen,
+  OTPPreview,
+  ReactionBarSpecimen,
+  SelectSpecimen,
+  TagInputPreview,
+  TagInputSpecimen,
+  TextAreaSpecimen,
+} from "./FormStories";
+import Link from "next/link";
 import { Tooltip } from "../components/ui/Tooltip";
 import { Avatar, AvatarStack } from "../components/ui/Avatar";
 import { Meter, Ring } from "../components/ui/Meter";
@@ -19,7 +47,7 @@ import { ModelPicker, type ModelOption } from "../components/ui/ModelPicker";
 import { AgentInbox, type AgentTask } from "../components/ui/AgentInbox";
 import {
   ArrowUpIcon,
-  BoltIcon,
+  ChevronRightIcon,
   CopyIcon,
   FolderIcon,
   PaperclipIcon,
@@ -31,8 +59,8 @@ import {
   XIcon,
 } from "../lib/icons";
 
-type LibraryFilter = "all" | "chat" | "agent" | "inputs" | "surfaces";
-type LibraryCategory = Exclude<LibraryFilter, "all">;
+type LibraryFilter = "all" | "chat" | "agent" | "inputs" | "surfaces" | "motion";
+export type LibraryCategory = Exclude<LibraryFilter, "all">;
 
 const LIBRARY_FILTERS: Array<{ id: LibraryFilter; label: string }> = [
   { id: "all", label: "Components" },
@@ -40,6 +68,7 @@ const LIBRARY_FILTERS: Array<{ id: LibraryFilter; label: string }> = [
   { id: "agent", label: "Agent" },
   { id: "inputs", label: "Inputs" },
   { id: "surfaces", label: "Surfaces" },
+  { id: "motion", label: "Motion" },
 ];
 
 export const LIBRARY_CATEGORY: Record<LibraryCategory, string> = {
@@ -47,6 +76,7 @@ export const LIBRARY_CATEGORY: Record<LibraryCategory, string> = {
   agent: "Agent",
   inputs: "Inputs",
   surfaces: "Surfaces",
+  motion: "Motion",
 };
 
 const MODELS: ModelOption[] = [
@@ -73,7 +103,6 @@ function LibraryCard({
   children,
   onOpen,
 }: Omit<LibraryItem, "preview"> & { children: ReactNode; onOpen: (slug: string) => void }) {
-  const isPro = category === "chat" || category === "agent";
   const onLinkClick = (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
     event.preventDefault();
@@ -86,12 +115,7 @@ function LibraryCard({
         <div className="library-card__stage" aria-hidden="true" inert>
           <div className="library-card__head">
             <span className="library-card__kind">{LIBRARY_CATEGORY[category]}</span>
-            <span className="library-card__styles">2 styles</span>
-            {isPro ? (
-              <span className="library-card__badge is-pro">
-                <BoltIcon size={10} /> Pro
-              </span>
-            ) : null}
+            <span className="library-card__styles">{LIBRARY_CATEGORY[category]}</span>
           </div>
           <div className="library-card__preview">
             <div className={`library-card__preview-inner preview-${slug}`}>{children}</div>
@@ -303,14 +327,14 @@ export const LIBRARY_ITEMS: LibraryItem[] = [
       ),
     },
     {
-      slug: "field",
-      title: "Field",
-      note: "Hairline control with hint, error and affix.",
+      slug: "text-field",
+      title: "Text Field",
+      note: "Hairline control with hint, error, affix and counter.",
       category: "inputs",
       preview: (
         <div className="lib-fields">
-          <Field label="Project name" defaultValue="affect-ui" hint="Lowercase, no spaces." />
-          <Field label="Workspace" defaultValue="not a valid slug" error="Use lowercase letters." />
+          <TextField label="Project name" defaultValue="agent-runner" hint="Lowercase, no spaces." />
+          <TextField label="Workspace" defaultValue="not a valid slug" error="Use lowercase letters." />
         </div>
       ),
     },
@@ -386,6 +410,179 @@ export const LIBRARY_ITEMS: LibraryItem[] = [
         </div>
       ),
     },
+    {
+      slug: "text-area",
+      title: "Text Area",
+      note: "Multi-line control with counter and auto-grow.",
+      category: "inputs",
+      preview: (
+        <div className="lib-fields">
+          <TextArea
+            label="Instructions"
+            defaultValue="Summarise the call, then list the open questions."
+            hint="Sent with every run."
+            maxLength={120}
+            showCount
+          />
+        </div>
+      ),
+    },
+    {
+      slug: "select",
+      title: "Select",
+      note: "Native select, styled to the hairline system.",
+      category: "inputs",
+      preview: (
+        <div className="lib-fields">
+          <Select
+            label="Model"
+            defaultValue="auto"
+            options={[
+              { value: "auto", label: "Auto — pick per task" },
+              { value: "sonnet", label: "Sonnet 5.5" },
+            ]}
+            hint="Auto routes by task."
+          />
+        </div>
+      ),
+    },
+    {
+      slug: "combobox",
+      title: "Combobox",
+      note: "Type to filter, arrow to choose, Enter to commit.",
+      category: "inputs",
+      preview: <ComboboxPreview />,
+    },
+    {
+      slug: "checkbox",
+      title: "Checkbox",
+      note: "Mixed states, descriptions and native form behaviour.",
+      category: "inputs",
+      preview: (
+        <div className="lib-fields">
+          <Checkbox defaultChecked label="Allow all tools" description="Applies to every agent." />
+          <Checkbox indeterminate label="Some tools" />
+        </div>
+      ),
+    },
+    {
+      slug: "tag-input",
+      title: "Tag Input",
+      note: "Enter or comma adds; Backspace removes the last.",
+      category: "inputs",
+      preview: <TagInputPreview />,
+    },
+    {
+      slug: "otp-input",
+      title: "OTP Input",
+      note: "Paste-ready one-time codes with per-box labels.",
+      category: "inputs",
+      preview: <OTPPreview />,
+    },
+    {
+      slug: "code-block",
+      title: "Code Block",
+      note: "Tray, filename, copy and a tiny colorizer — vendored MIT source.",
+      category: "chat",
+      preview: (
+        <div className="lib-code">
+          <CodeBlock code={`const agent = new Agent({ model: "sonnet-5.5" });`} language="ts" filename="agent.ts" />
+        </div>
+      ),
+    },
+    {
+      slug: "reaction-bar",
+      title: "Reaction Bar",
+      note: "Like, comment, repost and share in one pill — vendored MIT source.",
+      category: "agent",
+      preview: (
+        <ReactionBar
+          reactions={{ like: { count: 128, active: true }, comment: { count: 12 }, repost: { count: 4 } }}
+        />
+      ),
+    },
+    {
+      slug: "number-ticker",
+      title: "Number Ticker",
+      note: "Counts a value up once, in view, without layout shift.",
+      category: "motion",
+      preview: (
+        <span className="lib-ticker">
+          <NumberTicker value={1284} suffix=" runs" />
+        </span>
+      ),
+    },
+    {
+      slug: "text-reveal",
+      title: "Text Reveal",
+      note: "Reveals a line word by word when it enters the viewport.",
+      category: "motion",
+      preview: (
+        <span className="lib-reveal">
+          <TextReveal>Arrives word by word, once.</TextReveal>
+        </span>
+      ),
+    },
+    {
+      slug: "shimmer",
+      title: "Shimmer",
+      note: "Skeletons and shimmering text for arriving content.",
+      category: "motion",
+      preview: (
+        <div className="lib-shimmer">
+          <ShimmerStack lines={3} />
+        </div>
+      ),
+    },
+    {
+      slug: "tilt-card",
+      title: "Tilt Card",
+      note: "Tilts toward the pointer within a small bound.",
+      category: "motion",
+      preview: (
+        <TiltCard max={6}>
+          <div className="lib-tilt">
+            <strong>Pointer only</strong>
+            <span>6° at the edge</span>
+          </div>
+        </TiltCard>
+      ),
+    },
+    {
+      slug: "gradient-text",
+      title: "Gradient Text",
+      note: "A slow accent gradient across a headline.",
+      category: "motion",
+      preview: (
+        <span className="lib-gradient">
+          <GradientText sweep={false}>Owned, not copied.</GradientText>
+        </span>
+      ),
+    },
+    {
+      slug: "grid-background",
+      title: "Grid Background",
+      note: "A faint measured grid that fades at the edges.",
+      category: "motion",
+      preview: (
+        <div className="lib-gridbg">
+          <GridBackground size={18} />
+        </div>
+      ),
+    },
+    {
+      slug: "blur-crossfade",
+      title: "Blur Crossfade",
+      note: "Swaps content through a short blur, never a jump.",
+      category: "motion",
+      preview: (
+        <BlurCrossfade contentKey="1">
+          <Badge tone="accent" dot pulse>
+            Swapped in
+          </Badge>
+        </BlurCrossfade>
+      ),
+    },
 ];
 
 function LibraryIndex({ onOpenComponent }: { onOpenComponent: (slug: string) => void }) {
@@ -398,6 +595,7 @@ function LibraryIndex({ onOpenComponent }: { onOpenComponent: (slug: string) => 
     agent: items.filter((item) => item.category === "agent").length,
     inputs: items.filter((item) => item.category === "inputs").length,
     surfaces: items.filter((item) => item.category === "surfaces").length,
+    motion: items.filter((item) => item.category === "motion").length,
   };
   const visible = items.filter((item) => filter === "all" || item.category === filter);
 
@@ -418,6 +616,14 @@ function LibraryIndex({ onOpenComponent }: { onOpenComponent: (slug: string) => 
           </button>
         ))}
       </div>
+      <nav className="library-tabs library-tabs--cats" aria-label="Category pages">
+        {(Object.keys(LIBRARY_CATEGORY) as LibraryCategory[]).map((entry) => (
+          <Link key={entry} className="library-tab" href={`/components/category/${entry}`}>
+            All {LIBRARY_CATEGORY[entry].toLowerCase()}
+            <span className="library-tab__count">{counts[entry]}</span>
+          </Link>
+        ))}
+      </nav>
       <div className="library-grid">
         {visible.map(({ preview, detailPreview: _detailPreview, ...item }) => (
           <LibraryCard key={item.slug} {...item} onOpen={onOpenComponent}>
@@ -446,6 +652,19 @@ export function ComponentsPage({ onOpenComponent }: { onOpenComponent: (slug: st
       </ComponentSection>
 
       <ComponentSection
+        title="Inputs & forms"
+        lead="Every primitive is one file: a native control underneath, the hairline surface on top, and the keyboard behaviour people already expect."
+        count={6}
+      >
+        <TextAreaSpecimen />
+        <SelectSpecimen />
+        <ComboboxSpecimen />
+        <CheckboxSpecimen />
+        <TagInputSpecimen />
+        <OTPInputSpecimen />
+      </ComponentSection>
+
+      <ComponentSection
         title="Surfaces & data"
         lead="The quiet vocabulary: one card anatomy, tonal badges, deterministic avatars and meters that read at a glance."
         count={5}
@@ -460,23 +679,25 @@ export function ComponentsPage({ onOpenComponent }: { onOpenComponent: (slug: st
       <ComponentSection
         title="Chat"
         lead="The surfaces users spend the most time in. Streaming, phases, citations and feedback, all in one visual voice."
-        count={4}
+        count={5}
       >
         <ThinkingSpecimen />
         <ComposerSpecimen />
         <AnswerSpecimen />
         <MessageActionsSpecimen />
+        <CodeBlockSpecimen />
       </ComponentSection>
 
       <ComponentSection
         title="Agent operations"
         lead="Work made visible: tool calls, model choice, approvals and the inbox that holds all of it."
-        count={4}
+        count={5}
       >
         <ToolCallSpecimen />
         <ModelPickerSpecimen />
         <ApprovalSpecimen />
         <InboxSpecimen />
+        <ReactionBarSpecimen />
       </ComponentSection>
     </>
   );
@@ -626,27 +847,27 @@ function FieldSpecimen() {
   const [name, setName] = useState("affect-ui");
   return (
     <Specimen
-      id="spec-field"
-      name="Field"
+      id="spec-text-field"
+      name="Text Field"
       note="A 34px control with a 3px accent wash on focus. Errors are text plus colour, never colour alone."
       meta={["label", "hint", "error", "icons"]}
     >
       <div className="doc-grid doc-grid--2" style={{ width: "100%" }}>
-        <Field
+        <TextField
           label="Project name"
           value={name}
           onChange={(event) => setName(event.target.value)}
           hint="Lowercase, no spaces."
           optional
         />
-        <Field
+        <TextField
           label="Workspace"
           defaultValue="not a valid slug"
           error="Use lowercase letters, numbers and dashes."
           icon={<SearchIcon size={14} />}
         />
-        <Field label="Search runs" placeholder="Filter by agent or tool…" icon={<SearchIcon size={14} />} />
-        <Field label="Budget" defaultValue="40.00" affix="USD / month" />
+        <TextField label="Search runs" placeholder="Filter by agent or tool…" icon={<SearchIcon size={14} />} />
+        <TextField label="Budget" defaultValue="40.00" affix="USD / month" />
       </div>
     </Specimen>
   );
@@ -1088,5 +1309,62 @@ function InboxSpecimen() {
       </div>
       {last ? <span className="doc-hint">Last action → {last}</span> : null}
     </Specimen>
+  );
+}
+
+/* ------------------------------------------------------------ category page */
+
+export function CategoryPage({
+  category,
+  onOpenComponent,
+  onCategory,
+}: {
+  category: LibraryCategory;
+  onOpenComponent: (slug: string) => void;
+  onCategory: (category: LibraryCategory) => void;
+}) {
+  const entries = Object.keys(LIBRARY_CATEGORY) as LibraryCategory[];
+  const items = LIBRARY_ITEMS.filter((item) => item.category === category);
+
+  return (
+    <section className="library">
+      <nav className="breadcrumb" aria-label="Breadcrumb">
+        <Link href="/components">Components</Link>
+        <ChevronRightIcon size={10} />
+        <span aria-current="page">{LIBRARY_CATEGORY[category]}</span>
+      </nav>
+      <h1 className="page-title">{LIBRARY_CATEGORY[category]}</h1>
+      <p className="page-lead">
+        {items.length} components in this category, each rendering live. Open one for its API, keyboard
+        notes, motion and the registry install command.
+      </p>
+      <div className="library-tabs" role="group" aria-label="Component categories">
+        {entries.map((entry) => (
+          <button
+            key={entry}
+            type="button"
+            className="library-tab"
+            aria-pressed={entry === category}
+            onClick={() => onCategory(entry)}
+          >
+            {LIBRARY_CATEGORY[entry]}
+            <span className="library-tab__count">
+              {LIBRARY_ITEMS.filter((item) => item.category === entry).length}
+            </span>
+          </button>
+        ))}
+      </div>
+      <div className="library-grid">
+        {items.map(({ preview, detailPreview: _detailPreview, ...item }) => (
+          <LibraryCard key={item.slug} {...item} onOpen={onOpenComponent}>
+            {preview}
+          </LibraryCard>
+        ))}
+      </div>
+      <p className="doc-hint">
+        Install any of them from the self-hosted registry:{" "}
+        <code>npx shadcn@latest add http://localhost:3000/r/&lt;slug&gt;.json</code>
+      </p>
+    </section>
   );
 }

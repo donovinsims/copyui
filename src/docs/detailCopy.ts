@@ -492,7 +492,7 @@ export function Notifications() {
       },
     ],
   },
-  field: {
+  "text-field": {
     use: [
       "When an input needs a persistent label, hint or error message",
       "When a leading icon or trailing unit makes the expected value clearer",
@@ -501,11 +501,11 @@ export function Notifications() {
       "Using the placeholder as the only label",
       "For a read-only value that is better presented as text",
     ],
-    usage: `import { Field } from "@copyui/field";
+    usage: `import { TextField } from "@/components/ui/text-field";
 
 export function EmailField() {
   return (
-    <Field
+    <TextField
       label="Work email"
       hint="We only use this for run notifications."
       placeholder="you@company.com"
@@ -515,7 +515,7 @@ export function EmailField() {
     examples: [
       {
         title: "Error",
-        code: `<Field
+        code: `<TextField
   label="Workspace"
   value={workspace}
   error="That workspace is already taken."
@@ -523,7 +523,7 @@ export function EmailField() {
       },
       {
         title: "With affix",
-        code: `<Field
+        code: `<TextField
   label="Budget"
   icon={<WalletIcon />}
   affix="USD"

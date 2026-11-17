@@ -310,3 +310,47 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ---- Upstream compatibility ------------------------------------------- */
+/* Vendored MIT components (Code Block, Reaction Bar) read these names.
+   Mapping them here lets them inherit copyui's theme without forking the source. */
+:root {
+  --aui-surface: var(--ui-card);
+  --aui-ink: var(--ui-ink);
+  --aui-muted: var(--ui-muted);
+  --aui-border: var(--ui-line);
+  --aui-subtle: var(--ui-hover);
+  --aui-focus: var(--ui-focus);
+  --aui-font: var(--ui-font);
+  --aui-font-mono: var(--font-mono);
+  --aui-radius: var(--ui-r-md);
+  --aui-ease: var(--ui-ease);
+  --aui-shadow-card: var(--ui-shadow);
+  --aui-blue: var(--brand);
+  --aui-pink: #ee3e9e;
+  --aui-purple: #a651e0;
+  --aui-orange: var(--warn);
+  --aui-teal: #0e8f8a;
+}
+
+/* ---- Iconography ------------------------------------------------------ */
+:root {
+  --icon-xs: 10px;
+  --icon-sm: 12px;
+  --icon-md: 14px;
+  --icon-lg: 18px;
+  --icon-xl: 22px;
+  --icon-stroke: 1.6;
+}
+
+/* ---- Layers ----------------------------------------------------------- */
+:root {
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 20;
+  --z-dropdown: 40;
+  --z-overlay: 60;
+  --z-modal: 70;
+  --z-toast: 80;
+  --z-tooltip: 90;
+}

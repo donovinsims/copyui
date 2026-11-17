@@ -1,179 +1,237 @@
 # copyui
 
-A clean-room, token-driven recreation of the **affectUI** design language: the same premium feel
-for AI-product interfaces — quiet neutral surfaces, hairline depth, pill controls, one blue-violet
-accent, and motion that explains state.
+An owned, self-hosted design system for AI-product interfaces: a Next.js App Router gallery, a
+token layer, 32 self-contained React 19 components and a shadcn-compatible registry that serves
+those components from this app.
 
-This is an **independent implementation of the visible design**, built by measuring the rendered
-site (computed styles, geometry, timings) and normalising those values into a system. No affectUI
-source, assets or branding are copied. The original library is proprietary; if you want its actual
-files, buy a licence from [affectui.com](https://www.affectui.com).
+copyui is an independent implementation. The visual language was studied by measuring the
+rendered [affectui.com](https://www.affectui.com) interface — computed styles, geometry, timings —
+and normalising the values into tokens. Two components are vendored from affectui's MIT-licensed
+free source; everything else is original code. No Pro (paid) component or asset is used, and no
+affectui brand asset ships here. See [Licensing and attribution](#licensing-and-attribution).
+
+```
+Next.js 15 App Router · React 19 · TypeScript · no Tailwind in components
+no animation library · no runtime dependencies beyond React · MIT
+```
 
 ## Run it
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+npm run dev        # http://localhost:3000  (binds 0.0.0.0)
 npm run typecheck  # tsc --noEmit
-npm run build      # type-check + production build
+npm run build      # production build
+npm run registry:build  # regenerate src/registry/generated.ts
 ```
 
-React 19 · TypeScript · Vite · no Tailwind · no animation library · no runtime dependencies beyond
-React.
+Node 20 or newer. The registry route is served by the same dev server, so
+`http://localhost:3000/r/button.json` works as soon as `npm run dev` is up.
 
-## Universal cloning tool
+## Install a component
 
-`tool/` is the general engine behind the comparison: route discovery, deterministic capture,
-automatic node matching and declarative assertions. Phases 0–2 of [PLAN.md](PLAN.md) are implemented;
-later phases add pixel scoring, state coverage, mirroring and rebuild generation.
+Every component is one `.tsx` file with its CSS in a template string. The registry serves the
+real source file plus the small `lib/` helpers it imports, so the shadcn CLI can write a working
+copy into any React project (Tailwind not required).
+
+Direct URL:
+
+```bash
+npx shadcn@latest add http://localhost:3000/r/button.json
+```
+
+Short name — register the namespace once in the consuming project's `components.json`:
+
+```json
+{
+  "registries": {
+    "@copyui": "http://localhost:3000/r/{name}.json"
+  }
+}
+```
+
+```bash
+npx shadcn@latest add @copyui/button
+npx shadcn@latest add @copyui/chat-composer
+```
+
+What lands:
+
+```
+components/ui/button.tsx      the component (styles injected at runtime)
+lib/css.ts                    the 12-line injectCss helper
+lib/utils.ts                  cx() and the small format helpers
+```
+
+Import the design tokens once in the consuming app (`src/styles/tokens.css` here) and render:
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+export function Example() {
+  return <Button variant="primary">Save changes</Button>;
+}
+```
+
+The registry also lists sibling components as `registryDependencies`, so
+`@copyui/agent-inbox` pulls `avatar` and `badge` with it. `npm run registry:check` fails in CI if
+`src/registry/generated.ts` is out of date with the component sources.
+
+| Endpoint | Returns |
+| --- | --- |
+| `GET /r/<slug>.json` | `registry-item` JSON: `name`, `type`, `title`, `description`, `dependencies`, `registryDependencies`, `files[]` |
+| unknown slug | `404` with the available slugs |
+
+## Gallery
+
+The app is the gallery. Every page has the light/dark toggle in the header; the choice is stored
+in `localStorage` and applied before paint by an inline bootstrap script.
+
+| Route | Page |
+| --- | --- |
+| `/` | Overview: the system's look, live specimens and entry points |
+| `/components` | Every shipped component, live, filterable by category |
+| `/components/category/{chat,agent,inputs,surfaces}` | One category page per group, every component rendered live |
+| `/components/<slug>` | Detail: live preview, code, install command, props, keyboard, accessibility, motion, responsive |
+| `/foundations` | Colour, type, radius, elevation, spacing |
+| `/tokens` | The token groups and their values |
+| `/patterns` | Composed product patterns |
+| `/motion` | Motion primitives and their reduced-motion behaviour |
+
+## Tokens
+
+`src/styles/tokens.css` is the single source of truth. It has two layers: editorial values
+(`--bg`, `--ink`, `--accent`, `--r-lg`, `--shadow-*`, `--dur-*`, …) and semantic aliases
+(`--ui-card`, `--ui-ink`, `--ui-accent`, `--ui-r-md`, `--ui-dur`, …). Components read only the
+`--ui-*` layer, so rebranding is one block rather than a find-and-replace.
+
+| Group | Examples |
+| --- | --- |
+| Colour roles | `--bg`, `--panel`, `--card`, `--sunken`, `--text`, `--ink-soft`, `--line`, `--solid`, `--accent`, `--ok`, `--warn`, `--danger` |
+| Typography | `--font-sans`, `--font-mono`, `--text-2xs` … `--text-5xl`, `--leading-*`, `--tracking-*`, `--weight-*` |
+| Radii | `--r-xs`, `--r-sm`, `--r-md`, `--r-lg`, `--r-xl`, `--r-2xl`, `--r-pill`, scaled by `--radius-scale` |
+| Shadows | `--shadow-panel`, `--shadow-card`, `--shadow-hairline`, `--shadow-lift`, `--shadow-pop`, `--shadow-inset-top` |
+| Spacing | `--s-0` … `--s-15` on a 4px base, plus `--gutter`, `--content-max`, `--prose-max` |
+| Motion | `--dur-fast|--dur|--dur-slow|--dur-morph`, `--ease`, `--ease-pop`, `--ease-morph` |
+| Focus | `--focus`, `--focus-ring` (components use `2px solid var(--ui-focus)` with a 2–3px offset) |
+| Iconography | `--icon-xs` … `--icon-xl`, `--icon-stroke` |
+| Layers | `--z-base`, `--z-raised`, `--z-sticky`, `--z-dropdown`, `--z-overlay`, `--z-modal`, `--z-toast`, `--z-tooltip` |
+
+Dark mode is `data-theme="dark"` or `.dark` on an ancestor. `prefers-reduced-motion: reduce`
+collapses every duration token to 1ms and stops the remaining animations.
+
+## Components
+
+32 components, all in `src/components/ui/`, each a single `.tsx` file.
+
+| Group | Components |
+| --- | --- |
+| Primitives (10) | Button, Text Field, Text Area, Select, Combobox, Checkbox, Switch, Segmented Control, Tag Input, OTP Input |
+| Chat (5) | AI Answer, Chat Composer, Message Actions, Thinking Loader, Code Block |
+| Agent (5) | Tool Call Card, Reaction Bar, Approval Card, Model Picker, Agent Inbox |
+| Surfaces (5) | Card, Badge, Avatar, Meter, Tooltip |
+| Motion (7) | Number Ticker, Text Reveal, Shimmer, Tilt Card, Gradient Text, Grid Background, Blur Crossfade |
+
+House style, enforced by review rather than by a linter:
+
+- one file per component, CSS in a template string, injected once by `injectCss`;
+- no Tailwind class names, no animation library, no dependencies beyond React;
+- native elements underneath custom paint (a real `<button>`, `<input>`, `<select>`, checkbox);
+- visible focus on every interactive element, keyboard support for every custom widget, and
+  `aria-*` state that matches what is on screen;
+- `prefers-reduced-motion` honoured — the settled state is always legible without animation.
+
+## Repository layout
+
+```
+app/                      Next.js App Router: layout, gallery routes, registry route handler
+  r/[slug]/route.ts       self-hosted shadcn registry
+src/components/ui/        the 32 shipped components (one file each)
+src/lib/                  injectCss, cx/format helpers, hooks, icons
+src/styles/               tokens.css (source of truth) + base.css
+src/docs/                 gallery pages, specimens, detail template
+src/registry/generated.ts generated registry items (committed; rebuilt by script)
+registry/manifest.mjs     registry titles, descriptions, categories
+scripts/registry/         registry generator
+scripts/compare/          original one-off affectui comparison rig
+tool/                     general capture/match/assert comparison engine (Phases 0–2)
+skills/                   vendored Superpowers skills (excluded from the build)
+artifacts/                committed reports and metrics from the comparison work
+```
+
+## Accessibility
+
+- Semantic landmarks and native controls; no `div`-buttons.
+- Focus is always visible: a 2px ring at a 2px offset, or the field's 3px accent wash.
+- Custom widgets implement the expected keyboard model — the combobox uses
+  `aria-activedescendant` with Arrow/Home/End/Enter/Escape, the segmented control uses roving
+  tabindex with arrow keys, the tag input adds with Enter/comma and removes with Backspace,
+  the OTP input supports paste and arrow navigation.
+- Errors are text plus colour, never colour alone; hints and errors are wired with
+  `aria-describedby` and `aria-invalid`.
+- Motion respects `prefers-reduced-motion` at both the token and component level.
+
+## Verification
+
+```bash
+npm run typecheck        # tsc --noEmit
+npm run build            # production build
+npm run registry:check   # generated registry is current
+node -e 'fetch("http://localhost:3000/r/button.json").then(r=>r.json()).then(j=>console.log(j.name, j.type, j.files.length))'
+```
+
+## Comparison engine (historical)
+
+`tool/` is a separate, site-agnostic capture/match/assert engine built alongside copyui; Phases 0–2
+of [PLAN.md](PLAN.md) are implemented. It is not part of the app or the registry.
 
 ```bash
 npm test                     # unit tests + offline browser fixtures
 npm run compare:fixtures     # identical fixture passes, mutated fixture fails
 node tool/cli.mjs scan https://example.com
-node tool/cli.mjs compare https://reference.example https://local.example
-node tool/cli.mjs compare --config examples/affectui/compare.config.mjs   # the flagship, as data
+node tool/cli.mjs compare --config examples/affectui/compare.config.mjs   # the flagship
 ```
 
-The original hand-written rig remains available as `npm run compare` while the port is validated.
+The original hand-written rig is still available as `npm run compare`; it now starts this Next.js
+app as the local side.
 
-## What is inside
+## Licensing and attribution
 
-| Area | Files |
-| --- | --- |
-| Token source of truth | `src/styles/tokens.css`, `tokens.json`, `src/data/tokens.ts` |
-| Reset & base type | `src/styles/base.css` |
-| Primitives | `src/components/ui/Button.tsx`, `Badge`, `Card`, `SegmentedControl`, `Switch`, `Field`, `Tooltip`, `Avatar`, `Meter` |
-| AI surfaces | `ThinkingLoader`, `ChatComposer`, `AIAnswer`, `MessageActions`, `ModelPicker`, `ToolCallCard` |
-| Agent operations | `ApprovalCard`, `AgentInbox` |
-| Motion effects | `NumberTicker`, `TextReveal`, `Shimmer`, `TiltCard`, `GradientText`, `GridBackground`, `BlurCrossfade` |
-| Docs / gallery | `src/docs/*`, shell in `src/App.tsx` |
-| Reverse-engineering dossier | `DESIGN.md` |
-
-Open the app and use the header controls to change **accent**, **radius**, **elevation** and
-**theme** — every specimen re-skins live.
-
-## The architecture
-
-### 1. Two layers of tokens
-
-```css
-:root {
-  /* editorial: what the page is made of */
-  --bg: #f5f5f5;
-  --card: #fff;
-  --text: #0a0a0a;
-  --accent: #2f6bff;
-  --r-lg: calc(14px * var(--radius-scale));
-
-  /* semantic: what components read */
-  --ui-card: var(--card);
-  --ui-ink: var(--ink);
-  --ui-accent: var(--accent);
-  --ui-r-lg: var(--r-lg);
-}
-```
-
-Components only ever use `--ui-*`. That is what makes rebranding a one-block change rather than a
-find-and-replace.
-
-### 2. One file per component
-
-Every component is a single `.tsx` file that imports only React, the tiny `injectCss` helper and
-sibling primitives where it genuinely composes. Its CSS lives in a template string at the top of
-the file and is injected once into `<head>`:
-
-```tsx
-import { injectCss } from "../../lib/css";
-
-const CSS = `.ui-btn { … }`;
-injectCss("ui-button", CSS);
-
-export function Button(…) { … }
-```
-
-That keeps components portable: copy `Button.tsx` + `lib/css.ts` into another project and it works,
-with or without Tailwind.
-
-### 3. Theme by attributes
-
-```html
-<html data-theme="dark">
-```
-
-Dark mode is a variable swap (`.dark` also works). Elevation modes are
-`data-elevation="flat | layered"`. Reduced motion collapses the duration tokens to 1ms and stops
-looping animations.
-
-### 4. Motion grammar
-
-| Token | Value | Use |
+| Part | Origin | Licence |
 | --- | --- | --- |
-| `--dur-fast` | 120ms | hover, press |
-| `--dur` | 180ms | menus, borders |
-| `--dur-slow` | 280ms | indicator glide |
-| `--dur-morph` | 380ms | resolve rows, crossfades |
-| `--ease` | `cubic-bezier(.22,1,.36,1)` | almost everything |
-| `--ease-pop` | `cubic-bezier(.34,1.5,.64,1)` | switch thumb |
-| `--ease-morph` | `cubic-bezier(.32,.72,0,1)` | height morphs |
+| `app/`, `src/`, `tool/`, `scripts/`, token layer | Original work for copyui | MIT (`LICENSE`) |
+| `src/components/ui/CodeBlock.tsx`, `src/components/ui/ReactionBar.tsx` | Vendored from [flohoeller/affectui](https://github.com/flohoeller/affectui) `components/code-block.tsx` and `components/reaction-bar.tsx` | MIT, © 2026 Florian Höller |
+| Remaining `src/components/ui/*` | Original implementation; behaviour and visual language studied from the MIT-licensed free affectui components and the measured live site | MIT |
+| `skills/` | Vendored from [obra/superpowers](https://github.com/obra/superpowers) at `22f0b46` | MIT, © 2025 Jesse Vincent |
 
-## Rebranding
+**What is upstream MIT.** Two agent-facing components — Code Block and Reaction Bar — are copied
+from affectui's free, MIT-licensed source, with their behaviour unchanged. Their upstream licence
+notice is reproduced in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and linked from each
+file's header. `--aui-*` variables from upstream are mapped onto copyui tokens in `tokens.css`.
 
-```css
-:root {
-  --accent: #0f9d6a;
-  --accent-2: #0e7490;
-  --radius-scale: 0.9;
-}
+**What is derived.** The token values, type scale, radii, elevation, motion timings and the visual
+language of the other 30 components were derived by measuring the rendered affectui.com interface
+and reading its public documentation (`llms.txt`, `/design-system`, `/docs`). They are
+reimplementations, not copies, and share names and purpose rather than source.
 
-:root[data-theme="dark"] {
-  --accent: #59d18c;
-}
-```
+**What is original.** The token architecture (`--ui-*` semantic layer), every non-vendored
+component implementation, the gallery and its pages, the registry format and generator, the
+comparison engine in `tool/`, and the documentation in this repository.
 
-Platform status colours (`--ok`, `--warn`, `--danger`) are intentionally *not* derived from the
-accent: an approval is amber regardless of brand.
+**What is deliberately absent.** affectui Pro components, illustrations, paid assets and brand
+marks are not present, not reproduced and not obtainable through this repository. If you want the
+original library, buy it from [affectui.com](https://www.affectui.com).
 
-## Copying into your project
+**Skills.** `skills/` vendors the Superpowers methodology library for offline use by agents.
+`tsconfig.json` excludes it and nothing imports it, so it is not part of the build. See
+`skills/README.md` for the upstream commit and update process.
 
-1. Copy `src/styles/tokens.css` and import it once.
-2. Copy `src/lib/css.ts` (12 lines).
-3. Copy the component file you need, plus any primitives it imports (`Button` imports nothing but
-   React and `css.ts`; `AgentInbox` also imports `Avatar`, `Badge`, `useInterval`).
-4. Keep your own accent overrides in a selector with higher specificity than the component file.
+## Limits
 
-## Accessibility contract
-
-- Native elements first; buttons are buttons, inputs are inputs.
-- Focus rings only for keyboard users (`:focus-visible`), 2px at 55% accent.
-- Icon-only controls require `aria-label`; decorative SVG is `aria-hidden`.
-- Agent state changes are announced through polite live regions; shortcut hints are visual only
-  while the real bindings (`⌘↵`, `Esc`) work.
-- `prefers-reduced-motion` is honoured across every effect.
-- Colour never carries meaning alone: statuses pair a tone with a word and a dot.
-
-## Two-site comparison rig
-
-`npm run compare` captures affectui.com and this app under the same viewport, theme, font and
-frozen-animation conditions, then writes side-by-side composites, 50% overlays, fixed-selector
-metrics and a check report to `artifacts/compare/`.
-
-The detail surface now captures and scores the **entire page**, not only the first viewport, so the
-documentation body contributes to every layout score. The body carries the reference's full API,
-keyboard, accessibility, motion, responsive and named-example content, and its document length is
-within 1.87–2.34% of the reference at all three widths. The latest run passes **1000/1000** frame
-checks, a **6/6 ±3% document-height gate**, a **54/54 gateable section-height gate**, a **17/17
-structural probe** and a **17/17 body-uniqueness gate** across 1440x900, 1024x768 and 390x844 in
-light and dark. Two unchanged runs produced byte-identical `metrics.json`. See
-`scripts/compare/README.md` for setup, `artifacts/compare/report.md` for the measured values,
-`artifacts/compare/layout-audit.md` for the full-page scores and before/after heights, and
-`artifacts/compare/diff-triage.md` for the 274-cluster intentional-versus-review split.
-
-Screenshots are generated locally and ignored by Git; `metrics.json`, `report.md` and
-`layout-audit.md` are checked in.
-
-## Licence & attribution
-
-Original design language: affectUI by Flo Höller. This repository is an independent study for
-personal use; it reproduces measurements and interaction patterns, not source code. Refer to
-affectUI's licence before redistributing anything that mimics its commercial components.
+- copyui is a design system, not a copy of affectui's catalogue; only the free, public surface was
+  studied.
+- Some gallery pages are dense; the components themselves are the deliverable and are all
+  keyboard-reachable.
+- The comparison engine needs Chromium via Playwright for its fixture tests, and network access
+  for the optional live flagships.
+- No auth, database, analytics or CMS ships with this project, by design.

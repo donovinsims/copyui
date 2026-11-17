@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, type ReactNode } from "react";
 import { injectCss } from "../../lib/css";
 import { cx, formatDuration } from "../../lib/utils";

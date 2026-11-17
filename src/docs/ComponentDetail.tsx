@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, type MouseEvent } from "react";
 import {
   BoltIcon,
@@ -15,7 +17,6 @@ import { detailFor } from "./detailData";
 
 type DetailTab = "preview" | "code";
 type InstallMode = "cli" | "manual";
-type PackageManager = "pnpm" | "npm" | "yarn" | "bun";
 
 function componentName(title: string) {
   return title.replace(/[^a-zA-Z0-9]/g, "");
@@ -80,7 +81,6 @@ export function ComponentDetailPage({
   const [tab, setTab] = useState<DetailTab>("preview");
   const [copied, setCopied] = useState<string | null>(null);
   const [installMode, setInstallMode] = useState<InstallMode>("cli");
-  const [manager, setManager] = useState<PackageManager>("pnpm");
   const [look, setLook] = useState<"classic" | "clean">("clean");
   const item = LIBRARY_ITEMS.find((entry) => entry.slug === slug);
 
@@ -113,10 +113,9 @@ export function ComponentDetailPage({
   const meta = detailFor(slug, item.title, item.note, item.category);
   const name = componentName(item.title);
   const code = meta.usage;
-  const install = `npm i @copyui/${slug}`;
-  const installCommand =
-    manager === "npm" ? `npm i @copyui/${slug}` : `${manager} add @copyui/${slug}`;
-  const manualInstall = `Copy src/components/ui/${name}.tsx and src/lib/css.ts into your project.`;
+  const install = `npx shadcn@latest add http://localhost:3000/r/${slug}.json`;
+  const installCommand = install;
+  const manualInstall = `Copy components/ui/${slug}.tsx plus lib/css.ts and lib/utils.ts into your project, and import tokens.css once.`;
   const prompt = `Build a ${item.title} using the copyui design system. ${meta.description} Respect the shared tokens, 13px UI scale, hairline borders and the existing component API.`;
   const related = [
     ...LIBRARY_ITEMS.filter((entry) => entry.slug !== slug && entry.category === item.category),
@@ -426,8 +425,8 @@ export function ComponentDetailPage({
       <section className="doc__section">
         <h2 className="doc__h2">Installation</h2>
         <p className="doc__p">
-          Add {item.title} with the copyui CLI – your project needs React 19 and the design tokens
-          imported once – or copy the component file by hand.
+          Add {item.title} from the self-hosted copyui registry – your project needs React 19 and the
+          design tokens imported once – or copy the component file by hand.
         </p>
         <p className="doc__p">Requires React 19.</p>
         <div className="underline-tabs" role="tablist" aria-label="Install method">
@@ -450,19 +449,7 @@ export function ComponentDetailPage({
         </div>
         <div className="install">
           <div className="install__head">
-            <div className="pm-tabs" role="tablist" aria-label="Package manager">
-              {(["pnpm", "npm", "yarn", "bun"] as PackageManager[]).map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  role="tab"
-                  aria-selected={manager === value}
-                  onClick={() => setManager(value)}
-                >
-                  {value}
-                </button>
-              ))}
-            </div>
+            <span className="install__source">self-hosted registry · @copyui</span>
             <button
               type="button"
               className="install__copy"
