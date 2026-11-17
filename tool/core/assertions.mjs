@@ -114,7 +114,74 @@ export function assertionCount(specs, scope) {
   return checks.length;
 }
 
-export function coverageFor({ reference, local, required = [], matching = null, checks = [] }) {
+/**
+ * Inventory accounting for pages whose two sides deliberately hold different
+ * amounts of the same content. The class tokens come from configuration; the
+ * tool only counts them and attributes unpaired reference nodes to the empty
+ * shells that hold them.
+ */
+export function inventoryFor({ reference, local, matching, spec }) {
+  if (!spec) return null;
+  const refNodes = reference?.nodes ?? [];
+  const locNodes = local?.nodes ?? [];
+  const pairs = matching?.pairs ?? [];
+  const matchedReference = new Set(pairs.map((pair) => pair.reference));
+  const matchedLocal = new Set(pairs.map((pair) => pair.local));
+  const significant = (node) => Boolean(node?.visible) && (node?.rect?.width ?? 0) * (node?.rect?.height ?? 0) > 4;
+  const tokens = (node) => new Set(String(node?.classes ?? "").split(/\s+/).filter(Boolean));
+  const has = (node, token) => Boolean(token) && tokens(node).has(token);
+  const indices = (nodes) => nodes.map((node, index) => index);
+  const pairToLocal = new Map(pairs.map((pair) => [pair.reference, pair.local]));
+  const pairToReference = new Map(pairs.map((pair) => [pair.local, pair.reference]));
+
+  // Locate the paired repeated group first, so the card counts describe that
+  // grid rather than every card on the page. Without a paired group the first
+  // matching container still gives the real inventory numbers.
+  const groupOf = (nodes, token, minimum) =>
+    indices(nodes)
+      .filter((index) => has(nodes[index], token) && (nodes[index].children?.length ?? 0) >= minimum)
+      .sort((a, b) => nodes[b].children.length - nodes[a].children.length)[0];
+
+  let refGroup = indices(refNodes).find(
+    (index) => has(refNodes[index], spec.referenceGroup) && pairToLocal.has(index) && has(locNodes[pairToLocal.get(index)], spec.localGroup),
+  );
+  let locGroup = refGroup !== undefined ? pairToLocal.get(refGroup) : undefined;
+  if (refGroup === undefined) refGroup = groupOf(refNodes, spec.referenceGroup, 6);
+  if (locGroup === undefined) locGroup = groupOf(locNodes, spec.localGroup, 6);
+
+  const cardChildren = (nodes, group, token) =>
+    group === undefined ? [] : (nodes[group].children ?? []).filter((index) => has(nodes[index], token));
+  const refCards = cardChildren(refNodes, refGroup, spec.referenceCards);
+  const locCards = cardChildren(locNodes, locGroup, spec.localCards);
+
+  const unpaired = indices(refNodes).filter((index) => significant(refNodes[index]) && !matchedReference.has(index));
+
+  const shellNodes = new Set();
+  const walk = (index) => {
+    if (shellNodes.has(index)) return;
+    shellNodes.add(index);
+    for (const child of refNodes[index].children ?? []) walk(child);
+  };
+  for (const index of indices(refNodes)) {
+    if (significant(refNodes[index]) && has(refNodes[index], spec.emptyShell)) walk(index);
+  }
+
+  return {
+    referenceCards: refCards.length,
+    localCards: locCards.length,
+    pairedCards: pairs.filter((pair) => refCards.includes(pair.reference) && locCards.includes(pair.local)).length,
+    pairedReferenceCards: refCards.filter((index) => matchedReference.has(index)).length,
+    pairedLocalCards: locCards.filter((index) => matchedLocal.has(index)).length,
+    unpairedReferenceNodes: unpaired.length,
+    unpairedReferenceCardNodes: unpaired.filter((index) => refCards.includes(index)).length,
+    emptyShells: {
+      count: indices(refNodes).filter((index) => significant(refNodes[index]) && has(refNodes[index], spec.emptyShell)).length,
+      unpairedNodes: unpaired.filter((index) => shellNodes.has(index)).length,
+    },
+  };
+}
+
+export function coverageFor({ reference, local, required = [], matching = null, checks = [], inventory = null }) {
   const slotRows = required.map((name) => ({
     name,
     reference: Boolean(reference?.slots?.[name]),
@@ -137,6 +204,7 @@ export function coverageFor({ reference, local, required = [], matching = null, 
       missing: slotRows.filter((row) => !row.reference || !row.local),
     },
     matching: matching?.stats ?? null,
+    inventory: inventory ?? null,
     assertions: {
       total,
       passed,

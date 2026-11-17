@@ -175,6 +175,70 @@ test("identical content is recovered when the shell diverged", () => {
   assert.ok(result.stats.coverage >= 0.5, JSON.stringify(result.stats));
 });
 
+test("a repeated card grid pairs container and cards despite new class names and order", () => {
+  const card = (title, tag = "article") => ({
+    tag,
+    classes: tag === "article" ? "card" : "library-card",
+    children: [
+      {
+        tag: "div",
+        classes: "stage",
+        children: [{ tag: "div", classes: "preview" }],
+      },
+      {
+        tag: "div",
+        classes: "footer",
+        children: [{ tag: "h3", role: "heading", name: title }],
+      },
+    ],
+  });
+  const reference = page([
+    {
+      tag: "div",
+      classes: "grid",
+      children: [card("Alpha"), card("Beta"), card("Gamma")],
+    },
+  ]);
+  // Same cards, different wrapper, different class names and reversed order.
+  const localCards = ["Gamma", "Alpha", "Beta"].map((title) => ({
+      tag: "article",
+      classes: "library-card",
+      children: [
+        {
+          tag: "a",
+          role: "link",
+          classes: "library-card__link",
+          children: [
+            { tag: "div", classes: "stage", children: [{ tag: "div", classes: "preview" }] },
+            {
+              tag: "div",
+              classes: "meta",
+              children: [{ tag: "h3", role: "heading", name: title }],
+            },
+          ],
+        },
+      ],
+  }));
+  const local = page([{ tag: "div", classes: "library-grid", children: localCards }]);
+
+  const result = matchPages(reference, local);
+  const cardPairs = result.pairs.filter((pair) => pair.tag === "article");
+  assert.equal(cardPairs.length, 3, "every card pairs despite the order and wrapper");
+  for (const pair of cardPairs) {
+    const refTitle = reference.nodes[pair.reference].children
+      .flatMap((index) => reference.nodes[index].children)
+      .map((index) => reference.nodes[index].name)
+      .find(Boolean);
+    const locTitle = local.nodes[pair.local].children
+      .flatMap((index) => local.nodes[index].children)
+      .flatMap((index) => local.nodes[index].children)
+      .map((index) => local.nodes[index].name)
+      .find(Boolean);
+    assert.equal(locTitle, refTitle, "cards pair by title, not by position");
+  }
+  assert.ok(result.stats.coverage >= 0.6, JSON.stringify(result.stats));
+});
+
 test("similarity rewards matching tag, role, name and classes", () => {
   const [html] = build([{ tag: "article", classes: "card", name: "First" }]);
   const [same] = build([{ tag: "article", classes: "card", name: "First" }]);

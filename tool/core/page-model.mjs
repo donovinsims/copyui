@@ -423,6 +423,15 @@ function inPageExtractor(options) {
     innerWidth: window.innerWidth,
     innerHeight: window.innerHeight,
     bodyBackground: body ? getComputedStyle(body).backgroundColor : null,
+    // Rendering evidence: the declared stack, the loaded-face status and
+    // whether the page's display face actually resolved. Comparisons across
+    // machines need this to explain metric drift instead of guessing.
+    bodyFont: body ? getComputedStyle(body).fontFamily : null,
+    fontsStatus: document.fonts?.status ?? null,
+    fontChecks: {
+      inter: document.fonts?.check?.('16px Inter') ?? false,
+      dejavu: document.fonts?.check?.('16px "DejaVu Sans"') ?? false,
+    },
     fonts: [...new Set([...document.fonts].map((font) => `${font.family} ${font.weight} ${font.style}`))].sort(),
     fontFaces: collectFontFaces(),
     mediaQueries: collectMediaQueries(),

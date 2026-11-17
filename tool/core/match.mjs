@@ -1,5 +1,5 @@
 const LANDMARK_TAGS = new Set(["header", "nav", "main", "aside", "footer", "h1", "h2", "h3"]);
-const MAX_ALIGN_CHILDREN = 120;
+const MAX_ALIGN_CHILDREN = 300;
 const MAX_DEPTH = 80;
 
 function normalizeName(value) {
@@ -223,6 +223,46 @@ export function matchPages(reference, local, { minConfidence = 0.5 } = {}) {
       }
     }
 
+    // 2c. Repeated titles.
+    // A card grid can be ordered differently on each
+    // side, and positional alignment then pairs unrelated cards. Identical
+    // heading text inside a repeated child is the stronger signal.
+    const titleOf = (nodes, index) => {
+      const queue = [...(nodes[index]?.children ?? [])];
+      let guard = 0;
+      while (queue.length && guard < 60) {
+        const cursor = queue.shift();
+        const node = nodes[cursor];
+        guard += 1;
+        if (!node) continue;
+        if (node.role === "heading" || /(^|[-_])title$/i.test(node.classes ?? "")) {
+          const text = normalizeName(node.name);
+          if (text.length >= 3) return text;
+        }
+        queue.push(...(node.children ?? []));
+      }
+      return null;
+    };
+    // Only repeated sibling lists need title pairing. Two lone children that
+    // both contain the same heading are a container and its content, not peers.
+    if (refKids.length > 1 && locKids.length > 1) {
+      const refByTitle = new Map();
+      for (const index of refKids) {
+        const title = titleOf(refNodes, index);
+        if (!title) continue;
+        if (!refByTitle.has(title)) refByTitle.set(title, []);
+        refByTitle.get(title).push(index);
+      }
+      for (const locIndex of locKids) {
+        if (matchedLocal.has(locIndex)) continue;
+        const title = titleOf(locNodes, locIndex);
+        if (!title) continue;
+        const refIndex = (refByTitle.get(title) ?? []).find((candidate) => !matchedRef.has(candidate));
+        if (refIndex === undefined) continue;
+        if (addPair(refIndex, locIndex, 0.92)) alignChildren(refIndex, locIndex, depth + 1);
+      }
+    }
+
     // 2. Wrapper transparency. Compare through a short single-child chain on
     // either side before sequence alignment can pair the wrapper with the real
     // element and leave the content beneath it unmatched.
@@ -281,7 +321,100 @@ export function matchPages(reference, local, { minConfidence = 0.5 } = {}) {
       }
     }
 
-    // 3. Sequence alignment for the rest.
+    // 2b. Exact names within one parent.
+    // Identical visible text is the
+    // strongest signal available, and tag/role weighting must not hide it (a
+    // reference info link versus a local div with the same caption).
+    const localByName = new Map();
+    for (const locIndex of locKids) {
+      if (matchedLocal.has(locIndex)) continue;
+      const key = normalizeName(locNodes[locIndex].name);
+      if (key.length < 4 || localByName.has(key)) continue;
+      localByName.set(key, locIndex);
+    }
+    for (const refIndex of refKids) {
+      if (matchedRef.has(refIndex)) continue;
+      const key = normalizeName(refNodes[refIndex].name);
+      if (key.length < 4) continue;
+      const locIndex = localByName.get(key);
+      if (locIndex === undefined || matchedLocal.has(locIndex)) continue;
+      if (addPair(refIndex, locIndex, 0.85)) alignChildren(refIndex, locIndex, depth + 1);
+    }
+
+    // 3. One-level expansion.
+    // A presentational wrapper can group the parts
+    // that are siblings on the other side (`wrapper > first + second`, or a row
+    // holding several labelled parts). Offer both the direct children
+    // and the children of small non-landmark wrappers as candidates, then take
+    // the best pairs before sequence alignment can commit to a worse one.
+    const expandable = (nodes, index) => {
+      const node = nodes[index];
+      const kids = node?.children ?? [];
+      if (!kids.length || kids.length > 4) return [];
+      if (LANDMARK_TAGS.has(node.tag) || LANDMARK_TAGS.has(node.role)) return [];
+      return kids;
+    };
+    const leftRef = refKids.filter((index) => !matchedRef.has(index));
+    const leftLocal = locKids.filter((index) => !matchedLocal.has(index));
+    const tagsOf = (nodes, index) => {
+      const hist = new Map();
+      for (const child of nodes[index]?.children ?? []) {
+        const tag = nodes[child]?.tag ?? "";
+        hist.set(tag, (hist.get(tag) ?? 0) + 1);
+      }
+      return hist;
+    };
+    const histogram = (a, b) => {
+      let dot = 0;
+      let normA = 0;
+      let normB = 0;
+      for (const key of new Set([...a.keys(), ...b.keys()])) {
+        const x = a.get(key) ?? 0;
+        const y = b.get(key) ?? 0;
+        dot += x * y;
+        normA += x * x;
+        normB += y * y;
+      }
+      return normA && normB ? dot / Math.sqrt(normA * normB) : 0;
+    };
+    // Tag and role can differ on an equivalent container (an info link versus a
+    // div with the same caption); matching child shape is the structural tie.
+    const pairScore = (refIndex, locIndex) => {
+      const base = nodeSimilarity(refNodes[refIndex], locNodes[locIndex]);
+      const refChildren = refNodes[refIndex]?.children?.length ?? 0;
+      const locChildren = locNodes[locIndex]?.children?.length ?? 0;
+      if (!refChildren || !locChildren) return base;
+      // Large containers belong to the structural pass, which can weigh child
+      // content; expansion is for small wrappers holding a few siblings.
+      if (refChildren >= 6 && locChildren >= 6) return -1;
+      return 0.7 * base + 0.3 * histogram(tagsOf(refNodes, refIndex), tagsOf(locNodes, locIndex));
+    };
+    const candidates = [];
+    for (const refIndex of leftRef) {
+      for (const locIndex of leftLocal) {
+        candidates.push({ refIndex, locIndex, score: pairScore(refIndex, locIndex) });
+        for (const child of expandable(locNodes, locIndex)) {
+          candidates.push({ refIndex, locIndex: child, score: pairScore(refIndex, child) });
+        }
+      }
+    }
+    for (const locIndex of leftLocal) {
+      for (const refIndex of leftRef) {
+        for (const child of expandable(refNodes, refIndex)) {
+          candidates.push({ refIndex: child, locIndex, score: pairScore(child, locIndex) });
+        }
+      }
+    }
+    candidates.sort((a, b) => b.score - a.score);
+    for (const { refIndex, locIndex, score } of candidates) {
+      if (score < 0.35) break;
+      if (matchedRef.has(refIndex) || matchedLocal.has(locIndex)) continue;
+      if (addPair(refIndex, locIndex, Math.min(0.9, score))) alignChildren(refIndex, locIndex, depth + 1);
+    }
+
+    // 3b. Sequence alignment for the rest
+    // , after flattening has exposed the
+    // real peers.
     const remainingRef = refKids.filter((index) => !matchedRef.has(index));
     const remainingLocal = locKids.filter((index) => !matchedLocal.has(index));
     const aligned = alignSequences(remainingRef, remainingLocal, (a, b) =>
@@ -293,7 +426,8 @@ export function matchPages(reference, local, { minConfidence = 0.5 } = {}) {
       if (addPair(left, right, score)) alignChildren(left, right, depth + 1);
     }
 
-    // 3. Repeated groups (cards, list rows) pair in order even when content differs.
+    // 4. Repeated groups (cards, list rows)
+    // pair in order even when content differs.
     const groups = (indices, model) => {
       const map = new Map();
       for (const index of indices) {
@@ -329,7 +463,110 @@ export function matchPages(reference, local, { minConfidence = 0.5 } = {}) {
     alignChildren(refRoot, locRoot, 0);
   }
 
-  // 4. Global fallback: mutual best matches for leftovers, by exact accessible
+  // 6. Structural containers.
+    // A grid or panel can keep the same role and the
+  // same kind of children while every class name changes. Without pairing the
+  // container, its whole repeated child list is unreachable and a card grid
+  // collapses to a handful of shell matches.
+  const childTags = (nodes, index) => {
+    const hist = new Map();
+    for (const child of nodes[index]?.children ?? []) {
+      const tag = nodes[child]?.tag ?? "";
+      hist.set(tag, (hist.get(tag) ?? 0) + 1);
+    }
+    return hist;
+  };
+  const histogramSimilarity = (a, b) => {
+    let dot = 0;
+    let normA = 0;
+    let normB = 0;
+    for (const key of new Set([...a.keys(), ...b.keys()])) {
+      const x = a.get(key) ?? 0;
+      const y = b.get(key) ?? 0;
+      dot += x * y;
+      normA += x * x;
+      normB += y * y;
+    }
+    return normA && normB ? dot / Math.sqrt(normA * normB) : 0;
+  };
+  const contentDensity = (nodes, index) => {
+    const kids = nodes[index]?.children ?? [];
+    if (!kids.length) return 0;
+    let named = 0;
+    for (const child of kids) if (normalizeName(nodes[child]?.name).length >= 3) named += 1;
+    return named / kids.length;
+  };
+  const containerScore = (refIndex, locIndex) => {
+    const refNode = refNodes[refIndex];
+    const locNode = locNodes[locIndex];
+    if (refNode.tag !== locNode.tag && (!refNode.role || refNode.role !== locNode.role)) return null;
+    const refKids = refNode.children?.length ?? 0;
+    const locKids = locNode.children?.length ?? 0;
+    // Only repeated lists (grids, long rows) belong here; small containers are
+    // handled by the parent's own alignment and must not pair across cards.
+    if (refKids < 3 || locKids < 3) return null;
+    const refTags = childTags(refNodes, refIndex);
+    const locTags = childTags(locNodes, locIndex);
+    const histogram = histogramSimilarity(refTags, locTags);
+    if (histogram < 0.85) return null;
+    const ratio = Math.min(refKids, locKids) / Math.max(refKids, locKids);
+    // A second candidate grid can have exactly the expected child count while
+    // every child is an unrendered shell. Content density breaks that tie: two
+    // containers whose children carry text are the same list.
+    // Presence of text in both sides' children, not the fraction: a list of
+    // items whose previews are unrendered still carry text on the items that
+    // matter, and an unrendered duplicate group has none at all.
+    const content =
+      Math.min(contentDensity(refNodes, refIndex), contentDensity(locNodes, locIndex)) > 0 ? 1 : 0;
+    // Container box size is a poor signal for repeated lists: a longer
+    // reference list is proportionally taller than the recreation's shorter one
+    // even though they are the same list. Child shape, child content and child
+    // count are what identify a container.
+    const score = 0.5 * histogram + 0.3 * content + 0.2 * ratio;
+    return score >= 0.55 ? score : null;
+  };
+  const containersFor = (nodes, matched) =>
+    nodes
+      .map((node, index) => index)
+      .filter((index) => {
+        const node = nodes[index];
+        return !matched.has(index) && isSignificant(node) && (node.children?.length ?? 0) >= 3;
+      })
+      .sort((a, b) => nodes[b].children.length - nodes[a].children.length)
+      .slice(0, 80);
+
+  const depthOf = (nodes, index) => {
+    let depth = 0;
+    let cursor = index;
+    while (cursor >= 0 && depth < 80) {
+      depth += 1;
+      cursor = nodes[cursor].parent;
+    }
+    return depth;
+  };
+  const refDepth = refNodes.map((node, index) => depthOf(refNodes, index));
+  const locDepth = locNodes.map((node, index) => depthOf(locNodes, index));
+  // A container can differ by one wrapper level, but a stage two levels below a
+  // nested element is not the peer of its sibling's child: constrain depth so
+  // a histogram match cannot strand the real children.
+  const containerCandidates = [];
+  for (const refIndex of containersFor(refNodes, matchedRef)) {
+    for (const locIndex of containersFor(locNodes, matchedLocal)) {
+      const score = containerScore(refIndex, locIndex);
+      if (score !== null) containerCandidates.push({ refIndex, locIndex, score });
+    }
+  }
+  containerCandidates.sort((a, b) => b.score - a.score);
+  for (const { refIndex, locIndex, score } of containerCandidates) {
+    if (matchedRef.has(refIndex) || matchedLocal.has(locIndex)) continue;
+    if (addPair(refIndex, locIndex, Math.min(0.9, score))) {
+      alignChildren(refIndex, locIndex, 0);
+    }
+  }
+
+
+  // 4. Global fallback:
+    // mutual best matches for leftovers, by exact accessible
   // name and tag. This recovers portals and nodes whose parent structure moved.
   const unmatchedRef = refNodes
     .map((node, index) => index)
@@ -356,7 +593,28 @@ export function matchPages(reference, local, { minConfidence = 0.5 } = {}) {
       }
   }
 
-  // 5. Content anchors. The same visible string identifies the same element
+  // Two containers may pair only inside the same already-aligned region. Without
+  // this, a stage in one card can steal the matching head of another card.
+  const nearestPair = (nodes, index, matched) => {
+    let cursor = nodes[index]?.parent ?? -1;
+    let guard = 0;
+    while (cursor >= 0 && guard < 80) {
+      const pair = matched.get(cursor);
+      if (pair) return pair;
+      cursor = nodes[cursor].parent;
+      guard += 1;
+    }
+    return null;
+  };
+  const sameRegion = (refIndex, locIndex) => {
+    const refPair = nearestPair(refNodes, refIndex, matchedRef);
+    const locPair = nearestPair(locNodes, locIndex, matchedLocal);
+    if (!refPair && !locPair) return true;
+    if (!refPair || !locPair) return false;
+    return refPair.reference === locPair.reference && refPair.local === locPair.local;
+  };
+  // 5. Content anchors.
+    // The same visible string identifies the same element
   // even when its parent chain diverged (a rebuilt article, a moved panel).
   // This is what keeps a page comparable when the shell is structurally
   // different, which is the normal case for a recreation.
@@ -379,6 +637,7 @@ export function matchPages(reference, local, { minConfidence = 0.5 } = {}) {
       if (matchedLocal.has(locIndex)) continue;
       const locNode = locNodes[locIndex];
       if (refNode.tag !== locNode.tag && refNode.role !== locNode.role) continue;
+      if ((refNode.children?.length ?? 0) > 0 && !sameRegion(refIndex, locIndex)) continue;
       const score = nodeSimilarity(refNode, locNode) + 0.1;
       if (!best || score > best.score) best = { locIndex, score };
     }

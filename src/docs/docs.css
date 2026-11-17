@@ -2125,5 +2125,5 @@
   .table--api th:nth-child(4) { width: 220px; }
   .table--keys { min-width: 0; width: 100%; }
   .table--keys td:first-child { width: 220px; min-width: 220px; }
-  .doc__footer { flex-direction: column; gap: 4px; margin-top: 96px; }
+  .doc__footer { flex-direction: column; gap: 4px; margin-top: 112px; }
 }

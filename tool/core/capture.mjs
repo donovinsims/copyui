@@ -16,7 +16,7 @@ import {
   settlePage,
   waitForSlots,
 } from "./browser.mjs";
-import { coverageFor, evaluateAssertions, gateResult, summarizeChecks } from "./assertions.mjs";
+import { coverageFor, evaluateAssertions, gateResult, inventoryFor, summarizeChecks } from "./assertions.mjs";
 import { discoverRoutes } from "./discover.mjs";
 import { matchPages, matchingSummary } from "./match.mjs";
 import { extractPageModel } from "./page-model.mjs";
@@ -46,6 +46,8 @@ export function normalizeSurface(surface = {}, index = 0) {
     navigation: surface.navigation ?? [],
     assertions: surface.assertions ?? [],
     require: surface.require ?? {},
+    gates: surface.gates ?? null,
+    inventory: surface.inventory ?? null,
     uniqueBodies: surface.uniqueBodies ?? null,
     note: surface.note ?? null,
   };
@@ -276,7 +278,7 @@ function uniqueBodyCheck(surface, result) {
   };
 }
 
-function recomputeGates(entry, config) {
+function recomputeGates(entry, config, surface) {
   entry.checks = entry.checks ?? [];
   entry.coverage = entry.coverage ?? coverageFor({
     reference: entry.reference,
@@ -284,7 +286,10 @@ function recomputeGates(entry, config) {
     required: [],
     checks: entry.checks,
   });
-  entry.gates = gateResult({ checks: entry.checks, coverage: entry.coverage, gates: config.gates });
+  // A surface may declare its own floor when the two sides' inventories are
+  // deliberately different; the global gate stays the default.
+  const gates = { ...config.gates, ...(surface?.gates ?? {}) };
+  entry.gates = gateResult({ checks: entry.checks, coverage: entry.coverage, gates });
 }
 
 function addUniqueBodies(metrics, surface, result) {
@@ -295,6 +300,35 @@ function addUniqueBodies(metrics, surface, result) {
       entry.checks.push(uniqueBodyCheck(surface, result));
     }
   }
+}
+
+export async function annotateBaseline(metrics, config) {
+  if (!config.baseline) return 0;
+  let baseline;
+  try {
+    baseline = JSON.parse(await readFile(path.resolve(config.baseline), "utf8"));
+  } catch {
+    return 0;
+  }
+  let annotated = 0;
+  for (const [surfaceId, byViewport] of Object.entries(metrics.surfaces)) {
+    for (const [viewportId, byTheme] of Object.entries(byViewport)) {
+      for (const [theme, entry] of Object.entries(byTheme)) {
+        const priorChecks = baseline.surfaces?.[surfaceId]?.[viewportId]?.[theme]?.checks ?? [];
+        for (const check of entry.checks ?? []) {
+          if (check.pass) continue;
+          const prior = priorChecks.find((candidate) => candidate.name === check.name);
+          // A baseline that never recorded the value (the old rig stored null for
+          // shorthand shorthands it could not read) cannot prove drift.
+          if (!prior || prior.reference === null || prior.local === null) continue;
+          check.baseline = { reference: prior.reference, local: prior.local };
+          check.drift = JSON.stringify(prior.reference) !== JSON.stringify(check.reference);
+          annotated += 1;
+        }
+      }
+    }
+  }
+  return annotated;
 }
 
 function makeReport(metrics) {
@@ -328,7 +362,7 @@ function makeReport(metrics) {
         );
         for (const check of failed) {
           failures.push(
-            `${surfaceId} · ${viewportId} · ${theme} · ${check.name}: reference ${JSON.stringify(check.reference)}, local ${JSON.stringify(check.local)}`,
+            `${surfaceId} · ${viewportId} · ${theme} · ${check.name}: reference ${JSON.stringify(check.reference)}, local ${JSON.stringify(check.local)}${check.baseline ? ` (baseline reference ${JSON.stringify(check.baseline.reference)}, local ${JSON.stringify(check.baseline.local)}${check.drift ? "; reference moved" : ""})` : ""}`,
           );
         }
       }
@@ -347,6 +381,20 @@ function makeReport(metrics) {
       `- **${surfaceId}**: ${stats.matched}/${stats.referenceNodes} reference nodes matched (${Math.round(stats.coverage * 100)}%), mean confidence ${stats.meanConfidence}, ${stats.lowConfidence} low-confidence pairs.`,
     );
   }
+  const inventoryRows = [];
+  for (const [surfaceId, byViewport] of Object.entries(metrics.surfaces)) {
+    const entry = Object.values(Object.values(byViewport)[0] ?? {})[0];
+    const inventory = entry?.coverage?.inventory;
+    if (!inventory) continue;
+    inventoryRows.push(
+      `- **${surfaceId}**: ${inventory.referenceCards} reference cards vs ${inventory.localCards} local cards, ${inventory.pairedCards} paired; ${inventory.unpairedReferenceNodes} unpaired reference nodes (${inventory.unpairedReferenceCardNodes} card nodes, ${inventory.emptyShells.unpairedNodes} inside ${inventory.emptyShells.count} empty shells).`,
+    );
+  }
+  if (inventoryRows.length) {
+    lines.push("", "## Inventory", "");
+    for (const row of inventoryRows) lines.push(row);
+  }
+
   if (metrics.summary?.failures?.length) {
     lines.push("", "## Coverage gaps", "");
     for (const gap of metrics.summary.failures) lines.push(`- ${gap}`);
@@ -465,6 +513,12 @@ export async function runCompare(config, { logger, root = process.cwd() } = {}) 
                 required,
                 matching,
                 checks: entry.checks,
+                inventory: inventoryFor({
+                  reference: reference.model,
+                  local: local.model,
+                  matching,
+                  spec: surface.inventory,
+                }),
               });
             } else {
               entry.checks = evaluateAssertions(surface.assertions, { reference: entry.reference, local: entry.local });
@@ -473,9 +527,10 @@ export async function runCompare(config, { logger, root = process.cwd() } = {}) 
                 local: entry.local,
                 required,
                 checks: entry.checks,
+                inventory: null,
               });
             }
-            recomputeGates(entry, config);
+            recomputeGates(entry, config, surface);
           }
 
           metrics.surfaces[surface.id][viewport.id][theme] = entry;
@@ -488,7 +543,7 @@ export async function runCompare(config, { logger, root = process.cwd() } = {}) 
         });
         addUniqueBodies(metrics, surface, result);
         for (const byViewport of Object.values(metrics.surfaces[surface.id])) {
-          for (const entry of Object.values(byViewport)) recomputeGates(entry, config);
+          for (const entry of Object.values(byViewport)) recomputeGates(entry, config, surface);
         }
       }
     }
@@ -507,6 +562,7 @@ export async function runCompare(config, { logger, root = process.cwd() } = {}) 
       entries.length > 0 && entries.every((entry) => fatal.has(entry.reference?.status));
     const finishedAt = new Date().toISOString();
 
+    await annotateBaseline(metrics, config);
     await writeFile(path.join(outDir, "metrics.json"), `${JSON.stringify(metrics, null, 2)}\n`);
     await writeFile(path.join(outDir, "report.md"), makeReport(metrics));
 

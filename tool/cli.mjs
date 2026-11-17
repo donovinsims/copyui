@@ -256,7 +256,7 @@ async function commandCompare(options, logger) {
   const result = await runCompare(config, { logger });
   const { summary } = result.metrics;
   process.stdout.write(
-    `Checks ${summary.checks - summary.failed}/${summary.checks} · captures ${summary.captures} · coverage failures ${summary.coverageFailures}\n`,
+    `Checks ${summary.checks} total · ${summary.checks - summary.failed} passed · ${summary.failed} failed · captures ${summary.captures} · coverage failures ${summary.coverageFailures}\n`,
   );
   process.stdout.write(`Artifacts ${result.outDir}\n`);
   return result.exitCode;
