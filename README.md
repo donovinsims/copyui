@@ -21,6 +21,22 @@ npm run build      # type-check + production build
 React 19 · TypeScript · Vite · no Tailwind · no animation library · no runtime dependencies beyond
 React.
 
+## Universal cloning tool
+
+`tool/` is the general engine behind the comparison: route discovery, deterministic capture,
+automatic node matching and declarative assertions. Phases 0–2 of [PLAN.md](PLAN.md) are implemented;
+later phases add pixel scoring, state coverage, mirroring and rebuild generation.
+
+```bash
+npm test                     # unit tests + offline browser fixtures
+npm run compare:fixtures     # identical fixture passes, mutated fixture fails
+node tool/cli.mjs scan https://example.com
+node tool/cli.mjs compare https://reference.example https://local.example
+node tool/cli.mjs compare --config examples/affectui/compare.config.mjs   # the flagship, as data
+```
+
+The original hand-written rig remains available as `npm run compare` while the port is validated.
+
 ## What is inside
 
 | Area | Files |

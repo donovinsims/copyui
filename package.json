@@ -9,7 +9,13 @@
     "build": "tsc && vite build",
     "typecheck": "tsc",
     "compare": "node scripts/compare/capture.mjs",
+    "compare:fixtures": "node tool/test/fixtures-run.mjs",
+    "test": "node --test tool/test/*.test.mjs",
+    "tool": "node tool/cli.mjs",
     "preview": "vite preview --host 0.0.0.0"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
     "react": "^19.0.0",

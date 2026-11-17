@@ -3,5 +3,10 @@ dist/
 *.local
 .DS_Store
 
+# Clone artifacts, response cache and authenticated storage state.
+out/
+.copyui-cache/
+*.storageState.json
+
 # Generated comparison screenshots are local evidence; keep the rig output itself regenerable.
 artifacts/**/*.png
